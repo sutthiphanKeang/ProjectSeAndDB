@@ -10,9 +10,12 @@ import LaptopChromebookIcon from "@mui/icons-material/LaptopChromebook";
 import SchoolIcon from "@mui/icons-material/School";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import HomeIcon from '@mui/icons-material/Home';
-import NewspaperIcon from '@mui/icons-material/Newspaper';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import HomeIcon from "@mui/icons-material/Home";
+import NewspaperIcon from "@mui/icons-material/Newspaper";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 const theme = createTheme({
   palette: {
@@ -31,91 +34,114 @@ const theme = createTheme({
   },
 });
 
-export default class Navbar extends Component {
-  render() {
-    return (
-      <Box sx={{ flexGrow: 1 }}>
-          <ThemeProvider theme={theme}>
-            <AppBar position="static" color="primary">
-              <Toolbar variant="dense">
-                <Link to="/Home">
+const Navbar = () => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <ThemeProvider theme={theme}>
+        <AppBar position="static" color="primary">
+          <Toolbar variant="dense">
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <Typography variant="h4" sx={{ color: "white" }} component="div">
+                <b>เช่ารถเช่าใจ</b>
+              </Typography>
+            </Link>
+
+            <Box sx={{ flexGrow: 1 }} />
+            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+              <IconButton size="medium" color="inherit">
+                <HomeIcon />
+                <Typography>&nbsp;</Typography>
+                <Link to="/" style={{ textDecoration: "none" }}>
                   <Typography
-                    variant="h4"
-                    sx={{ color: "white" }}
-                    component="div"
+                    sx={{
+                      color: "white",
+                      fontWeight: "bold",
+                      fontSize: "100%",
+                    }}
                   >
-                    <b>เช่ารถเช่าใจ</b>
+                    Home
                   </Typography>
                 </Link>
-
-                <Box sx={{ flexGrow: 1 }} />
-                <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                  <IconButton size="medium" color="inherit">
-                    <HomeIcon />
-                    <Typography>&nbsp;</Typography>
-                    <Link to="/Home" color="inherit">
-                      <Typography
-                        sx={{
-                          color: "white",
-                          fontWeight: "bold",
-                          fontSize: "100%",
-                        }}
-                      >
-                        Home
-                      </Typography>
-                    </Link>
-                  </IconButton>
-                  <IconButton size="medium" color="inherit">
-                    <NewspaperIcon />
-                    <Typography>&nbsp;</Typography>
-                    <Link to="/About">
-                      <Typography
-                        sx={{
-                          color: "white",
-                          fontWeight: "bold",
-                          fontSize: "100%",
-                        }}
-                      >
-                        News
-                      </Typography>
-                    </Link>
-                  </IconButton>
-                  <IconButton size="medium" color="inherit">
-                    <LaptopChromebookIcon />
-                    <Typography>&nbsp;</Typography>
-                    <Link to="/Skills" color="inherit">
-                      <Typography
-                        sx={{
-                          color: "white",
-                          fontWeight: "bold",
-                          fontSize: "100%",
-                        }}
-                      >
-                        Booking
-                      </Typography>
-                    </Link>
-                  </IconButton>
-                  <IconButton size="medium" color="inherit">
-                    <AccountCircleIcon />
-                    <Typography>&nbsp;</Typography>
-                    <Link to="/Education" color="inherit">
-                      <Typography
-                        sx={{
-                          color: "white",
-                          fontWeight: "bold",
-                          fontSize: "100%",
-                        }}
-                      >
-                        Log in/Register
-                      </Typography>
-                    </Link>
-                  </IconButton>
-                </Box>
-              </Toolbar>
-            </AppBar>
-          </ThemeProvider>
-      </Box>
-      
-    )
-  }
-}
+              </IconButton>
+              <IconButton size="medium" color="inherit">
+                <NewspaperIcon />
+                <Typography>&nbsp;</Typography>
+                <Link to="/" style={{ textDecoration: "none" }}>
+                  <Typography
+                    sx={{
+                      color: "white",
+                      fontWeight: "bold",
+                      fontSize: "100%",
+                    }}
+                  >
+                    News
+                  </Typography>
+                </Link>
+              </IconButton>
+              <IconButton size="medium" color="inherit">
+                <LaptopChromebookIcon />
+                <Typography>&nbsp;</Typography>
+                <Link to="/" style={{ textDecoration: "none" }}>
+                  <Typography
+                    sx={{
+                      color: "white",
+                      fontWeight: "bold",
+                      fontSize: "100%",
+                    }}
+                  >
+                    Booking
+                  </Typography>
+                </Link>
+              </IconButton>
+              <Button
+                id="basic-button"
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleClick}
+                color="inherit"
+              >
+                <AccountCircleIcon />
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                <MenuItem onClick={handleClose}>
+                  <Link to="/" style={{ textDecoration: "none" }}>
+                    My account
+                  </Link>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                <Link to="/Manage" style={{ textDecoration: "none" }}>
+                    Manage For Admin
+                  </Link>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                <Link to="/" style={{ textDecoration: "none" }}>
+                Logout
+                  </Link>
+                  </MenuItem>
+              </Menu>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </ThemeProvider>
+    </Box>
+  );
+};
+export default Navbar;

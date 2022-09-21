@@ -2,6 +2,7 @@ import React, { Component, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import FirstHome from "./FirstHome";
 import Navbar from "./Navbar";
+import Container from "@mui/material/Container";
 
 
 const MainLayout:React.FC<{}> = () => {
@@ -13,7 +14,9 @@ const MainLayout:React.FC<{}> = () => {
   return (
     <div>
       <Navbar />
-      <Outlet />
+      <Container fixed>
+        <Outlet />
+      </Container>
     </div>
   );
 };
