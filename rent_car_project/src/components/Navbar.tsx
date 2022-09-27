@@ -49,7 +49,7 @@ const Navbar = () => {
       <ThemeProvider theme={theme}>
         <AppBar position="static" color="primary">
           <Toolbar variant="dense">
-            <Link to="/" style={{ textDecoration: "none" }}>
+            <Link to="/FirstHome" style={{ textDecoration: "none" }}>
               <Typography variant="h4" sx={{ color: "white" }} component="div">
                 <b>เช่ารถเช่าใจ</b>
               </Typography>
