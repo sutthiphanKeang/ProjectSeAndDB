@@ -6,10 +6,10 @@ import Container from "@mui/material/Container";
 
 
 const MainLayout:React.FC<{}> = () => {
-  const navigate = useNavigate();
-  useEffect(() => {
-    navigate("/FirstHome");
-  }, []);
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   navigate("/FirstHome");
+  // }, []);
 
   return (
     <div>
