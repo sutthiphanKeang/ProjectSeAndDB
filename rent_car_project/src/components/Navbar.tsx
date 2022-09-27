@@ -60,7 +60,7 @@ const Navbar = () => {
               <IconButton size="medium" color="inherit">
                 <HomeIcon />
                 <Typography>&nbsp;</Typography>
-                <Link to="/" style={{ textDecoration: "none" }}>
+                <Link to="/FirstHome" style={{ textDecoration: "none" }}>
                   <Typography
                     sx={{
                       color: "white",
@@ -90,7 +90,7 @@ const Navbar = () => {
               <IconButton size="medium" color="inherit">
                 <LaptopChromebookIcon />
                 <Typography>&nbsp;</Typography>
-                <Link to="/" style={{ textDecoration: "none" }}>
+                <Link to="/Booking" style={{ textDecoration: "none" }}>
                   <Typography
                     sx={{
                       color: "white",
