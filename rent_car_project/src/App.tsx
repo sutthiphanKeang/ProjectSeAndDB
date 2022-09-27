@@ -4,6 +4,7 @@ import FirstHome from './components/FirstHome';
 import MainLayOut from './components/MainLayOut';
 import Manage from './components/admin/Manage';
 import Booking from './components/Booking';
+import ReturnCar from './components/ReturnCar';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path='FirstHome' element={<FirstHome/>}></Route>
         <Route path='Manage' element={<Manage/>}></Route>
         <Route path='Booking' element={<Booking/>}></Route>
+        <Route path='ReturnCar' element={<ReturnCar/>}></Route>
       </Route>
     </Routes>
   );
