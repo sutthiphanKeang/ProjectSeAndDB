@@ -5,6 +5,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Card, CardContent } from "@mui/material";
 import Insurance from "./Insurance";
+import ManageCar from "./ManageCar";
+import AddCar from "./AddCar";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -62,13 +64,13 @@ export default function BasicTabs() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        จัดการรถ
+        <ManageCar/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Insurance/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        เพิ่มรถ
+        <AddCar/>
       </TabPanel>
       <TabPanel value={value} index={3}>
         เพิ่มประกัน
