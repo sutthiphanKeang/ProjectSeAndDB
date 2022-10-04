@@ -39,7 +39,7 @@ const AddCar: React.FC = () => {
 
   const handleSubmit = () => {
     console.log(`handleSubmit`);
-    const body = new FormData()
+    var body = new FormData()
     body.append('carName',carName)
     body.append('carId',carId)
     body.append('description',description)
@@ -48,14 +48,12 @@ const AddCar: React.FC = () => {
     body.append('file', file ? file[0] : "./Screen Shot 2565-10-03 at 23.02.04.png")
     
     fetch("http://localhost:5500/vehicle/", {
-      mode: 'no-cors',
+      mode: 'cors',
       body: body,
       method: "POST",
-      headers: {
-        "Content-type": "multipart/form-data",
-        "Accept": "application/json",
-        "type": "formData"
-      },
+      // headers: {
+      //   "Content-type": "multipart/form-data",
+      // },
       // body: JSON.stringify({
       //   carName: carName,
       //   carId: carId,
