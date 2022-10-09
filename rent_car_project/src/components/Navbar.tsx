@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -34,22 +34,19 @@ const theme = createTheme({
   },
 });
 
-const Navbar = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+type props = {
+  onLogin : boolean;
+  setonLogin : (a:boolean) => void;
+}
 
+const Navbar: React.FC<props> = ({onLogin,setonLogin}) => {
+  
   return (
     <Box sx={{ flexGrow: 1 }}>
       <ThemeProvider theme={theme}>
         <AppBar position="static" color="primary">
           <Toolbar variant="dense">
-            <Link to="/FirstHome" style={{ textDecoration: "none" }}>
+            <Link to="/" style={{ textDecoration: "none" }}>
               <Typography variant="h4" sx={{ color: "white" }} component="div">
                 <b>เช่ารถเช่าใจ</b>
               </Typography>
@@ -60,7 +57,7 @@ const Navbar = () => {
               <IconButton size="medium" color="inherit">
                 <HomeIcon />
                 <Typography>&nbsp;</Typography>
-                <Link to="/FirstHome" style={{ textDecoration: "none" }}>
+                <Link to="/" style={{ textDecoration: "none" }}>
                   <Typography
                     sx={{
                       color: "white",
@@ -72,71 +69,82 @@ const Navbar = () => {
                   </Typography>
                 </Link>
               </IconButton>
-              <IconButton size="medium" color="inherit">
-                <NewspaperIcon />
-                <Typography>&nbsp;</Typography>
-                <Link to="/" style={{ textDecoration: "none" }}>
-                  <Typography
-                    sx={{
-                      color: "white",
-                      fontWeight: "bold",
-                      fontSize: "100%",
-                    }}
-                  >
-                    News
-                  </Typography>
-                </Link>
-              </IconButton>
-              <IconButton size="medium" color="inherit">
-                <LaptopChromebookIcon />
-                <Typography>&nbsp;</Typography>
-                <Link to="/Booking" style={{ textDecoration: "none" }}>
-                  <Typography
-                    sx={{
-                      color: "white",
-                      fontWeight: "bold",
-                      fontSize: "100%",
-                    }}
-                  >
-                    Booking
-                  </Typography>
-                </Link>
-              </IconButton>
-              <Button
-                id="basic-button"
-                aria-controls={open ? "basic-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
-                color="inherit"
-              >
-                <AccountCircleIcon />
-              </Button>
-              <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                  "aria-labelledby": "basic-button",
-                }}
-              >
-                <MenuItem onClick={handleClose}>
+              {onLogin && (
+                <IconButton size="medium" color="inherit">
+                  <LaptopChromebookIcon />
+                  <Typography>&nbsp;</Typography>
+                  <Link to="/Booking" style={{ textDecoration: "none" }}>
+                    <Typography
+                      sx={{
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "100%",
+                      }}
+                    >
+                      Booking
+                    </Typography>
+                  </Link>
+                </IconButton>
+              )}
+              {onLogin && (
+                <IconButton size="medium" color="inherit">
+                  <LaptopChromebookIcon />
+                  <Typography>&nbsp;</Typography>
+                  <Link to="" style={{ textDecoration: "none" }}>
+                    <Typography
+                      sx={{
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "100%",
+                      }}
+                    >
+                      My Account
+                    </Typography>
+                  </Link>
+                </IconButton>
+              )}
+              {onLogin && (
+                <IconButton
+                  size="medium"
+                  color="inherit"
+                  onClick={() => {
+                    localStorage.clear();
+                    setonLogin(false);
+                    alert("Log Out สำเร็จ")
+                  }}
+                >
+                  <LaptopChromebookIcon />
+                  <Typography>&nbsp;</Typography>
                   <Link to="/" style={{ textDecoration: "none" }}>
-                    My account
+                    <Typography
+                      sx={{
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "100%",
+                      }}
+                    >
+                      Log Out
+                    </Typography>
                   </Link>
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                <Link to="/Manage" style={{ textDecoration: "none" }}>
-                    Manage For Admin
+                </IconButton>
+              )}
+              {!onLogin && (
+                <IconButton size="medium" color="inherit">
+                  <HomeIcon />
+                  <Typography>&nbsp;</Typography>
+                  <Link to="/Login" style={{ textDecoration: "none" }}>
+                    <Typography
+                      sx={{
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "100%",
+                      }}
+                    >
+                      Log In And Register
+                    </Typography>
                   </Link>
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                <Link to="/" style={{ textDecoration: "none" }}>
-                Logout
-                  </Link>
-                  </MenuItem>
-              </Menu>
+                </IconButton>
+              )}
             </Box>
           </Toolbar>
         </AppBar>

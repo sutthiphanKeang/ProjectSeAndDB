@@ -37,7 +37,8 @@ const AddCar: React.FC = () => {
   const [price, setprice] = useState("");
   const [file, setfile] = useState<FileList | null>();
 
-  const handleSubmit = () => {
+  const handleSubmit = (e:React.MouseEvent) => {
+    e.preventDefault();
     console.log(`handleSubmit`);
     var body = new FormData()
     body.append('carName',carName)
