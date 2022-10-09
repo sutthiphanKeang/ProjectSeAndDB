@@ -73,7 +73,7 @@ const Navbar: React.FC<props> = ({onLogin,setonLogin}) => {
                 <IconButton size="medium" color="inherit">
                   <LaptopChromebookIcon />
                   <Typography>&nbsp;</Typography>
-                  <Link to="/Booking" style={{ textDecoration: "none" }}>
+                  <Link to="/rentCar" style={{ textDecoration: "none" }}>
                     <Typography
                       sx={{
                         color: "white",

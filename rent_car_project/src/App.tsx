@@ -14,6 +14,9 @@ import AddCar from "./components/admin/AddCar";
 import Login from "./components/Login-user";
 import LoginAdmin from "./components/Login-admin";
 import Register from "./components/Regis-user";
+import ReturnCar from './components/ReturnCar';
+import RentCar from './components/RentCar';
+
 
 function App() {
   return (
@@ -22,6 +25,8 @@ function App() {
         <Route path="/" element={<FirstHome />}></Route>
         <Route path="Manage" element={<Manage />}></Route>
         <Route path="Booking" element={<Booking />}></Route>
+        <Route path='ReturnCar' element={<ReturnCar/>}></Route>
+        <Route path='RentCar' element={<RentCar/>}></Route>
         <Route path="ManageCar" element={<ManageCar />}></Route>
         <Route path="AddCar" element={<AddCar />}></Route>
         <Route path="Login" element={<Login />}></Route>
