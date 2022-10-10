@@ -1,14 +1,10 @@
 import {
-  Avatar,
-  Backdrop,
   Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  Modal,
   Slide,
   Typography,
 } from "@mui/material";
