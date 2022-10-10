@@ -52,10 +52,10 @@ const AuthenUser: React.FC = () => {
         setonLogin(true);
         console.log("a", data);
       })
-      .catch((error) => {
-        console.error("found error", error);
-        alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
-      });
+      // .catch((error) => {
+      //   console.error("found error", error);
+      //   alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
+      // });
   };
 
   console.log("user email 👉️", uemail);

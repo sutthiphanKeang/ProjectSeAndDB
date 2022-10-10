@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import { useState } from "react";
+import Grid from "@mui/material/Grid";
 
 const LoginAdmin: React.FC = () => {
   const [aemail, setaemail] = useState("");
@@ -17,7 +18,7 @@ const LoginAdmin: React.FC = () => {
     body.append("lemail", aemail);
     body.append("lpassword", apassword);
 
-    fetch("http://localhost:5500/authen/login", {
+    fetch("http://localhost:5500/authen/admin/login", {
       mode: "cors",
       body: body,
       method: "POST",
@@ -27,7 +28,6 @@ const LoginAdmin: React.FC = () => {
   };
   console.log("admin email 👉️", aemail);
   console.log("admin password 👉️", apassword);
-
 
   return (
     <Stack
@@ -39,35 +39,53 @@ const LoginAdmin: React.FC = () => {
       <Card sx={{ mt: 6 }}>
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
-            <Typography variant="h5" component="div">
-              Log in
+            <Typography variant="h5" component="div" align="center">
+              <h3>Log in</h3>
             </Typography>
             <div>
               <br />
             </div>
-            <form encType="multipart/form-data">
-              <input
-                type="text"
-                placeholder="email"
-                name="email"
-                onChange={(event) => setaemail(event.target.value)}
-              ></input>
-              <input
-                type="text"
-                placeholder="password"
-                name="password"
-                onChange={(event) => setapassword(event.target.value)}
-              ></input>
-            </form>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                xs
+                container
+                direction="column"
+                spacing={2}
+                justifyContent="center"
+                alignItems="center"
+                marginLeft="20%"
+                
+              >
+                <Grid item>
+                  <form 
+                  encType="multipart/form-data">
+                    <input 
+                      type="text"
+                      placeholder="email"
+                      name="email"
+                      onChange={(event) => setaemail(event.target.value)}
+                    ></input>
+                    <input 
+                      type="text"
+                      placeholder="password"
+                      name="password"
+                      onChange={(event) => setapassword(event.target.value)}
+                    ></input>
+                  </form>
+                </Grid>
+              </Grid>
+            </Grid>
           </CardContent>
           <CardActions>
             <Button
+              fullWidth
               variant="contained"
               type="submit"
               sx={{ m: 1 }}
               onClick={lhandleSubmit}
             >
-              Submit
+              Login
             </Button>
           </CardActions>
         </Card>
