@@ -5,11 +5,26 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const LoginAdmin: React.FC = () => {
+  const [onLogin, setonLogin] = useOutletContext<any>();
   const [aemail, setaemail] = useState("");
+  const navigate = useNavigate();
   const [apassword, setapassword] = useState("");
+  const [part, setpart] = useState("");
+
+  useEffect(() => {
+    navigate(part);
+  }, [part]);
+
+  useEffect(() =>{
+    if (onLogin){
+      navigate("/")
+    }
+  },[])
 
   const lhandleSubmit = () => {
     console.log(`lhandleSubmit`);
@@ -17,13 +32,27 @@ const LoginAdmin: React.FC = () => {
     body.append("lemail", aemail);
     body.append("lpassword", apassword);
 
-    fetch("http://localhost:5500/authen/login", {
-      mode: "cors",
-      body: body,
-      method: "POST",
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data));
+    axios
+      .post("http://localhost:5500/authen/admin/login", {
+        email: aemail,
+        password: apassword,
+      })
+      .then((response) => {
+        console.log("login res", response);
+        return response.data;
+      })
+      .then((data) => {
+        localStorage.setItem("user", JSON.stringify(data));
+        console.log("token", JSON.parse(localStorage.getItem("user")??"{token:\"\"}").token);
+        console.log("b", data);
+        setpart("/");
+        setonLogin(true);
+        console.log("a", data);
+      })
+      .catch((error) => {
+        console.error("found error", error);
+        alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
+      });
   };
   console.log("admin email 👉️", aemail);
   console.log("admin password 👉️", apassword);
