@@ -15,6 +15,12 @@ import Login from "./components/Login-user";
 import LoginAdmin from "./components/Login-admin";
 import Register from "./components/Regis-user";
 import ReturnCar from './components/ReturnCar';
+
+import Costsummary from './components/user/Costsummary';
+import Payment from './components/user/Payment';
+import Additional from './components/user/Additional';
+
+
 import Insurance from './components/Insurance';
 import UserPage from './components/UserPage';
 import RentCar from './components/RentCar';
@@ -28,6 +34,11 @@ function App() {
         <Route path="Manage" element={<Manage />}></Route>
         <Route path="Booking" element={<Booking />}></Route>
         <Route path='ReturnCar' element={<ReturnCar/>}></Route>
+
+        <Route path='Costsummary' element={<Costsummary/>}></Route>
+        <Route path='Payment' element={<Payment/>}></Route>
+        <Route path='Additional' element={<Additional/>}></Route>
+
         <Route path='Insurance' element={<Insurance/>}></Route>
         <Route path='UserPage' element={<UserPage/>}></Route>
         <Route path='RentCar' element={<RentCar/>}></Route>
@@ -37,6 +48,7 @@ function App() {
         <Route path="LoginAdmin" element={<LoginAdmin />}></Route>
         <Route path="Register" element={<Register />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
+
       </Route>
     </Routes>
   );

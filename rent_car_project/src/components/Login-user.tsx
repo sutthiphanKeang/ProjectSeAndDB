@@ -45,8 +45,8 @@ const AuthenUser: React.FC = () => {
         return response.data;
       })
       .then((data) => {
-        localStorage.setItem("res", JSON.stringify(data));
-        console.log("token", JSON.parse(localStorage.getItem("res")??"{token:\"\"}").token);
+        localStorage.setItem("user", JSON.stringify(data));
+        console.log("token", JSON.parse(localStorage.getItem("user")??"{token:\"\"}").token);
         console.log("b", data);
         setpart("/");
         setonLogin(true);

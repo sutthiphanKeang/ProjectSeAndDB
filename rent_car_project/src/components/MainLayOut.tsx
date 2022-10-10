@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 
 
 const MainLayout:React.FC<{}> = () => {
-  const [onLogin, setonLogin] = useState(localStorage.getItem("res") !== null);
+  const [onLogin, setonLogin] = useState(localStorage.getItem("user") !== null);
   
   return (
     <div>

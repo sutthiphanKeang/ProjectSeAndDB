@@ -1,10 +1,10 @@
 import {
   Box,
-  Button,
   ButtonBase,
   Container,
   Grid,
   List,
+  ListItem,
   Paper,
   Stack,
   TextField,
@@ -36,7 +36,7 @@ export default function ReturnCar() {
   }));
   return (
     <Container fixed>
-      <Box sx={{ display: "flex", flexDirection: "row-reverse" }}>
+      <Box sx={{ display: "flex", flexDirection: "row-reverse" ,height: "50%"}}>
         <TextField
           className="search-bar"
           sx={{ mt: 5, mb: 5 }}
@@ -53,27 +53,40 @@ export default function ReturnCar() {
           variant="outlined"
         />
       </Box>
-      <div className="test-div">
-        <Stack
-          direction="column"
-          justifyContent="center"
-          alignItems="stretch"
-          spacing={2}
+
+      <Stack
+        direction="column"
+        justifyContent="center"
+        alignItems="stretch"
+        spacing={2}
+      >
+        <List
+          sx={{
+            width: "100%",
+            maxWidth: "100%",
+            bgcolor: "background.paper",
+            position: "relative",
+            overflow: "auto",
+            maxHeight: 500,
+            background: "#e0e0e0",
+            "& ul": { padding: 0 },
+          }}
+          subheader={<li />}
         >
-          <List
-            sx={{
-              width: "100%",
-              maxWidth: "100%",
-              bgcolor: "background.paper",
-              position: "relative",
-              overflow: "auto",
-              maxHeight: 500,
-            }}
-          >
-            {data2.map((item, index) => (
-              <Item>
+          {data2.map((item, index) => (
+            <ListItem>
+              <Paper
+                sx={{
+                  p: 2,
+                  margin: "auto",
+                  maxWidth: 800,
+                  flexGrow: 1,
+                  backgroundColor: (theme) =>
+                    theme.palette.mode === "dark" ? "#1A2027" : "#f5f5f5",
+                }}
+              >
                 <Grid container spacing={2}>
-                  <Grid item>
+                  <Grid item xs>
                     <ButtonBase>
                       <img
                         alt="complex"
@@ -118,11 +131,11 @@ export default function ReturnCar() {
                     </Grid>
                   </Grid>
                 </Grid>
-              </Item>
-            ))}
-          </List>
-        </Stack>
-      </div>
+              </Paper>
+            </ListItem>
+          ))}
+        </List>
+      </Stack>
     </Container>
   );
 }

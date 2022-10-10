@@ -1,15 +1,16 @@
 import {
   Box,
-  Button,
   ButtonBase,
   Container,
   Grid,
   List,
+  ListItem,
   Paper,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
+
 import React, { useEffect, useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
@@ -26,8 +27,6 @@ export default function ReturnCar() {
         setData(data);
       });
   }, []);
-
-  console.log(data2);
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#fff" : "#E5E7E9 ",
     ...theme.typography.body2,
@@ -36,10 +35,8 @@ export default function ReturnCar() {
     color: theme.palette.text.secondary,
   }));
   return (
-    <Container fixed sx={{}}>
-      <Box
-        sx={{ display: "flex", flexDirection: "row-reverse", height: "50%" }}
-      >
+    <Container fixed >
+      <Box sx={{ display: "flex", flexDirection: "row-reverse", height: "50%" }}>
         <TextField
           className="search-bar"
           sx={{ mt: 5, mb: 5 }}
@@ -56,27 +53,40 @@ export default function ReturnCar() {
           variant="outlined"
         />
       </Box>
-      <div className="test-div">
-        <Stack
-          direction="column"
-          justifyContent="center"
-          alignItems="stretch"
-          spacing={2}
+
+      <Stack
+        direction="column"
+        justifyContent="center"
+        alignItems="stretch"
+        spacing={2}
+      >
+        <List
+          sx={{
+            width: "100%",
+            maxWidth: "100%",
+            bgcolor: "background.paper",
+            position: "relative",
+            overflow: "auto",
+            maxHeight: 500,
+            background: "#e0e0e0",
+            "& ul": { padding: 0 },
+          }}
+          subheader={<li />}
         >
-          <List
-            sx={{
-              width: "100%",
-              maxWidth: "100%",
-              bgcolor: "background.paper",
-              position: "relative",
-              overflow: "auto",
-              maxHeight: 500,
-            }}
-          >
-            {data2.map((item, index) => (
-              <Item>
+          {data2.map((item, index) => (
+            <ListItem>
+              <Paper
+                sx={{
+                  p: 2,
+                  margin: "auto",
+                  maxWidth: 800,
+                  flexGrow: 1,
+                  backgroundColor: (theme) =>
+                    theme.palette.mode === "dark" ? "#1A2027" : "#f5f5f5",
+                }}
+              >
                 <Grid container spacing={2}>
-                  <Grid item>
+                  <Grid item xs>
                     <ButtonBase>
                       <img
                         alt="complex"
@@ -92,7 +102,10 @@ export default function ReturnCar() {
                       <Grid
                         item
                         xs
-                        sx={{ alignItems: "center", justifyContent: "center" }}
+                        sx={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
                       >
                         <Typography
                           gutterBottom
@@ -123,36 +136,33 @@ export default function ReturnCar() {
                     </Grid>
                   </Grid>
                 </Grid>
-              </Item>
-            ))}
-          </List>
-        </Stack>
-      </div>
+              </Paper>
+            </ListItem>
+          ))}
+        </List>
+      </Stack>
     </Container>
   );
 }
 // .search-bar{
-    
+
 //   margin-top: 10px;
 //   width: 100%;
 // }
 
 // .test-div{
-//   background-color: rgb(158, 158, 158);   
+//   background-color: rgb(158, 158, 158);
 //   display: block;
 //   width: 100%;
 //   overflow: auto;
 //   height: 50%;
 
-  
 // }
 
 // .search-div{
 //   display: flex;
 //   flex-direction: row-reverse;
 // }
-
-
 
 // .stack-car{
 //   text-align: left;

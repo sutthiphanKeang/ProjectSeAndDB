@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -10,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import SendIcon from "@mui/icons-material/Send";
 import ReactDOM from "react-dom/client";
+import Autocomplete from "@mui/material/Autocomplete";
 
 const theme = createTheme({
   palette: {
@@ -29,32 +30,58 @@ const theme = createTheme({
   },
 });
 
+
 const AddCar: React.FC = () => {
+  const options = ["Sedan", "Van", "Motorcycle", "Hatchback", "Coupe", "SUV", "PPV", "Pickup", "Sport", "Super"];
+  const [value, setValue] = React.useState<string>("");
+  const [inputValue, setInputValue] = React.useState("");
+
   const [carName, setcarName] = useState("");
   const [carId, setcarId] = useState("");
   const [description, setdescription] = useState("");
   const [review, setreview] = useState("");
   const [price, setprice] = useState("");
   const [file, setfile] = useState<FileList | null>();
+  const typeId = new Map<string, string>( 
+    [["Sedan", "1"],
+    ["Van", "2"],
+    ["Motorcycle", "3"],
+    ["Hatchback", "4"],
+    ["Coupe", "5"],
+    ["SUV", "6"],
+    ["PPV", "7"],
+    ["Pickup", "8"],
+    ["Sport", "9"],
+    ["Super", "10"]]
+  );
+  const [typeCar, settypeCar] = React.useState("");
+  // settypeCar(value ?? typeId.get("sedan"));
 
-  const handleSubmit = (e:React.MouseEvent) => {
+  const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
     console.log(`handleSubmit`);
-    var body = new FormData()
-    body.append('carName',carName)
-    body.append('carId',carId)
-    body.append('description',description)
-    body.append('review',review)
-    body.append('price',price)
-    body.append('file', file ? file[0] : "./Screen Shot 2565-10-03 at 23.02.04.png")
-    
+    var body = new FormData();
+    body.append("carName", carName);
+    body.append("carId", carId);
+    body.append("description", description);
+    body.append("review", review);
+    body.append("price", price);
+    body.append("typeId", typeCar);
+    body.append(
+      "file",
+      file ? file[0] : "./Screen Shot 2565-10-03 at 23.02.04.png"
+    );
+
+    const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+    console.log("token", token);
+
     fetch("http://localhost:5500/vehicle/", {
-      mode: 'cors',
+      mode: "cors",
       body: body,
       method: "POST",
-      // headers: {
-      //   "Content-type": "multipart/form-data",
-      // },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       // body: JSON.stringify({
       //   carName: carName,
       //   carId: carId,
@@ -63,7 +90,6 @@ const AddCar: React.FC = () => {
       //   price: price,
       //   file: file ? file[0] : "./Screen Shot 2565-10-03 at 23.02.04.png",
       // }),
-      
     })
       .then((response) => response.json())
       .then((data) => console.log(data));
@@ -80,12 +106,18 @@ const AddCar: React.FC = () => {
     //   .then((success) => console.log(success))
     //   .catch((err) => console.log(err));
   };
-  console.log("carName 👉️", carName);
-  console.log("carId 👉️", carId);
-  console.log("description 👉️", description);
-  console.log("review 👉️", review);
-  console.log("price 👉️", price);
-  console.log("file 👉️", file);
+  useEffect(()=>{
+
+    console.log("carName 👉️", carName);
+    console.log("carId 👉️", carId);
+    console.log("description 👉️", description);
+    console.log("review 👉️", review);
+    console.log("price 👉️", price);
+    console.log("value 👉️", value);
+    console.log("typeCar 👉️", typeCar);
+    console.log("file 👉️", file);
+  },[typeCar])
+
 
   // setcarName("")
   // setcarId("")
@@ -175,7 +207,7 @@ const AddCar: React.FC = () => {
       <Card sx={{ maxWidth: 345 }}>
         <CardContent>
           <h1>Import Data</h1>
-          <form encType='multipart/form-data'>
+          <form encType="multipart/form-data">
             <input
               type="text"
               placeholder="carName"
@@ -211,13 +243,36 @@ const AddCar: React.FC = () => {
               onChange={(event) => setprice(event.target.value)}
               value={price}
             ></input>
-            {/* <form method="POST" action="http://localhost:5500/vehicle/img" encType="multipart/form-data"> */}
             <input
               placeholder="file"
               type="file"
               name="file"
               onChange={(event) => setfile(event.target.files)}
             ></input>
+            <div>
+              <br />
+              <Autocomplete
+                value={value}
+                onChange={(event: any, newValue: string | null) => {
+                  // setValue(newValue ?? "Sedan");
+                  if (newValue){
+                    settypeCar(typeId.get(newValue)!)
+                  }
+              
+                  // settypeCar(value ?? typeId.get(value));
+                }}
+                inputValue={inputValue}
+                onInputChange={(event, newInputValue) => {
+                  setInputValue(newInputValue);
+                }}
+                id="type-id-car"
+                options={options}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Type Car" />
+                )}
+              />
+            </div>
 
             <Stack direction="row" alignItems="center" spacing={2}></Stack>
             <Button
