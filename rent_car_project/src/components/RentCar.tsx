@@ -13,9 +13,10 @@ import {
 import React, { useEffect, useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
+
 import { styled } from "@mui/material/styles";
 import { v4 as uuidv4 } from "uuid";
-import ReturnCarButton from "./ReturnCarButton";
+import RentCarButton from "./RentCarButton";
 
 export default function ReturnCar() {
   const [data2, setData] = useState<any[]>([]);
@@ -26,8 +27,6 @@ export default function ReturnCar() {
         setData(data);
       });
   }, []);
-
-  console.log(data2);
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#fff" : "#E5E7E9 ",
     ...theme.typography.body2,
@@ -36,10 +35,8 @@ export default function ReturnCar() {
     color: theme.palette.text.secondary,
   }));
   return (
-    <Container fixed sx={{}}>
-      <Box
-        sx={{ display: "flex", flexDirection: "row-reverse", height: "50%" }}
-      >
+    <Container fixed>
+      <Box sx={{ display: "flex", flexDirection: "row-reverse" }}>
         <TextField
           className="search-bar"
           sx={{ mt: 5, mb: 5 }}
@@ -113,12 +110,10 @@ export default function ReturnCar() {
                       </Grid>
                     </Grid>
                     <Grid item alignItems="center" justifyContent="center">
-                      <ReturnCarButton
-                        title={item.name}
+                      <RentCarButton
+                        title={item.brand}
                         img={item.vehicle_img}
                         id={item.vehicle_id}
-                        brand={item.brand}
-                        year={item.year}
                       />
                     </Grid>
                   </Grid>
@@ -131,30 +126,3 @@ export default function ReturnCar() {
     </Container>
   );
 }
-// .search-bar{
-    
-//   margin-top: 10px;
-//   width: 100%;
-// }
-
-// .test-div{
-//   background-color: rgb(158, 158, 158);   
-//   display: block;
-//   width: 100%;
-//   overflow: auto;
-//   height: 50%;
-
-  
-// }
-
-// .search-div{
-//   display: flex;
-//   flex-direction: row-reverse;
-// }
-
-
-
-// .stack-car{
-//   text-align: left;
-//   display: flex;
-// }

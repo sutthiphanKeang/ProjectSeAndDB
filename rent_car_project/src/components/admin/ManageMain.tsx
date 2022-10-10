@@ -4,8 +4,14 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Card, CardContent } from "@mui/material";
-import Insurance from "./AddInsurance";
+import AddInsurance from "./AddInsurance";
 import ManageIN from "./ManageIn";
+import Insurance from "../Insurance";
+import ManageCar from "./ManageCar";
+import AddCar from "./AddCar";
+import { useNavigate , useOutletContext} from "react-router-dom";
+import { useEffect } from "react";
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -14,6 +20,7 @@ interface TabPanelProps {
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
+  
 
   return (
     <div
@@ -40,12 +47,20 @@ function a11yProps(index: number) {
 }
 
 export default function BasicTabs() {
+  const [onLogin, setonLogin] = useOutletContext<any>();
+  const navigate = useNavigate();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
+  useEffect(() =>{
+    if (!onLogin){
+      navigate("/LoginAdmin")
+    }
+  },[])
+  
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -62,13 +77,13 @@ export default function BasicTabs() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        จัดการรถ
+        <ManageCar/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ManageIN/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        เพิ่มรถ
+        <AddCar/>
       </TabPanel>
       <TabPanel value={value} index={3}>
         <Insurance/>
