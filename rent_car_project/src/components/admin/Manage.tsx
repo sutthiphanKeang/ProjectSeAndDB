@@ -4,8 +4,8 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Card, CardContent } from "@mui/material";
-import Insurance from "./Insurance";
-
+import Insurance from "./AddInsurance";
+import ManageIN from "./ManageIn";
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -65,13 +65,13 @@ export default function BasicTabs() {
         จัดการรถ
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Insurance/>
+        <ManageIN/>
       </TabPanel>
       <TabPanel value={value} index={2}>
         เพิ่มรถ
       </TabPanel>
       <TabPanel value={value} index={3}>
-        เพิ่มประกัน
+        <Insurance/>
       </TabPanel>
       <TabPanel value={value} index={4}>
         ตรวจสอบสลิป

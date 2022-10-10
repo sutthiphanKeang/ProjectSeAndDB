@@ -5,6 +5,8 @@ import MainLayOut from './components/MainLayOut';
 import Manage from './components/admin/Manage';
 import Booking from './components/Booking';
 import ReturnCar from './components/ReturnCar';
+import Insurance from './components/Insurance';
+import UserPage from './components/UserPage';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
         <Route path='Manage' element={<Manage/>}></Route>
         <Route path='Booking' element={<Booking/>}></Route>
         <Route path='ReturnCar' element={<ReturnCar/>}></Route>
+        <Route path='Insurance' element={<Insurance/>}></Route>
+        <Route path='UserPage' element={<UserPage/>}></Route>
       </Route>
     </Routes>
   );
