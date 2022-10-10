@@ -5,14 +5,10 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-<<<<<<< HEAD
-import { useState } from "react";
 import Grid from "@mui/material/Grid";
-=======
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useOutletContext } from "react-router-dom";
->>>>>>> a102bc94850c9cd413bbe325d78db5bd150af3ae
 
 const LoginAdmin: React.FC = () => {
   const [onLogin, setonLogin] = useOutletContext<any>();
@@ -37,15 +33,6 @@ const LoginAdmin: React.FC = () => {
     body.append("lemail", aemail);
     body.append("lpassword", apassword);
 
-<<<<<<< HEAD
-    fetch("http://localhost:5500/authen/admin/login", {
-      mode: "cors",
-      body: body,
-      method: "POST",
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data));
-=======
     axios
       .post("http://localhost:5500/authen/admin/login", {
         email: aemail,
@@ -67,7 +54,6 @@ const LoginAdmin: React.FC = () => {
         console.error("found error", error);
         alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
       });
->>>>>>> a102bc94850c9cd413bbe325d78db5bd150af3ae
   };
   console.log("admin email 👉️", aemail);
   console.log("admin password 👉️", apassword);
