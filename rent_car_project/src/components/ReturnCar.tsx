@@ -4,7 +4,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import "./css/ReturnCar.css"
 import { styled } from '@mui/material/styles';
-import { v4 as uuidv4 } from 'uuid';
+
 
 export default function ReturnCar() {
   const Item = styled(Paper)(({ theme }) => ({
@@ -58,7 +58,7 @@ export default function ReturnCar() {
                       Full resolution 1920x1080 • JPEG
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      ID: {uuidv4()}
+                      ID: {index}
                     </Typography>
                   </Grid>
                   <Grid item>
