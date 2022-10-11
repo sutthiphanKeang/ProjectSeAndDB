@@ -35,7 +35,7 @@ export default function ReturnCar() {
     color: theme.palette.text.secondary,
   }));
   return (
-    <Container fixed>
+    <>
       <Box sx={{ display: "flex", flexDirection: "row-reverse" ,height: "50%"}}>
         <TextField
           className="search-bar"
@@ -136,6 +136,6 @@ export default function ReturnCar() {
           ))}
         </List>
       </Stack>
-    </Container>
+    </>
   );
 }
