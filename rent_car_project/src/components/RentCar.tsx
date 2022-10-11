@@ -13,9 +13,6 @@ import {
 import React, { useEffect, useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
-
-import { styled } from "@mui/material/styles";
-import { v4 as uuidv4 } from "uuid";
 import RentCarButton from "./RentCarButton";
 
 export default function ReturnCar() {
@@ -27,13 +24,6 @@ export default function ReturnCar() {
         setData(data);
       });
   }, []);
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#fff" : "#E5E7E9 ",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "row-reverse" ,height: "50%"}}>

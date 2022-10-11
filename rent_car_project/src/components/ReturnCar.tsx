@@ -14,8 +14,6 @@ import {
 import React, { useEffect, useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
-import { styled } from "@mui/material/styles";
-import { v4 as uuidv4 } from "uuid";
 import ReturnCarButton from "./ReturnCarButton";
 
 export default function ReturnCar() {
@@ -27,13 +25,7 @@ export default function ReturnCar() {
         setData(data);
       });
   }, []);
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#fff" : "#E5E7E9 ",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
+
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "row-reverse", height: "50%" }}>
@@ -144,27 +136,4 @@ export default function ReturnCar() {
     </>
   );
 }
-// .search-bar{
 
-//   margin-top: 10px;
-//   width: 100%;
-// }
-
-// .test-div{
-//   background-color: rgb(158, 158, 158);
-//   display: block;
-//   width: 100%;
-//   overflow: auto;
-//   height: 50%;
-
-// }
-
-// .search-div{
-//   display: flex;
-//   flex-direction: row-reverse;
-// }
-
-// .stack-car{
-//   text-align: left;
-//   display: flex;
-// }
