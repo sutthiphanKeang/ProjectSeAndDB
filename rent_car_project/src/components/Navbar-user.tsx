@@ -5,17 +5,9 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
-import ConstructionIcon from "@mui/icons-material/Construction";
 import LaptopChromebookIcon from "@mui/icons-material/LaptopChromebook";
-import SchoolIcon from "@mui/icons-material/School";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import HomeIcon from "@mui/icons-material/Home";
-import NewspaperIcon from "@mui/icons-material/Newspaper";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 
 const theme = createTheme({
   palette: {
@@ -35,12 +27,11 @@ const theme = createTheme({
 });
 
 type props = {
-  onLogin : boolean;
-  setonLogin : (a:boolean) => void;
-}
+  onLoginuser: boolean;
+  setonLoginuser: (a: boolean) => void;
+};
 
-const Navbar: React.FC<props> = ({onLogin,setonLogin}) => {
-  
+const NavbarUser: React.FC<props> = ({ onLoginuser, setonLoginuser }) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <ThemeProvider theme={theme}>
@@ -54,22 +45,25 @@ const Navbar: React.FC<props> = ({onLogin,setonLogin}) => {
 
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <IconButton size="medium" color="inherit">
-                <HomeIcon />
-                <Typography>&nbsp;</Typography>
-                <Link to="/" style={{ textDecoration: "none" }}>
-                  <Typography
-                    sx={{
-                      color: "white",
-                      fontWeight: "bold",
-                      fontSize: "100%",
-                    }}
-                  >
-                    Home
-                  </Typography>
-                </Link>
-              </IconButton>
-              {onLogin && (
+              {onLoginuser && (
+                <IconButton size="medium" color="inherit">
+                  <HomeIcon />
+                  <Typography>&nbsp;</Typography>
+                  <Link to="/" style={{ textDecoration: "none" }}>
+                    <Typography
+                      sx={{
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "100%",
+                      }}
+                    >
+                      Home
+                    </Typography>
+                  </Link>
+                </IconButton>
+              )}
+
+              {onLoginuser && (
                 <IconButton size="medium" color="inherit">
                   <LaptopChromebookIcon />
                   <Typography>&nbsp;</Typography>
@@ -86,7 +80,7 @@ const Navbar: React.FC<props> = ({onLogin,setonLogin}) => {
                   </Link>
                 </IconButton>
               )}
-              {onLogin && (
+              {onLoginuser && (
                 <IconButton size="medium" color="inherit">
                   <LaptopChromebookIcon />
                   <Typography>&nbsp;</Typography>
@@ -103,14 +97,14 @@ const Navbar: React.FC<props> = ({onLogin,setonLogin}) => {
                   </Link>
                 </IconButton>
               )}
-              {onLogin && (
+              {onLoginuser && (
                 <IconButton
                   size="medium"
                   color="inherit"
                   onClick={() => {
                     localStorage.clear();
-                    setonLogin(false);
-                    alert("Log Out สำเร็จ")
+                    setonLoginuser(false);
+                    alert("Log Out สำเร็จ");
                   }}
                 >
                   <LaptopChromebookIcon />
@@ -128,7 +122,7 @@ const Navbar: React.FC<props> = ({onLogin,setonLogin}) => {
                   </Link>
                 </IconButton>
               )}
-              {!onLogin && (
+              {!onLoginuser && (
                 <IconButton size="medium" color="inherit">
                   <HomeIcon />
                   <Typography>&nbsp;</Typography>
@@ -152,4 +146,4 @@ const Navbar: React.FC<props> = ({onLogin,setonLogin}) => {
     </Box>
   );
 };
-export default Navbar;
+export default NavbarUser;

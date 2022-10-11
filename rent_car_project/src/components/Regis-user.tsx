@@ -6,11 +6,29 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 
+interface State {
+  fname: string;
+  lname: string;
+  id: string;
+  phone: string;
+  email: string;
+  password: string;
+  showPassword: boolean;
+}
+
 const RegisUser: React.FC = () => {
+  const [values, setValues] = React.useState<State>({
+    fname: "",
+    lname: "",
+    id: "",
+    phone: "",
+    email: "",
+    password: "",
+    showPassword: false,
+  });
+
   const navigate = useNavigate();
   const [part, setpart] = useState("");
 
@@ -60,7 +78,7 @@ const RegisUser: React.FC = () => {
       alignItems="center"
       spacing={4}
     >
-      <Card>
+      <Card sx={{ mt: 6 }}>
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
             <Typography variant="h5" component="div">
@@ -112,11 +130,15 @@ const RegisUser: React.FC = () => {
             <Button
               variant="contained"
               type="submit"
-              sx={{ m: 1 }}
+              sx={{ ml: 2, width: "67ch" }}
               onClick={rhandleSubmit}
             >
               Submit
             </Button>
+          </CardActions>
+          <CardActions sx={{ ml: 2 }}>
+            Have account ? <div>&nbsp;</div>
+            <a href="/Login">Log-in</a>
           </CardActions>
         </Card>
       </Card>

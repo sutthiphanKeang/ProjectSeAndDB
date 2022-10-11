@@ -5,49 +5,84 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import Grid from "@mui/material/Grid";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import axios from "axios";
+
+import IconButton from "@mui/material/IconButton";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import FormControl from "@mui/material/FormControl";
+import TextField from "@mui/material/TextField";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+interface State {
+  email: string;
+  password: string;
+  showPassword: boolean;
+}
 
 const LoginAdmin: React.FC = () => {
-  const [onLogin, setonLogin] = useOutletContext<any>();
-  const [aemail, setaemail] = useState("");
+  const [values, setValues] = React.useState<State>({
+    email: "",
+    password: "",
+    showPassword: false,
+  });
+
+  const handleChange =
+    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
+
+  const handleClickShowPassword = () => {
+    setValues({
+      ...values,
+      showPassword: !values.showPassword,
+    });
+  };
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
+  const [onLoginadmin, setonLoginadmin] = useOutletContext<any>();
   const navigate = useNavigate();
-  const [apassword, setapassword] = useState("");
   const [part, setpart] = useState("");
+
 
   useEffect(() => {
     navigate(part);
   }, [part]);
 
-  useEffect(() =>{
-    if (onLogin){
-      navigate("/")
-    }
-  },[])
+  // useEffect(() =>{
+  //   if (!onLoginadmin){
+  //     navigate("/LoginAdmin")
+  //   }
+  // },[onLoginadmin])
 
   const lhandleSubmit = () => {
     console.log(`lhandleSubmit`);
-    var body = new FormData();
-    body.append("lemail", aemail);
-    body.append("lpassword", apassword);
 
     axios
       .post("http://localhost:5500/authen/admin/login", {
-        email: aemail,
-        password: apassword,
+        email: values.email,
+        password: values.password,
       })
       .then((response) => {
         console.log("login res", response);
         return response.data;
       })
       .then((data) => {
-        localStorage.setItem("user", JSON.stringify(data));
-        console.log("token", JSON.parse(localStorage.getItem("user")??"{token:\"\"}").token);
+        localStorage.setItem("admin", JSON.stringify(data));
+        console.log("token", JSON.parse(localStorage.getItem("admin")??"{token:\"\"}").token);
         console.log("b", data);
-        setpart("/");
-        setonLogin(true);
+        setpart("/admin/Manage");
+        setonLoginadmin(true);
+        console.log("uonLoginuser for admin login", onLoginadmin);
         console.log("a", data);
       })
       .catch((error) => {
@@ -55,8 +90,8 @@ const LoginAdmin: React.FC = () => {
         alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
       });
   };
-  console.log("admin email 👉️", aemail);
-  console.log("admin password 👉️", apassword);
+  console.log("admin email 👉️", values.email);
+  console.log("admin password 👉️", values.password);
 
   return (
     <Stack
@@ -68,53 +103,58 @@ const LoginAdmin: React.FC = () => {
       <Card sx={{ mt: 6 }}>
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
-            <Typography variant="h5" component="div" align="center">
-              <h3>Log in</h3>
+            <Typography variant="h4" component="div" align="center">
+              <b>Log-in for Admin</b>
             </Typography>
             <div>
               <br />
             </div>
-            <Grid container spacing={2}>
-              <Grid
-                item
-                xs
-                container
-                direction="column"
-                spacing={2}
-                justifyContent="center"
-                alignItems="center"
-                marginLeft="20%"
-                
-              >
-                <Grid item>
-                  <form 
-                  encType="multipart/form-data">
-                    <input 
-                      type="text"
-                      placeholder="email"
-                      name="email"
-                      onChange={(event) => setaemail(event.target.value)}
-                    ></input>
-                    <input 
-                      type="text"
-                      placeholder="password"
-                      name="password"
-                      onChange={(event) => setapassword(event.target.value)}
-                    ></input>
-                  </form>
-                </Grid>
-              </Grid>
-            </Grid>
+            <form>
+              <TextField
+                label="Email"
+                id="outlined-start-adornment"
+                sx={{ m: 1, width: "25ch" }}
+                value={values.email}
+                onChange={handleChange("email")}
+              />
+              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={values.showPassword ? "text" : "password"}
+                  value={values.password}
+                  onChange={handleChange("password")}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {values.showPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                />
+              </FormControl>
+            </form>
           </CardContent>
           <CardActions>
             <Button
-              fullWidth
               variant="contained"
               type="submit"
-              sx={{ m: 1 }}
+              sx={{ ml: 2, width: "67ch" ,mb:1}}
               onClick={lhandleSubmit}
             >
-              Login
+              Submit
             </Button>
           </CardActions>
         </Card>
