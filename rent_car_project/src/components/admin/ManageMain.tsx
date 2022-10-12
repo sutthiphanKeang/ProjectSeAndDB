@@ -47,7 +47,7 @@ function a11yProps(index: number) {
 }
 
 export default function BasicTabs() {
-  const [onLogin, setonLogin] = useOutletContext<any>();
+  const [onLoginadmin] = useOutletContext<any>();
   const navigate = useNavigate();
   const [value, setValue] = React.useState(0);
 
@@ -55,11 +55,8 @@ export default function BasicTabs() {
     setValue(newValue);
   };
 
-  useEffect(() =>{
-    if (!onLogin){
-      navigate("/LoginAdmin")
-    }
-  },[])
+
+  console.log("admin", onLoginadmin)
   
   return (
     <Box sx={{ width: "100%" }}>

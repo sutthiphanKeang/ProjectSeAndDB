@@ -6,39 +6,71 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import { useEffect, useState } from "react";
-import { useNavigate , useOutletContext} from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
 
+import IconButton from "@mui/material/IconButton";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import FormControl from "@mui/material/FormControl";
+import TextField from "@mui/material/TextField";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+interface State {
+  email: string;
+  password: string;
+  showPassword: boolean;
+}
+
 const AuthenUser: React.FC = () => {
-  const [onLogin, setonLogin] = useOutletContext<any>();
+  const [values, setValues] = React.useState<State>({
+    email: "",
+    password: "",
+    showPassword: false,
+  });
+
+  const handleChange =
+    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
+
+  const handleClickShowPassword = () => {
+    setValues({
+      ...values,
+      showPassword: !values.showPassword,
+    });
+  };
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
+  const [onLoginuser, setonLoginuser] = useOutletContext<any>();
   const navigate = useNavigate();
   const [part, setpart] = useState("");
-
-  // login
-  const [uemail, setuemail] = useState("");
-  const [upassword, setupassword] = useState("");
 
   useEffect(() => {
     navigate(part);
   }, [part]);
 
-  useEffect(() =>{
-    if (onLogin){
-      navigate("/")
+  useEffect(() => {
+    if (onLoginuser) {
+      navigate("/");
     }
-  },[])
+  }, [onLoginuser]);
 
   // login
   const lhandleSubmit = () => {
-    console.log(`uhandleSubmit`);
-    // var body = new FormData();
-    // body.append("lemail", lemail);
-    // body.append("lpassword", lpassword);
+    console.log(`User handleSubmit`);
 
     axios
       .post("http://localhost:5500/authen/login", {
-        email: uemail,
-        password: upassword,
+        email: values.email,
+        password: values.password,
       })
       .then((response) => {
         console.log("login res", response);
@@ -46,20 +78,25 @@ const AuthenUser: React.FC = () => {
       })
       .then((data) => {
         localStorage.setItem("user", JSON.stringify(data));
-        console.log("token", JSON.parse(localStorage.getItem("user")??"{token:\"\"}").token);
+        console.log(
+          "token",
+          JSON.parse(localStorage.getItem("user") ?? '{token:""}').token
+        );
         console.log("b", data);
+        alert("เข้าสู่ระบบสำเร็จ");
         setpart("/");
-        setonLogin(true);
+        setonLoginuser(true);
+        console.log("uonLoginuser for user login", onLoginuser);
         console.log("a", data);
       })
-      // .catch((error) => {
-      //   console.error("found error", error);
-      //   alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
-      // });
+    .catch((error) => {
+      console.error("found error", error);
+      alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
+    });
   };
 
-  console.log("user email 👉️", uemail);
-  console.log("user password 👉️", upassword);
+  console.log("user email 👉️", values.email);
+  console.log("user password 👉️", values.password);
 
   return (
     <Stack
@@ -71,41 +108,63 @@ const AuthenUser: React.FC = () => {
       <Card sx={{ mt: 6 }}>
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
-            <Typography variant="h5" component="div">
-              Log in
+            <Typography variant="h4" component="div" align="center">
+              <b>Log-in</b>
             </Typography>
             <div>
               <br />
             </div>
             <form>
-              <input
-                type="text"
-                placeholder="email"
-                name="email"
-                onChange={(event) => setuemail(event.target.value)}
-                value={uemail}
-              ></input>
-              <input
-                type="text"
-                placeholder="password"
-                name="password"
-                onChange={(event) => setupassword(event.target.value)}
-                value={upassword}
-              ></input>
+              <TextField
+                label="Email"
+                id="outlined-start-adornment"
+                sx={{ m: 1, width: "25ch" }}
+                value={values.email}
+                onChange={handleChange("email")}
+              />
+              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={values.showPassword ? "text" : "password"}
+                  value={values.password}
+                  onChange={handleChange("password")}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {values.showPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                />
+              </FormControl>
             </form>
           </CardContent>
           <CardActions>
             <Button
               variant="contained"
               type="submit"
-              sx={{ m: 1 }}
+              sx={{ ml: 2, width: "67ch" }}
               onClick={lhandleSubmit}
             >
               Submit
             </Button>
           </CardActions>
-          <CardActions>
-            <span>New User ? <a href="/Register">Sign Up</a></span>
+          <CardActions sx={{ ml: 2 }}>
+            New User ? <div>&nbsp;</div>
+            <a href="/Register">Sign Up</a>
           </CardActions>
         </Card>
       </Card>

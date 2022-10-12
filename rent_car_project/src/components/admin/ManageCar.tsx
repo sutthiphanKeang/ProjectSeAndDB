@@ -11,6 +11,7 @@ export default function ManageCar() {
       .then((response) => response.json())
       .then((data) => {
         setData(data);
+        
       });
   }, []);
   return(
@@ -73,6 +74,7 @@ export default function ManageCar() {
                           variant="subtitle1"
                           component="div"
                         >
+                          
                           Brand: {item.brand}
                         </Typography>
                         <Typography variant="body2" gutterBottom>
@@ -91,6 +93,9 @@ export default function ManageCar() {
                         title={item.name}
                         img={item.vehicle_img}
                         id={item.vehicle_id}
+                        year = {item.year}
+                        brand = {item.brand}
+                        
                       />
                     </Grid>
                   </Grid>
