@@ -6,11 +6,11 @@ import Box from "@mui/material/Box";
 import { Card, CardContent } from "@mui/material";
 import AddInsurance from "./AddInsurance";
 import ManageIN from "./ManageIn";
-import Insurance from "../Insurance";
 import ManageCar from "./ManageCar";
 import AddCar from "./AddCar";
 import { useNavigate , useOutletContext} from "react-router-dom";
 import { useEffect } from "react";
+import CheckSlip from "./CheckSlip";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -83,10 +83,10 @@ export default function BasicTabs() {
         <AddCar/>
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <Insurance/>
+        <AddInsurance/>
       </TabPanel>
       <TabPanel value={value} index={4}>
-        ตรวจสอบสลิป
+        <CheckSlip/>
       </TabPanel>
     </Box>
   );
