@@ -8,7 +8,7 @@ export default class FristHome extends Component {
   render() {
     const slideImages = [
       {
-        url: 'img/DOG.jpg',
+        url: 'img/Car1.jpg',
         caption: 'Slide 1'
       },
       {
@@ -20,8 +20,8 @@ export default class FristHome extends Component {
         <Slide >
          {slideImages.map((slideImage, index)=> (
             <div className="each-slide" key={index}>
-              <div style={{'backgroundImage': `url(${slideImage.url})`, height: 400}}>
-                <span>{slideImage.caption}</span>
+              <div style={{'backgroundImage': `url(${slideImage.url})`, height: 600}}>
+
               </div>
             </div>
           ))} 

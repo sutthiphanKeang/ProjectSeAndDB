@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect ,useState  } from "react";
 import Stack from '@mui/material/Stack';
 import ListItem from '@mui/material/ListItem';
 import { Button, DialogContent } from '@mui/material';
@@ -12,8 +12,19 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import EditIcon from '@mui/icons-material/Edit';
 import List from '@mui/material/List';
+
 export default function ManageIN(){
-    const [open,setOpen] = React.useState(false);
+  const [data2, setData] = useState<any[]>([]);
+  useEffect(() => {
+    fetch("https://carleasing.azurewebsites.net/insurance/admin")
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+        
+      });
+  }, []);  
+  
+  const [open,setOpen] = React.useState(false);
     const handleClickOpen = () => {
       setOpen(true);};
       const handleClose = () => {
@@ -56,7 +67,7 @@ export default function ManageIN(){
       }}
       subheader={<li />}
     >
-            {LISTDATA.map((item) => (
+            {data2.map((item) => (
             <ListItem>
             <Paper sx={{
         p: 2,
@@ -74,22 +85,22 @@ export default function ManageIN(){
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div" color='#1a237e'>
-                Name :  {item.Name}
+                Name :  
               </Typography>
               <Typography gutterBottom variant="subtitle2" component="div">
-                ประกันภัยชั้นที่ {item.class}
+                ประกันภัยชั้นที่ 
               </Typography>
               <Typography variant="body2" gutterBottom>
-                - {item.Detail}
+                - 
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                ID : {item.id}
+                ID : 
               </Typography>
             </Grid>
           </Grid>
           <Grid item>
             <Typography variant="subtitle1" component="div">
-              {item.Price} บาท
+               บาท
             </Typography>
           </Grid>
           <Grid item>
@@ -145,42 +156,3 @@ export default function ManageIN(){
   
 }
 
-const LISTDATA = [
-    {
-      Name: "วิริยะประกันภัย",
-      class: 1,
-      Detail: "ถูกและดี",
-      id:147,
-      Price: 19
-    }
-    ,
-{
-  Name: "วิริยะประกันภัย 3",
-  class: 2,
-  Detail: "ถูกและดี 3",
-  id:123,
-  Price: 30
-},
-    {
-      Name: "วิริยะประกันภัย 2",
-      class: 3,
-      Detail: "ถูกและดี 2",
-      id:456,
-      Price: 30
-    }
-    ,
-{
-  Name: "วิริยะประกันภัย 3",
-  class: 2,
-  Detail: "ถูกและดี 3",
-  id:123,
-  Price: 30
-},
-    {
-      Name: "วิริยะประกันภัย 3",
-      class: 2,
-      Detail: "ถูกและดี 3",
-      id:123,
-      Price: 30
-    }
-    ]

@@ -33,6 +33,7 @@ const LoginAdmin: React.FC = () => {
     body.append("lemail", aemail);
     body.append("lpassword", apassword);
 
+
     axios
       .post("http://localhost:5500/authen/admin/login", {
         email: aemail,
@@ -54,6 +55,7 @@ const LoginAdmin: React.FC = () => {
         console.error("found error", error);
         alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
       });
+
   };
   console.log("admin email 👉️", aemail);
   console.log("admin password 👉️", apassword);

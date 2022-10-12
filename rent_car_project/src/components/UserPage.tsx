@@ -104,7 +104,7 @@ export default function UserPage(){
                   <Item > <Typography variant="subtitle2" color='#bf360c'>
                 <h1>Notify</h1></Typography>
                 <Typography variant="subtitle2" color='#212121'>
-                <h2>เหลือเวลาในการคืนรถในอีก   วัน</h2></Typography>
+                <h2>วันคืนรถของท่าน : วว ดด ปปปป</h2></Typography>
                   
                   <p></p></Item>
                   
