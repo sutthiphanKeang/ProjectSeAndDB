@@ -5,7 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 
 import axios from "axios";
@@ -29,6 +29,7 @@ interface State {
 }
 
 const RegisUser: React.FC = () => {
+  const [onLoginuser] = useOutletContext<any>();
   const [values, setValues] = React.useState<State>({
     fname: "",
     lname: "",
@@ -64,16 +65,15 @@ const RegisUser: React.FC = () => {
     navigate(part);
   }, [part]);
 
+  useEffect(() => {
+    if (onLoginuser) {
+      navigate("/");
+    }
+  }, [onLoginuser]);
+
   // register
   const rhandleSubmit = () => {
     console.log(`rhandleSubmit`);
-    // var body = new FormData();
-    // body.append("email", values.email);
-    // body.append("password", values.password);
-    // body.append("id", values.id);
-    // body.append("firstName", values.fname);
-    // body.append("lastName", values.lname);
-    // body.append("phone", values.phone);
 
     axios
       .post("http://localhost:5500/authen/sign-up", {
@@ -97,14 +97,6 @@ const RegisUser: React.FC = () => {
         alert("กรุณาตรวจสอบข้อมูลอีกครั้ง" + Response);
       });
 
-    // fetch("http://localhost:5500/authen/sign-up", {
-    //   mode: "cors",
-    //   body: body,
-    //   method: "POST",
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => console.log(data));
-    //   setpart("/Login");
   };
   console.log("regis email 👉️", values.email);
   console.log("regis password 👉️", values.password);

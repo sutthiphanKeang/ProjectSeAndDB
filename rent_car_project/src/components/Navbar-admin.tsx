@@ -7,7 +7,6 @@ import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
 import LaptopChromebookIcon from "@mui/icons-material/LaptopChromebook";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import HomeIcon from "@mui/icons-material/Home";
 
 const theme = createTheme({
   palette: {
@@ -71,7 +70,7 @@ const NavbarAdmin: React.FC<props> = ({ onLoginadmin, setonLoginadmin }) => {
                 >
                   <LaptopChromebookIcon />
                   <Typography>&nbsp;</Typography>
-                  <Link to="/Admin/Login" style={{ textDecoration: "none" }}>
+                  <Link to="/" style={{ textDecoration: "none" }}>
                     <Typography
                       sx={{
                         color: "white",
