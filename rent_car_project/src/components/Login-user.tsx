@@ -57,11 +57,11 @@ const AuthenUser: React.FC = () => {
     navigate(part);
   }, [part]);
 
-  // useEffect(() => {
-  //   if (onLoginuser) {
-  //     navigate("/");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (onLoginuser) {
+      navigate("/");
+    }
+  }, [onLoginuser]);
 
   // login
   const lhandleSubmit = () => {
@@ -83,6 +83,7 @@ const AuthenUser: React.FC = () => {
           JSON.parse(localStorage.getItem("user") ?? '{token:""}').token
         );
         console.log("b", data);
+        alert("เข้าสู่ระบบสำเร็จ");
         setpart("/");
         setonLoginuser(true);
         console.log("uonLoginuser for user login", onLoginuser);

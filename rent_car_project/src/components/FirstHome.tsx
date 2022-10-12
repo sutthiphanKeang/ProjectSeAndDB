@@ -9,23 +9,23 @@ export default class FristHome extends Component {
     const slideImages = [
       {
         url: 'img/DOG.jpg',
-        caption: 'Slide 1'
       },
       {
         url: 'img/dog1.jpg',
-        caption: 'Slide 2'
       }];
     return (
       <div className="slide-container">
-        <Slide >
+        <Box sx={{mt:3}}>
+          <Slide >
          {slideImages.map((slideImage, index)=> (
             <div className="each-slide" key={index}>
               <div style={{'backgroundImage': `url(${slideImage.url})`, height: 400}}>
-                <span>{slideImage.caption}</span>
               </div>
             </div>
           ))} 
         </Slide>
+        </Box>
+        
       </div>
     )
   }
