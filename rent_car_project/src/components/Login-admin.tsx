@@ -58,11 +58,11 @@ const LoginAdmin: React.FC = () => {
     navigate(part);
   }, [part]);
 
-  useEffect(() =>{
-    if (onLoginadmin){
-      navigate("/")
-    }
-  },[onLoginadmin])
+  // useEffect(() =>{
+  //   if (onLoginadmin){
+  //     navigate("/")
+  //   }
+  // },[onLoginadmin])
 
   const lhandleSubmit = () => {
     console.log(`lhandleSubmit`);

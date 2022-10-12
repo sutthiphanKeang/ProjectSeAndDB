@@ -11,6 +11,7 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import SendIcon from "@mui/icons-material/Send";
 import ReactDOM from "react-dom/client";
 import Autocomplete from "@mui/material/Autocomplete";
+import { useNavigate , useOutletContext} from "react-router-dom";
 
 const theme = createTheme({
   palette: {
@@ -32,6 +33,8 @@ const theme = createTheme({
 
 
 const AddCar: React.FC = () => {
+  // const [onLoginadmin] = useOutletContext<any>();
+  const navigate = useNavigate();
   const options = ["Sedan", "Van", "Motorcycle", "Hatchback", "Coupe", "SUV", "PPV", "Pickup", "Sport", "Super"];
   const [value, setValue] = React.useState<string>("");
   const [inputValue, setInputValue] = React.useState("");
@@ -106,6 +109,13 @@ const AddCar: React.FC = () => {
     //   .then((success) => console.log(success))
     //   .catch((err) => console.log(err));
   };
+
+  // useEffect(() => {
+  //   if (onLoginadmin) {
+  //     navigate("/");
+  //   }
+  // }, [onLoginadmin]);
+
   useEffect(()=>{
 
     console.log("carName 👉️", carName);
@@ -117,14 +127,7 @@ const AddCar: React.FC = () => {
     console.log("typeCar 👉️", typeCar);
     console.log("file 👉️", file);
   },[typeCar])
-
-
-  // setcarName("")
-  // setcarId("")
-  // setdescription("")
-  // setreview("")
-  // setprice("")
-  // setfile(null)
+   
 
   return (
     <Stack
