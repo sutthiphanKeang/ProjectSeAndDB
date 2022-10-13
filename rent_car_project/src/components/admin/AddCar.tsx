@@ -111,7 +111,7 @@ const AddCar: React.FC = () => {
 
     axios({
       method: "post",
-      url: "http://localhost:5500/vehicle/",
+      url: "https://carleasing.azurewebsites.net/vehicle/",
       data: body,
       headers: {
         "Content-Type": "multipart/form-data",
