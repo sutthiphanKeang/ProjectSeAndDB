@@ -23,29 +23,18 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 interface User {
-  fname : string,
-  lname : string,
-  id_no : string,
-  phone : string,
-  email : string,
-  password : string,
-  bill_id : any,
-  daylefts : any,
+  fname: string;
+  lname: string;
+
+  phone: string;
 }
 
-export default function UserPage() {
-  const [open, setOpen] = React.useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+const UserPage: React.FC = () => {
+  const [edited,setEdit] = useState(false);
   const [data2, setData] = useState("");
 
   const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
   console.log("token", token);
-  
 
   useEffect(() => {
     axios
@@ -60,24 +49,74 @@ export default function UserPage() {
       .then((data) => {
         setData(data);
         console.log(data);
+        
+        
       })
       .catch((error) => {
         console.error("found error", error);
         alert("กรุณาลองใหม่อีกครั้ง");
       });
-      
-  }, []);
+  }, [edited]);
   const dataJson = JSON.stringify(data2);
-  let data : string = dataJson;
+  let data: string = dataJson;
   let jsonObj = JSON.parse(data);
 
   let name: any = jsonObj.bill_id;
   console.log(name);
 
-  console.log("type",typeof(data2));
+  console.log("type", typeof data2);
   console.log(JSON.stringify(data2));
-  
-  
+  const [open, setOpen] = React.useState(false);
+  const [values, setValues] = React.useState<User>({
+    fname: jsonObj.fname,
+    lname: jsonObj.lname,
+    phone: jsonObj.phone,
+  });
+  const handleClickOpen = () => {
+    setOpen(true);
+    setValues({
+      fname: jsonObj.fname,
+      lname: jsonObj.lname,
+      phone: jsonObj.phone,
+    });
+  };
+  const handleChange =
+    (prop: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
+  const handleClose = () => {
+    setOpen(false);
+    setValues({
+      fname: jsonObj.fname,
+      lname: jsonObj.lname,
+      phone: jsonObj.phone,
+    });
+    setEdit(!edited);
+  };
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = JSON.parse(
+      localStorage.getItem("user") ?? '{token:""}'
+    ).token;
+    console.log("token", token);
+    axios({
+      method: "put",
+      url: "https://carleasing.azurewebsites.net/user/edit",
+      data: { id: jsonObj.id ,
+        customerFname: values.fname,
+        customerLname: values.lname,
+        phone: values.phone},
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        console.log("regis res", response);
+        return response.data;
+      })
+      .then((data) => console.log(data))
+      .then(handleClose);
+  };
   return (
     <Stack
       direction="column"
@@ -132,48 +171,54 @@ export default function UserPage() {
                   >
                     Edit
                   </Button>
-                  <Dialog open={open} onClose={handleClickOpen}>
+                  <Dialog open={open} onClose={handleClose}>
                     <DialogTitle> แก้ไขข้อมูลส่วนตัว กรอกที่นี่</DialogTitle>
                     <DialogContent>
                       <TextField
-                        autoFocus
+                       defaultValue	={values.fname}
                         margin="dense"
                         id="Firstname"
                         label="Firstname"
+                        value={values.fname}
                         fullWidth
                         variant="standard"
+                        onChange={handleChange("fname")}
                       />
                       <TextField
-                        autoFocus
+                       defaultValue	={values.lname}
                         margin="dense"
                         id="Lastname"
                         label="Lastname"
+                        value={values.lname}
                         fullWidth
                         variant="standard"
+                        onChange={handleChange("lname")}
                       />
                       <TextField
-                        autoFocus
+                       defaultValue	={values.phone}
                         margin="dense"
                         id="Phone"
                         label="Phone number"
+                        value={values.phone}
                         fullWidth
                         variant="standard"
+                        onChange={handleChange("phone")}
                       />
                     </DialogContent>
                     <DialogActions>
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={handleEdit}
+                      >
+                        Save
+                      </Button>
                       <Button
                         color="primary"
                         variant="outlined"
                         onClick={handleClose}
                       >
                         Cancel
-                      </Button>
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        onClick={handleClose}
-                      >
-                        Edit
                       </Button>
                     </DialogActions>
                   </Dialog>
@@ -202,8 +247,12 @@ export default function UserPage() {
                 <h1>Notify</h1>
               </Typography>
               <Typography variant="subtitle2" color="#212121">
-                {jsonObj.daylefts >= 0 &&(<h2>เหลือเวลาอีก {jsonObj.daylefts} วัน</h2>)}
-                {jsonObj.daylefts < 0 &&(<h2>เกินกำหนดคืนรถมา {Math.abs(jsonObj.daylefts)} วัน</h2>)}
+                {jsonObj.daylefts >= 0 && (
+                  <h2>เหลือเวลาอีก {jsonObj.daylefts} วัน</h2>
+                )}
+                {jsonObj.daylefts < 0 && (
+                  <h2>เกินกำหนดคืนรถมา {Math.abs(jsonObj.daylefts)} วัน</h2>
+                )}
               </Typography>
               <p></p>
             </Item>
@@ -221,4 +270,5 @@ export default function UserPage() {
       </ListItem>
     </Stack>
   );
-}
+};
+export default UserPage;
