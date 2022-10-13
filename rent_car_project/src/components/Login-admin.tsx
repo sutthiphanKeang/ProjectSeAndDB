@@ -58,18 +58,18 @@ const LoginAdmin: React.FC = () => {
     navigate(part);
   }, [part]);
 
-  // useEffect(() =>{
-  //   if (onLoginadmin){
-  //     navigate("/")
-  //   }
-  // },[onLoginadmin])
+  useEffect(() =>{
+    if (onLoginadmin){
+      navigate("/Admin/Manage")
+    }
+  },[onLoginadmin])
 
   const lhandleSubmit = () => {
     console.log(`lhandleSubmit`);
 
 
     axios
-      .post("http://localhost:5500/authen/admin/login", {
+      .post("https://carleasing.azurewebsites.net/authen/admin/login", {
         email: values.email,
         password: values.password,
       })
@@ -81,7 +81,7 @@ const LoginAdmin: React.FC = () => {
         localStorage.setItem("admin", JSON.stringify(data));
         console.log("token", JSON.parse(localStorage.getItem("admin")??"{token:\"\"}").token);
         console.log("b", data);
-        setpart("/admin/Manage");
+        setpart("/Admin/Manage");
         setonLoginadmin(true);
         console.log("uonLoginuser for admin login", onLoginadmin);
         console.log("a", data);
