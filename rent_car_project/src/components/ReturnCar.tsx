@@ -19,7 +19,7 @@ import ReturnCarButton from "./ReturnCarButton";
 export default function ReturnCar() {
   const [data2, setData] = useState<any[]>([]);
   useEffect(() => {
-    fetch("http://localhost:5500/vehicle")
+    fetch("https://carleasing.azurewebsites.net/vehicle")
       .then((response) => response.json())
       .then((data) => {
         setData(data);
