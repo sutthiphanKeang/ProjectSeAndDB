@@ -5,8 +5,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
-import LaptopChromebookIcon from "@mui/icons-material/LaptopChromebook";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import ConstructionIcon from '@mui/icons-material/Construction';
+import LogoutIcon from '@mui/icons-material/Logout';
+import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
 
 const theme = createTheme({
   palette: {
@@ -36,14 +38,16 @@ const NavbarAdmin: React.FC<props> = ({ onLoginadmin, setonLoginadmin }) => {
       <ThemeProvider theme={theme}>
         <AppBar position="static" color="primary">
           <Toolbar variant="dense">
+          <DirectionsCarFilledIcon/>
+            <Typography>&nbsp;</Typography>
               <Typography variant="h4" sx={{ color: "white" }} component="div">
-                <b>เช่ารถเช่าใจ</b>
+                <b>เช่ารถเช่าใจ For Admin</b>
               </Typography>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               {onLoginadmin && (
                 <IconButton size="medium" color="inherit">
-                  <LaptopChromebookIcon />
+                  <ConstructionIcon />
                   <Typography>&nbsp;</Typography>
                   <Link to="/Admin/Manage" style={{ textDecoration: "none" }}>
                     <Typography
@@ -68,7 +72,7 @@ const NavbarAdmin: React.FC<props> = ({ onLoginadmin, setonLoginadmin }) => {
                     alert("Log Out สำเร็จ");
                   }}
                 >
-                  <LaptopChromebookIcon />
+                  <LogoutIcon />
                   <Typography>&nbsp;</Typography>
                   <Link to="/" style={{ textDecoration: "none" }}>
                     <Typography

@@ -14,8 +14,11 @@ import React, { useEffect, useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import RentCarButton from "./RentCarButton";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 export default function ReturnCar() {
+  const [onLoginuser] = useOutletContext<any>();
+  const navigate = useNavigate();
   const [data2, setData] = useState<any[]>([]);
   useEffect(() => {
     fetch("https://carleasing.azurewebsites.net/vehicle")
@@ -24,6 +27,12 @@ export default function ReturnCar() {
         setData(data);
       });
   }, []);
+
+  useEffect(() => {
+    if (!onLoginuser) {
+      navigate("/Login");
+    }
+  }, [onLoginuser]);
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "row-reverse" ,height: "50%"}}>

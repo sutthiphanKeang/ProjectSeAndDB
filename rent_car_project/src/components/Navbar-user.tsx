@@ -8,6 +8,10 @@ import { Link } from "react-router-dom";
 import LaptopChromebookIcon from "@mui/icons-material/LaptopChromebook";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import HomeIcon from "@mui/icons-material/Home";
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
+import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
 
 const theme = createTheme({
   palette: {
@@ -37,6 +41,8 @@ const NavbarUser: React.FC<props> = ({ onLoginuser, setonLoginuser }) => {
       <ThemeProvider theme={theme}>
         <AppBar position="static" color="primary">
           <Toolbar variant="dense">
+            <DirectionsCarFilledIcon/>
+            <Typography>&nbsp;</Typography>
             <Link to="/" style={{ textDecoration: "none" }}>
               <Typography variant="h4" sx={{ color: "white" }} component="div">
                 <b>เช่ารถเช่าใจ</b>
@@ -82,7 +88,7 @@ const NavbarUser: React.FC<props> = ({ onLoginuser, setonLoginuser }) => {
               )}
               {onLoginuser && (
                 <IconButton size="medium" color="inherit">
-                  <LaptopChromebookIcon />
+                  <AccountBoxIcon />
                   <Typography>&nbsp;</Typography>
                   <Link to="/UserPage" style={{ textDecoration: "none" }}>
                     <Typography
@@ -107,7 +113,7 @@ const NavbarUser: React.FC<props> = ({ onLoginuser, setonLoginuser }) => {
                     alert("Log Out สำเร็จ");
                   }}
                 >
-                  <LaptopChromebookIcon />
+                  <LogoutIcon />
                   <Typography>&nbsp;</Typography>
                   <Link to="/" style={{ textDecoration: "none" }}>
                     <Typography
@@ -124,7 +130,7 @@ const NavbarUser: React.FC<props> = ({ onLoginuser, setonLoginuser }) => {
               )}
               {!onLoginuser && (
                 <IconButton size="medium" color="inherit">
-                  <HomeIcon />
+                  <LoginIcon />
                   <Typography>&nbsp;</Typography>
                   <Link to="/Login" style={{ textDecoration: "none" }}>
                     <Typography
