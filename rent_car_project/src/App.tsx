@@ -9,7 +9,6 @@ import FirstHome from "./components/FirstHome";
 import MainLayoutUser from "./components/MainLayout-user";
 import MainLayoutAdmin from "./components/MainLayout-admin";
 import Manage from "./components/admin/ManageMain";
-import Booking from "./components/Booking";
 import ManageCar from "./components/admin/ManageCar";
 import AddCar from "./components/admin/AddCar";
 import Login from "./components/Login-user";
@@ -32,7 +31,6 @@ function App() {
     <Routes>
       <Route path="/" element={<MainLayoutUser />}>
         <Route path="" element={<FirstHome />}/>
-        <Route path="Booking" element={<Booking />}></Route>
         <Route path='ReturnCar' element={<ReturnCar/>}></Route>
         <Route path='Costsummary' element={<Costsummary/>}></Route>
         <Route path='Payment' element={<Payment/>}></Route>

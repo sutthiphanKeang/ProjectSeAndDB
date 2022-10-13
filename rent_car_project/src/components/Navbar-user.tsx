@@ -84,7 +84,7 @@ const NavbarUser: React.FC<props> = ({ onLoginuser, setonLoginuser }) => {
                 <IconButton size="medium" color="inherit">
                   <LaptopChromebookIcon />
                   <Typography>&nbsp;</Typography>
-                  <Link to="" style={{ textDecoration: "none" }}>
+                  <Link to="/UserPage" style={{ textDecoration: "none" }}>
                     <Typography
                       sx={{
                         color: "white",

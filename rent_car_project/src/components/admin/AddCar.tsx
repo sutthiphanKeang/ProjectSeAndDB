@@ -57,7 +57,7 @@ const AddCar: React.FC = () => {
     "Sport",
     "Super",
   ];
-  const [value, setValue] = React.useState<string | null>(options[0]);
+  const [value, setValue] = React.useState<string | null>();
   const [inputValue, setInputValue] = React.useState('');
 
   const [values, setValues] = React.useState<State>({

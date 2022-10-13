@@ -159,6 +159,10 @@ const LoginAdmin: React.FC = () => {
               Submit
             </Button>
           </CardActions>
+          <CardActions sx={{ ml: 2 }}>
+            If you are not admin <div>&nbsp;</div>
+            <a href="/Login">Log-in</a>
+          </CardActions>
         </Card>
       </Card>
     </Stack>
