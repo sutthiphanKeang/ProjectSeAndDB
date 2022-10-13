@@ -6,12 +6,15 @@ import CardMedia from "@mui/material/CardMedia";
 import { Box, ThemeProvider, createTheme } from "@mui/system";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
+import Autocomplete from "@mui/material/Autocomplete";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { DialogActions, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import SendIcon from "@mui/icons-material/Send";
-import ReactDOM from "react-dom/client";
-import Autocomplete from "@mui/material/Autocomplete";
-import { useNavigate , useOutletContext} from "react-router-dom";
+import SaveIcon from "@mui/icons-material/Save";
+import LoadingButton from "@mui/lab/LoadingButton";
+import axios from "axios";
 
 const theme = createTheme({
   palette: {
@@ -31,22 +34,51 @@ const theme = createTheme({
   },
 });
 
+interface State {
+  carName: string;
+  carId: string;
+  description: string;
+  review: string;
+  price: string;
+}
 
 const AddCar: React.FC = () => {
   // const [onLoginadmin] = useOutletContext<any>();
   const navigate = useNavigate();
-  const options = ["Sedan", "Van", "Motorcycle", "Hatchback", "Coupe", "SUV", "PPV", "Pickup", "Sport", "Super"];
-  const [value, setValue] = React.useState<string>("");
-  const [inputValue, setInputValue] = React.useState("");
+  const options = [
+    "Sedan",
+    "Van",
+    "Motorcycle",
+    "Hatchback",
+    "Coupe",
+    "SUV",
+    "PPV",
+    "Pickup",
+    "Sport",
+    "Super",
+  ];
+  const [value, setValue] = React.useState<string | null>(options[0]);
+  const [inputValue, setInputValue] = React.useState('');
 
-  const [carName, setcarName] = useState("");
-  const [carId, setcarId] = useState("");
-  const [description, setdescription] = useState("");
-  const [review, setreview] = useState("");
-  const [price, setprice] = useState("");
+  const [values, setValues] = React.useState<State>({
+    carName: "",
+    carId: "",
+    description: "",
+    review: "",
+    price: "",
+  });
+
+  const [loading, setLoading] = React.useState(false);
+
+  const handleChange =
+    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
+
   const [file, setfile] = useState<FileList | null>();
-  const typeId = new Map<string, string>( 
-    [["Sedan", "1"],
+
+  const typeId = new Map<string, string>([
+    ["Sedan", "1"],
     ["Van", "2"],
     ["Motorcycle", "3"],
     ["Hatchback", "4"],
@@ -55,79 +87,51 @@ const AddCar: React.FC = () => {
     ["PPV", "7"],
     ["Pickup", "8"],
     ["Sport", "9"],
-    ["Super", "10"]]
-  );
+    ["Super", "10"],
+  ]);
   const [typeCar, settypeCar] = React.useState("");
-  // settypeCar(value ?? typeId.get("sedan"));
 
   const handleSubmit = (e: React.MouseEvent) => {
+    setLoading(true);
     e.preventDefault();
     console.log(`handleSubmit`);
     var body = new FormData();
-    body.append("carName", carName);
-    body.append("carId", carId);
-    body.append("description", description);
-    body.append("review", review);
-    body.append("price", price);
+    body.append("carName", values.carName);
+    body.append("carId", values.carId);
+    body.append("description", values.description);
+    body.append("review", values.review);
+    body.append("price", values.price);
     body.append("typeId", typeCar);
-    body.append(
-      "file",
-      file ? file[0] : "./Screen Shot 2565-10-03 at 23.02.04.png"
-    );
+    body.append("file", file ? file[0] : "img/Car1.jpg");
 
-    const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+    const token = JSON.parse(
+      localStorage.getItem("admin") ?? '{token:""}'
+    ).token;
     console.log("token", token);
 
-    fetch("http://localhost:5500/vehicle/", {
-      mode: "cors",
-      body: body,
-      method: "POST",
+    axios({
+      method: "post",
+      url: "http://localhost:5500/vehicle/",
+      data: body,
       headers: {
-        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+        "Authorization": `Bearer ${token}`,
       },
-      // body: JSON.stringify({
-      //   carName: carName,
-      //   carId: carId,
-      //   description: description,
-      //   review: review,
-      //   price: price,
-      //   file: file ? file[0] : "./Screen Shot 2565-10-03 at 23.02.04.png",
-      // }),
     })
-      .then((response) => response.json())
-      .then((data) => console.log(data));
-
-    // fetch("http://localhost:5500/vehicle/", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "image/png",
-    //   },
-    //   body: file ? file[0] : "./Screen Shot 2565-10-03 at 23.02.04.png",
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => console.log(data))
-    //   .then((success) => console.log(success))
-    //   .catch((err) => console.log(err));
+      .then((response) => {
+        console.log("Admin Import Car >>", response);
+        setLoading(false);
+        alert("เพิ่มรถสำเร็จ");
+        return response.data;
+      })
+      .then((data) => console.log(data))
+      .catch((error) => {
+        console.error("found error", error);
+        setLoading(false);
+        alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
+      });
   };
 
-  // useEffect(() => {
-  //   if (onLoginadmin) {
-  //     navigate("/");
-  //   }
-  // }, [onLoginadmin]);
-
-  useEffect(()=>{
-
-    console.log("carName 👉️", carName);
-    console.log("carId 👉️", carId);
-    console.log("description 👉️", description);
-    console.log("review 👉️", review);
-    console.log("price 👉️", price);
-    console.log("value 👉️", value);
-    console.log("typeCar 👉️", typeCar);
-    console.log("file 👉️", file);
-  },[typeCar])
-   
 
   return (
     <Stack
@@ -136,14 +140,12 @@ const AddCar: React.FC = () => {
       alignItems="center"
       spacing={12}
     >
-      <Card sx={{ maxWidth: 345 }}>
+      <Card sx={{ Width: 345, height: 500 }}>
         <CardMedia
           component="img"
           height="225"
           image={
-            file
-              ? URL.createObjectURL(file[0])
-              : "/static/images/cards/contemplative-reptile.jpg"
+            file ? URL.createObjectURL(file[0]) : "imageDefault/Default.jpeg"
           }
         />
         <CardContent>
@@ -160,109 +162,106 @@ const AddCar: React.FC = () => {
               <Box
                 sx={{
                   color: "text.primary",
-                  fontSize: 34,
-                  fontWeight: "medium",
+                  fontSize: 22,
+                  fontWeight: "bold",
                 }}
               >
-                {carName}
+                Car Name : {values.carName}
               </Box>
               <Box
                 sx={{
                   color: "text.secondary",
                   fontSize: 25,
-                  fontWeight: "medium",
+                  fontWeight: "bold",
                 }}
               >
-                {carId}
+                Car ID : {values.carId}
               </Box>
               <Box
                 sx={{
                   color: "text.secondary",
                   fontSize: 25,
-                  fontWeight: "medium",
+                  fontWeight: "bold",
                 }}
               >
-                {description}
+                Description : {values.description}
               </Box>
               <Box
                 sx={{
-                  color: "success.dark",
+                  color: "text.secondary",
                   display: "inline",
                   fontWeight: "bold",
-                  fontSize: 29,
+                  fontSize: 25,
                 }}
               >
-                {review}
+                Review : {values.review}
               </Box>
               <Box
                 sx={{
                   color: "success.dark",
                   fontWeight: "bold",
-                  fontSize: 29,
+                  fontSize: 25,
                 }}
               >
-                {price}
+                Price : {values.price}
               </Box>
             </Box>
           </ThemeProvider>
         </CardContent>
       </Card>
-      <Card sx={{ maxWidth: 345 }}>
+      <Card sx={{ Width: 345, height: 500 }}>
         <CardContent>
-          <h1>Import Data</h1>
+          <Typography variant="h4" component="div" align="center">
+            <b>Import Data</b>
+          </Typography>
+          <>
+            <br />
+          </>
           <form encType="multipart/form-data">
-            <input
-              type="text"
-              placeholder="carName"
-              name="carName"
-              onChange={(event) => setcarName(event.target.value)}
-              value={carName}
-            ></input>
-            <input
-              type="text"
-              placeholder="carId"
-              name="carId"
-              onChange={(event) => setcarId(event.target.value)}
-              value={carId}
-            ></input>
-            <input
-              type="text"
-              placeholder="description"
-              name="description"
-              onChange={(event) => setdescription(event.target.value)}
-              value={description}
-            ></input>
-            <input
-              type="text"
-              placeholder="review"
-              name="review"
-              onChange={(event) => setreview(event.target.value)}
-              value={review}
-            ></input>
-            <input
-              type="text"
-              placeholder="price"
-              name="price"
-              onChange={(event) => setprice(event.target.value)}
-              value={price}
-            ></input>
-            <input
-              placeholder="file"
-              type="file"
-              name="file"
-              onChange={(event) => setfile(event.target.files)}
-            ></input>
             <div>
-              <br />
+              <TextField
+                label="Car Name"
+                id="outlined-start-adornment"
+                sx={{ m: 1, width: "25ch" }}
+                value={values.carName}
+                onChange={handleChange("carName")}
+              />
+              <TextField
+                label="Car ID"
+                id="outlined-start-adornment"
+                sx={{ m: 1, width: "25ch" }}
+                value={values.carId}
+                onChange={handleChange("carId")}
+              />
+            </div>
+            <div>
+              <TextField
+                id="outlined-multiline-static"
+                label="Description"
+                sx={{ m: 1, width: "25ch" }}
+                multiline
+                rows={4}
+                value={values.description}
+                onChange={handleChange("description")}
+              />
+              <TextField
+                id="outlined-multiline-static"
+                label="Review"
+                sx={{ m: 1, width: "25ch" }}
+                multiline
+                rows={4}
+                value={values.review}
+                onChange={handleChange("review")}
+              />
+            </div>
+            <div>
               <Autocomplete
                 value={value}
                 onChange={(event: any, newValue: string | null) => {
-                  // setValue(newValue ?? "Sedan");
-                  if (newValue){
-                    settypeCar(typeId.get(newValue)!)
+                  if (newValue) {
+                    settypeCar(typeId.get(newValue)!);
                   }
-              
-                  // settypeCar(value ?? typeId.get(value));
+                  setValue(newValue);
                 }}
                 inputValue={inputValue}
                 onInputChange={(event, newInputValue) => {
@@ -270,23 +269,59 @@ const AddCar: React.FC = () => {
                 }}
                 id="type-id-car"
                 options={options}
-                sx={{ width: 300 }}
+                sx={{ m: 1, display: "inline-flex", width: "25ch" }}
                 renderInput={(params) => (
                   <TextField {...params} label="Type Car" />
                 )}
               />
+              <TextField
+                label="Price"
+                id="outlined-start-adornment"
+                sx={{ m: 1, width: "25ch" }}
+                value={values.price}
+                onChange={handleChange("price")}
+              />
             </div>
-
-            <Stack direction="row" alignItems="center" spacing={2}></Stack>
-            <Button
-              variant="contained"
-              endIcon={<SendIcon />}
-              type="submit"
-              sx={{ m: 1 }}
-              onClick={handleSubmit}
-            >
-              Send
-            </Button>
+            <div>
+              <Button
+                variant="contained"
+                component="label"
+                sx={{ m: 1, width: "24ch", height: "7ch", fontWeight: "bold" }}
+              >
+                Upload
+                <input
+                  hidden
+                  accept="image/*"
+                  multiple
+                  type="file"
+                  onChange={(event) => setfile(event.target.files)}
+                />
+              </Button>
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="label"
+              >
+                <input
+                  hidden
+                  accept="image/*"
+                  type="file"
+                  onChange={(event) => setfile(event.target.files)}
+                />
+                <PhotoCamera />
+              </IconButton>
+              <LoadingButton
+                color="secondary"
+                onClick={handleSubmit}
+                loading={loading}
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
+                variant="contained"
+                sx={{ m: 1, width: "28ch", height: "7ch", fontWeight: "bold" }}
+              >
+                Save
+              </LoadingButton>
+            </div>
           </form>
         </CardContent>
       </Card>

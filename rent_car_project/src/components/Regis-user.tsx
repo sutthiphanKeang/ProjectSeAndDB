@@ -76,7 +76,7 @@ const RegisUser: React.FC = () => {
     console.log(`rhandleSubmit`);
 
     axios
-      .post("http://localhost:5500/authen/sign-up", {
+      .post("https://carleasing.azurewebsites.net/authen/sign-up", {
         email: values.email,
         password: values.password,
         id: values.id,

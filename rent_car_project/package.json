@@ -6,7 +6,8 @@
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.3",
-    "@mui/material": "^5.10.4",
+    "@mui/lab": "^5.0.0-alpha.103",
+    "@mui/material": "^5.10.9",
     "@mui/x-date-pickers-pro": "^5.0.3",
     "@react-spring/web": "^9.5.5",
     "@testing-library/jest-dom": "^5.16.5",
@@ -16,8 +17,8 @@
     "@types/node": "^16.11.57",
     "@types/react": "^18.0.18",
     "@types/react-dom": "^18.0.6",
-    "axios": "^1.1.2",
     "@wojtekmaj/react-daterange-picker": "^4.0.0",
+    "axios": "^1.1.2",
     "bootstrap-daterangepicker": "^3.1.0",
     "dayjs": "^1.11.5",
     "jquery": "^3.6.1",
@@ -35,10 +36,10 @@
     "react-slideshow-image": "^4.0.5",
     "react-spring": "^8.x",
     "typescript": "^4.8.2",
+    "uuid4": "^2.0.3",
     "validator": "^13.7.0",
     "web-vitals": "^2.1.4",
-    "yup": "^0.32.11",
-    "uuid4": "^2.0.3"
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",
