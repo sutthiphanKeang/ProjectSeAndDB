@@ -27,7 +27,7 @@ type props = {
   year?: any;
   brand?: any;
   deleted: boolean;
-  setDelete: (a:boolean) => void;
+  setDelete: (a: boolean) => void;
 };
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -48,7 +48,15 @@ interface State {
   typeID: string;
 }
 
-const ManageCarButton: React.FC<props> = ({ title, img, id, year, brand ,deleted,setDelete}) => {
+const ManageCarButton: React.FC<props> = ({
+  title,
+  img,
+  id,
+  year,
+  brand,
+  deleted,
+  setDelete,
+}) => {
   const options = [
     "Sedan",
     "Van",
@@ -63,7 +71,7 @@ const ManageCarButton: React.FC<props> = ({ title, img, id, year, brand ,deleted
   ];
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
-  
+
   const [inputValue, setInputValue] = React.useState("");
   const [typeCar, settypeCar] = React.useState("");
   const typeId = new Map<string, string>([
@@ -147,26 +155,21 @@ const ManageCarButton: React.FC<props> = ({ title, img, id, year, brand ,deleted
       localStorage.getItem("admin") ?? '{token:""}'
     ).token;
     console.log("token", token);
-    console.log({carId:values.carID})
+    console.log({ carId: values.carID });
     axios({
       method: "delete",
-      url: "https://carleasing.azurewebsites.net/vehicle/id",
-      data: {carId:values.carID},
+      url: "https://carleasing.azurewebsites.net/vehicle/delete",
+      data: { carId: values.carID },
       headers: {
-       
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
-      
       .then((response) => {
         console.log("regis res", response);
-        return response.data;}
-      )
+        return response.data;
+      })
       .then((data) => console.log(data))
       .then(handleClose2);
-
-
-    
   };
   const handleClose = () => {
     setOpen(false);
