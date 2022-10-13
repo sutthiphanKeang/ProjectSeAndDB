@@ -1,19 +1,19 @@
 import { List, ListItem, Paper, Grid, ButtonBase, Typography } from "@mui/material";
 import { Container, Stack } from "@mui/system";
 import React, { useEffect, useState } from "react";
-import ReturnCarButton from "../ReturnCarButton";
 import ManageCarButton from "./ManageCarButton";
 
 export default function ManageCar() {
   const [data2, setData] = useState<any[]>([])
+  const [deleted,setDelete] = useState(false);
   useEffect(() => {
-    fetch("http://localhost:5500/vehicle")
+    fetch("https://carleasing.azurewebsites.net/vehicle")
       .then((response) => response.json())
       .then((data) => {
         setData(data);
         
       });
-  }, []);
+  }, [deleted]);
   return(
     <Container fixed>
       <Stack
@@ -95,6 +95,8 @@ export default function ManageCar() {
                         id={item.vehicle_id}
                         year = {item.year}
                         brand = {item.brand}
+                        deleted = {deleted}
+                        setDelete = {setDelete}
                         
                       />
                     </Grid>

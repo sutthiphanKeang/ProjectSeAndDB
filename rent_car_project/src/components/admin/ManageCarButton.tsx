@@ -17,6 +17,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { TransitionProps } from "@mui/material/transitions/transition";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import { type } from "@testing-library/user-event/dist/type";
+import axios from "axios";
+import { boolean } from "yup";
 
 type props = {
   title?: any;
@@ -24,6 +26,8 @@ type props = {
   id?: any;
   year?: any;
   brand?: any;
+  deleted: boolean;
+  setDelete: (a:boolean) => void;
 };
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -43,9 +47,23 @@ interface State {
   raw: any;
   typeID: string;
 }
-const ManageCarButton: React.FC<props> = ({ title, img, id ,year,brand}) => {
-  const options = ["Sedan", "Van", "Motorcycle", "Hatchback", "Coupe", "SUV", "PPV", "Pickup", "Sport", "Super"];
+
+const ManageCarButton: React.FC<props> = ({ title, img, id, year, brand ,deleted,setDelete}) => {
+  const options = [
+    "Sedan",
+    "Van",
+    "Motorcycle",
+    "Hatchback",
+    "Coupe",
+    "SUV",
+    "PPV",
+    "Pickup",
+    "Sport",
+    "Super",
+  ];
   const [open, setOpen] = useState(false);
+  const [open2, setOpen2] = useState(false);
+  
   const [inputValue, setInputValue] = React.useState("");
   const [typeCar, settypeCar] = React.useState("");
   const typeId = new Map<string, string>([
@@ -62,8 +80,8 @@ const ManageCarButton: React.FC<props> = ({ title, img, id ,year,brand}) => {
   ]);
 
   const [values, setValues] = React.useState<State>({
-    carName: brand+" "+ title+" "+year,
-    carID: "",
+    carName: brand + " " + title + " " + year,
+    carID: id,
     description: "",
     review: "",
     price: "",
@@ -89,21 +107,11 @@ const ManageCarButton: React.FC<props> = ({ title, img, id ,year,brand}) => {
       });
     }
   };
-  // const handleUpload = async e => {
-  //   e.preventDefault();
-  //   const formData = new FormData();
-  //   formData.append("image", image.raw);
-
-  //   await fetch("YOUR_URL", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "multipart/form-data"
-  //     },
-  //     body: formData
-  //   });
-  // };
   const handleOpen = () => {
     setOpen(true);
+  };
+  const handleOpen2 = () => {
+    setOpen2(true);
   };
   const handleNext = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -116,21 +124,49 @@ const ManageCarButton: React.FC<props> = ({ title, img, id ,year,brand}) => {
     body.append("typeId", typeCar);
     body.append("file", values.raw);
 
-    const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+    const token = JSON.parse(
+      localStorage.getItem("admin") ?? '{token:""}'
+    ).token;
     console.log("token", token);
 
-    fetch("http://localhost:5500/vehicle/edit", {
+    fetch("https://carleasing.azurewebsites.net/vehicle/edit", {
       mode: "cors",
       body: body,
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      
     })
       .then((response) => response.json())
       .then((data) => console.log(data))
       .then(handleClose);
+  };
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = JSON.parse(
+      localStorage.getItem("admin") ?? '{token:""}'
+    ).token;
+    console.log("token", token);
+    console.log({carId:values.carID})
+    axios({
+      method: "delete",
+      url: "https://carleasing.azurewebsites.net/vehicle/id",
+      data: {carId:values.carID},
+      headers: {
+       
+        "Authorization": `Bearer ${token}`,
+      },
+    })
+      
+      .then((response) => {
+        console.log("regis res", response);
+        return response.data;}
+      )
+      .then((data) => console.log(data))
+      .then(handleClose2);
+
+
+    
   };
   const handleClose = () => {
     setOpen(false);
@@ -144,6 +180,10 @@ const ManageCarButton: React.FC<props> = ({ title, img, id ,year,brand}) => {
       raw: "",
       typeID: "",
     });
+  };
+  const handleClose2 = () => {
+    setOpen2(false);
+    setDelete(true);
   };
   return (
     <>
@@ -166,12 +206,7 @@ const ManageCarButton: React.FC<props> = ({ title, img, id ,year,brand}) => {
         <DialogTitle>{"Edit Car Detail"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Grid
-              container
-              // spacing={1}
-              // justifyContent="space-around"
-              alignItems="center"
-            >
+            <Grid container alignItems="center">
               <Grid
                 item
                 style={{ flexGrow: "1" }}
@@ -221,35 +256,30 @@ const ManageCarButton: React.FC<props> = ({ title, img, id ,year,brand}) => {
                   </>
                 ) : (
                   <>
-                  <img
-                        src={img}
-                        alt="dummy"
-                        width="100%"
-                        height="100%"
-                  />
-                  <Button
-                    variant="outlined"
-                    startIcon={
-                      <InsertPhotoIcon
-                        sx={{
-                          color: "primary.main",
-                          alignItems: "center",
-                          display: "flex",
-                        }}
+                    <img src={img} alt="dummy" width="100%" height="100%" />
+                    <Button
+                      variant="outlined"
+                      startIcon={
+                        <InsertPhotoIcon
+                          sx={{
+                            color: "primary.main",
+                            alignItems: "center",
+                            display: "flex",
+                          }}
                         />
                       }
                       component="label"
-                      >
-                    UPLOAD
-                    <input
-                      accept="image/*"
-                      id="icon-button-file"
-                      type="file"
-                      style={{ display: "none" }}
-                      onChange={handleChangeImage}
+                    >
+                      UPLOAD
+                      <input
+                        accept="image/*"
+                        id="icon-button-file"
+                        type="file"
+                        style={{ display: "none" }}
+                        onChange={handleChangeImage}
                       />
-                  </Button>
-                      </>
+                    </Button>
+                  </>
                 )}
               </Grid>
 
@@ -269,7 +299,7 @@ const ManageCarButton: React.FC<props> = ({ title, img, id ,year,brand}) => {
                     value={values.carName}
                     onChange={handleChange("carName")}
                   />
-                  
+
                   <TextField
                     id="description"
                     label="description"
@@ -306,9 +336,12 @@ const ManageCarButton: React.FC<props> = ({ title, img, id ,year,brand}) => {
                     options={options}
                     sx={{ width: 300 }}
                     renderInput={(params) => (
-                      <TextField {...params} label="Type Car" variant="standard" />
+                      <TextField
+                        {...params}
+                        label="Type Car"
+                        variant="standard"
+                      />
                     )}
-                    disablePortal
                   />
                 </Box>
               </Grid>
@@ -330,9 +363,27 @@ const ManageCarButton: React.FC<props> = ({ title, img, id ,year,brand}) => {
         variant="contained"
         startIcon={<DeleteIcon />}
         sx={{ mt: 1 }}
+        onClick={handleOpen2}
       >
         Delete
       </Button>
+      <Dialog
+        open={open2}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose2}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Are you sure you want to delete this car?"}</DialogTitle>
+        <DialogActions>
+          <Button color="success" onClick={handleDelete}>
+            Confirm
+          </Button>
+          <Button color="error" onClick={handleClose2}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
