@@ -28,6 +28,10 @@ type props = {
   brand?: any;
   deleted: boolean;
   setDelete: (a: boolean) => void;
+  des: string;
+  review: string;
+  price: any;
+  type: any;
 };
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -56,6 +60,10 @@ const ManageCarButton: React.FC<props> = ({
   brand,
   deleted,
   setDelete,
+  des,
+  review,
+  price,
+  type
 }) => {
   const options = [
     "Sedan",
@@ -90,12 +98,12 @@ const ManageCarButton: React.FC<props> = ({
   const [values, setValues] = React.useState<State>({
     carName: brand + " " + title + " " + year,
     carID: id,
-    description: "",
-    review: "",
-    price: "",
+    description: des,
+    review: review,
+    price: price,
     preview: "",
     raw: "",
-    typeID: "",
+    typeID: options[type-1],
   });
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,14 +182,14 @@ const ManageCarButton: React.FC<props> = ({
   const handleClose = () => {
     setOpen(false);
     setValues({
-      carName: "",
-      carID: "",
-      description: "",
-      review: "",
-      price: "",
+      carName: brand + " " + title + " " + year,
+      carID: id,
+      description: des,
+      review: review,
+      price: price,
       preview: "",
       raw: "",
-      typeID: "",
+      typeID: options[type-1],
     });
   };
   const handleClose2 = () => {

@@ -97,6 +97,10 @@ export default function ManageCar() {
                         brand = {item.brand}
                         deleted = {deleted}
                         setDelete = {setDelete}
+                        des = {item.description}
+                        review = {item.review}
+                        price = {item.cost}
+                        type = {item.type_id}
                         
                       />
                     </Grid>
