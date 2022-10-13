@@ -4,7 +4,6 @@ import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css'
 
 export default class FristHome extends Component {
-  
   render() {
     const slideImages = [
       {
@@ -24,8 +23,7 @@ export default class FristHome extends Component {
             </div>
           ))} 
         </Slide>
-        </Box>
-        
+        </Box>  
       </div>
     )
   }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component,useState,useEffect } from 'react'
 import Stack from '@mui/material/Stack';
 import ListItem from '@mui/material/ListItem';
 import Paper from '@mui/material/Paper';
@@ -28,7 +28,15 @@ export default function UserPage(){
   const handleClose = () => {
       setOpen(false);
     };
-    
+    const [data2, setData] = useState<any[]>([]);
+    useEffect(() => {
+    fetch("http://localhost:5500/authen")
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+        console.log(data2);
+      });
+  }, []);  
 
 
 
@@ -48,7 +56,7 @@ export default function UserPage(){
           theme.palette.mode === 'dark' ? '#1A2027' : '#eeeeee',
       }}
     >
-      
+      {data2.map((item) => (
       <Grid container spacing={2}>
         
         <Grid item xs={12} sm container>
@@ -58,10 +66,10 @@ export default function UserPage(){
                 <h1> User Information </h1>
               </Typography>
               <Typography gutterBottom variant="subtitle2" component="div">
-                <h2>Firstname : </h2>
+                <h2>Firstname : {item.fname} </h2>
               </Typography>
               <Typography variant="subtitle2" gutterBottom>
-                <h2>Lastname : </h2>
+                <h2>Lastname : {item.lname}</h2>
               </Typography>
               <Typography variant="subtitle2" color="text.secondary">
                 <h2>User ID : </h2>
@@ -91,7 +99,7 @@ export default function UserPage(){
           <Grid item>
           </Grid>
         </Grid>
-      </Grid></Grid>
+      </Grid></Grid>))}
       </Paper>
       </ListItem>
 

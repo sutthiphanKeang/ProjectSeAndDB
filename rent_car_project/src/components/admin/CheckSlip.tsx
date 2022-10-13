@@ -12,7 +12,6 @@ import {
     Stack,
     TextField,
     Typography,
-    styled,
     Button,
     DialogContent,
     DialogActions
@@ -22,7 +21,22 @@ import {
 
 
 export default function CheckSlip() {
-  
+  const token = JSON.parse(localStorage.getItem("admin") ?? '{token:""}').token;
+    console.log("token", token);
+
+  const [data2, setData] = useState<any[]>([]);
+  useEffect(() => {
+    fetch("http://localhost:5500/payment/admin",{
+      mode: "cors",
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },})
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+      });
+  }, []);
 
   
   const [open,setOpen] = React.useState(false);
@@ -31,16 +45,9 @@ export default function CheckSlip() {
     const handleClose = () => {
       setOpen(false);
     };
-    const [data2, setData] = useState<any[]>([]);
-    useEffect(() => {
-    fetch("http://localhost:5500/payment/admin")
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        console.log(data2);
-      });
-  }, []);
-  
+    
+
+    
   
   
   return (
