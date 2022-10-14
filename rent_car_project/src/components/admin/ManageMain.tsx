@@ -3,14 +3,13 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Card, CardContent } from "@mui/material";
 import AddInsurance from "./AddInsurance";
 import ManageIN from "./ManageIn";
 import ManageCar from "./ManageCar";
 import AddCar from "./AddCar";
 import { useNavigate , useOutletContext} from "react-router-dom";
-import { useEffect } from "react";
 import CheckSlip from "./CheckSlip";
+import { useEffect } from "react";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -21,7 +20,6 @@ interface TabPanelProps {
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
   
-
   return (
     <div
       role="tabpanel"
@@ -46,6 +44,7 @@ function a11yProps(index: number) {
   };
 }
 
+//หน้าหลักสำหรับหน้า admin
 export default function BasicTabs() {
   const [onLoginadmin] = useOutletContext<any>();
   const navigate = useNavigate();
@@ -55,6 +54,11 @@ export default function BasicTabs() {
     setValue(newValue);
   };
 
+  useEffect(() =>{
+    if (!onLoginadmin){
+      navigate("/Admin")
+    }
+  },[onLoginadmin])
 
   console.log("admin", onLoginadmin)
   

@@ -43,10 +43,10 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
       <Route path="/Admin" element={<MainLayoutAdmin />}>
+        <Route path="" element={<LoginAdmin />}></Route>
         <Route path="Manage" element={<Manage />}></Route>
         {/* <Route path="ManageCar" element={<ManageCar />}></Route>
         <Route path="AddCar" element={<AddCar />}></Route> */}
-        <Route path="Login" element={<LoginAdmin />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
