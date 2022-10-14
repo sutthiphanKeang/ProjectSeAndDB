@@ -10,10 +10,18 @@ import DialogTitle from "@mui/material/DialogTitle";
 import EditIcon from "@mui/icons-material/Edit";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
-import { Button, DialogContent } from "@mui/material";
+import { Button, ButtonBase, DialogContent, List } from "@mui/material";
 import axios from "axios";
-import { type } from "@testing-library/user-event/dist/type";
 import { useNavigate, useOutletContext } from "react-router-dom";
+
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from "@mui/icons-material/Search";
+import ReturnCarButton from "./ReturnCarButton";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#eeeeee",
@@ -31,20 +39,20 @@ interface User {
 }
 
 const UserPage: React.FC = () => {
-  const [onLoginuser] = useOutletContext<any>();
+  const [onLoginuser, setonLoginuser] = useOutletContext<any>();
   const navigate = useNavigate();
 
-  const [edited,setEdit] = useState(false);
+  const [edited, setEdit] = useState(false);
   const [data2, setData] = useState("");
 
   const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
   console.log("token", token);
 
-  useEffect(() =>{
-    if (!onLoginuser){
-      navigate("/Login")
+  useEffect(() => {
+    if (!onLoginuser) {
+      navigate("/Login");
     }
-  },[onLoginuser])
+  }, [onLoginuser]);
 
   useEffect(() => {
     axios
@@ -59,23 +67,22 @@ const UserPage: React.FC = () => {
       .then((data) => {
         setData(data);
         console.log(data);
-        
-        
       })
       .catch((error) => {
-        console.error("found error", error);
-        alert("กรุณาลองใหม่อีกครั้ง");
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
       });
   }, [edited]);
+
   const dataJson = JSON.stringify(data2);
   let data: string = dataJson;
   let jsonObj = JSON.parse(data);
 
-  let name: any = jsonObj.bill_id;
-  console.log(name);
-
-  console.log("type", typeof data2);
-  console.log(JSON.stringify(data2));
   const [open, setOpen] = React.useState(false);
   const [values, setValues] = React.useState<User>({
     fname: jsonObj.fname,
@@ -90,6 +97,23 @@ const UserPage: React.FC = () => {
       phone: jsonObj.phone,
     });
   };
+
+  const [dataBook, setDataBook] = useState<any[]>([]);
+  useEffect(() => {
+    axios
+      .get("https://carleasing.azurewebsites.net/user/booking", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        setDataBook(data);
+      });
+  }, [edited]);
+
   const handleChange =
     (prop: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setValues({ ...values, [prop]: event.target.value });
@@ -112,10 +136,12 @@ const UserPage: React.FC = () => {
     axios({
       method: "put",
       url: "https://carleasing.azurewebsites.net/user/edit",
-      data: { id: jsonObj.id ,
+      data: {
+        id: jsonObj.id,
         customerFname: values.fname,
         customerLname: values.lname,
-        phone: values.phone},
+        phone: values.phone,
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -145,99 +171,139 @@ const UserPage: React.FC = () => {
               theme.palette.mode === "dark" ? "#1A2027" : "#eeeeee",
           }}
         >
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm container>
-              <Grid item xs container direction="column" spacing={2}>
-                <Grid item xs>
-                  <Typography
-                    gutterBottom
-                    variant="subtitle1"
-                    component="div"
-                    color="#1a237e"
-                  >
-                    <h1> User Information </h1>
-                  </Typography>
-                  <Typography gutterBottom variant="subtitle2" component="div">
-                    <h2>Firstname : {jsonObj.fname} </h2>
-                  </Typography>
-                  <Typography variant="subtitle2" gutterBottom>
-                    <h2>Lastname : {jsonObj.lname}</h2>
-                  </Typography>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    <h2>User ID : {jsonObj.id_no}</h2>
-                  </Typography>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    <h2>Phone number : {jsonObj.phone}</h2>
-                  </Typography>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="stretch"
+            spacing={2}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm container>
+                <Grid item xs container direction="column" spacing={2}>
+                  <Grid item xs>
+                    <Typography
+                      gutterBottom
+                      variant="subtitle1"
+                      component="div"
+                      color="#1a237e"
+                    >
+                      <h1> User Information </h1>
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="subtitle2"
+                      component="div"
+                    >
+                      <h2>Firstname : {jsonObj.fname} </h2>
+                    </Typography>
+                    <Typography variant="subtitle2" gutterBottom>
+                      <h2>Lastname : {jsonObj.lname}</h2>
+                    </Typography>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      <h2>User ID : {jsonObj.id_no}</h2>
+                    </Typography>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      <h2>Phone number : {jsonObj.phone}</h2>
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Button
+                      component="div"
+                      color="primary"
+                      variant="contained"
+                      onClick={handleClickOpen}
+                      startIcon={<EditIcon />}
+                      sx={{ ml: 1 }}
+                    >
+                      Edit
+                    </Button>
+                    <Dialog open={open} onClose={handleClose}>
+                      <DialogTitle> แก้ไขข้อมูลส่วนตัว กรอกที่นี่</DialogTitle>
+                      <DialogContent>
+                        <TextField
+                          defaultValue={values.fname}
+                          margin="dense"
+                          id="Firstname"
+                          label="Firstname"
+                          value={values.fname}
+                          fullWidth
+                          variant="standard"
+                          onChange={handleChange("fname")}
+                        />
+                        <TextField
+                          defaultValue={values.lname}
+                          margin="dense"
+                          id="Lastname"
+                          label="Lastname"
+                          value={values.lname}
+                          fullWidth
+                          variant="standard"
+                          onChange={handleChange("lname")}
+                        />
+                        <TextField
+                          defaultValue={values.phone}
+                          margin="dense"
+                          id="Phone"
+                          label="Phone number"
+                          value={values.phone}
+                          fullWidth
+                          variant="standard"
+                          onChange={handleChange("phone")}
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          onClick={handleEdit}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          color="primary"
+                          variant="outlined"
+                          onClick={handleClose}
+                        >
+                          Cancel
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Button
-                    component="div"
-                    color="primary"
-                    variant="contained"
-                    onClick={handleClickOpen}
-                    startIcon={<EditIcon />}
-                    sx={{ ml: 1 }}
-                  >
-                    Edit
-                  </Button>
-                  <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle> แก้ไขข้อมูลส่วนตัว กรอกที่นี่</DialogTitle>
-                    <DialogContent>
-                      <TextField
-                       defaultValue	={values.fname}
-                        margin="dense"
-                        id="Firstname"
-                        label="Firstname"
-                        value={values.fname}
-                        fullWidth
-                        variant="standard"
-                        onChange={handleChange("fname")}
-                      />
-                      <TextField
-                       defaultValue	={values.lname}
-                        margin="dense"
-                        id="Lastname"
-                        label="Lastname"
-                        value={values.lname}
-                        fullWidth
-                        variant="standard"
-                        onChange={handleChange("lname")}
-                      />
-                      <TextField
-                       defaultValue	={values.phone}
-                        margin="dense"
-                        id="Phone"
-                        label="Phone number"
-                        value={values.phone}
-                        fullWidth
-                        variant="standard"
-                        onChange={handleChange("phone")}
-                      />
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        onClick={handleEdit}
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        color="primary"
-                        variant="outlined"
-                        onClick={handleClose}
-                      >
-                        Cancel
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
-                </Grid>
-
-                <Grid item></Grid>
               </Grid>
             </Grid>
-          </Grid>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm container>
+                <Grid item xs container direction="column" spacing={2}>
+                  <Grid item xs sx={{ maxWidth: 345 }}>
+                    
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        image="/static/images/cards/contemplative-reptile.jpg"
+                        alt="green iguana"
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          Lizard
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Lizards are a widespread group of squamate reptiles,
+                          with over 6,000 species, ranging across all continents
+                          except Antarctica
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <Button size="small">Share</Button>
+                        <Button size="small">Learn More</Button>
+                      </CardActions>
+                    
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Stack>
         </Paper>
       </ListItem>
 
@@ -252,20 +318,18 @@ const UserPage: React.FC = () => {
         >
           <Grid item md={4.5} columnSpacing={2}>
             <Item>
-              {" "}
               <Typography variant="subtitle2" color="#bf360c">
                 <h1>Notify</h1>
               </Typography>
               <Typography variant="subtitle2" color="#212121">
-                {!jsonObj.daylefts &&(<h2>ไม่มีรายการเช่ารถ</h2>)}
-                {(jsonObj.daylefts  >= 0 && jsonObj.daylefts != null)  && (
+                {!jsonObj.daylefts && <h2>ไม่มีรายการเช่ารถ</h2>}
+                {jsonObj.daylefts >= 0 && jsonObj.daylefts != null && (
                   <h2>เหลือเวลาอีก {jsonObj.daylefts} วัน</h2>
                 )}
-                {(jsonObj.daylefts < 0 && jsonObj.daylefts != null) && (
+                {jsonObj.daylefts < 0 && jsonObj.daylefts != null && (
                   <h2>เกินกำหนดคืนรถมา {Math.abs(jsonObj.daylefts)} วัน</h2>
                 )}
               </Typography>
-              <p></p>
             </Item>
           </Grid>
           <Grid item md={4.5} columnSpacing={2}>
@@ -278,6 +342,120 @@ const UserPage: React.FC = () => {
             </Item>
           </Grid>
         </Grid>
+      </ListItem>
+
+      <ListItem>
+        <Paper
+          sx={{
+            p: 2,
+            margin: "auto",
+            maxWidth: 800,
+            flexGrow: 1,
+            backgroundColor: (theme) =>
+              theme.palette.mode === "dark" ? "#1A2027" : "#eeeeee",
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm container>
+              <Grid item xs container direction="column" spacing={2}>
+                <Grid item xs>
+                  <List
+                    sx={{
+                      width: "100%",
+                      maxWidth: "100%",
+                      bgcolor: "background.paper",
+                      position: "relative",
+                      overflow: "auto",
+                      maxHeight: 500,
+                      background: "#e0e0e0",
+                      "& ul": { padding: 0 },
+                    }}
+                    subheader={<li />}
+                  >
+                    {dataBook.map((item, index) => (
+                      <ListItem>
+                        <Paper
+                          sx={{
+                            p: 2,
+                            margin: "auto",
+                            maxWidth: 800,
+                            flexGrow: 1,
+                            backgroundColor: (theme) =>
+                              theme.palette.mode === "dark"
+                                ? "#1A2027"
+                                : "#f5f5f5",
+                          }}
+                        >
+                          <Grid container spacing={2}>
+                            <Grid item xs>
+                              <ButtonBase>
+                                <img
+                                  alt="complex"
+                                  src={`${item.vehicle_img}?w=50&h=50&fit=crop&auto=format`}
+                                  srcSet={`${item.vehicle_img}?w=50&h=50&fit=crop&auto=format&dpr=2 2x`}
+                                  width="200"
+                                  height="160"
+                                />
+                              </ButtonBase>
+                            </Grid>
+                            <Grid item xs={12} sm container>
+                              <Grid
+                                item
+                                xs
+                                container
+                                direction="column"
+                                spacing={2}
+                              >
+                                <Grid
+                                  item
+                                  xs
+                                  sx={{
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <Typography
+                                    gutterBottom
+                                    variant="subtitle1"
+                                    component="div"
+                                  >
+                                    brand : {item.brand}
+                                  </Typography>
+                                  <Typography variant="body2" gutterBottom>
+                                    Model name : {item.model_name}
+                                  </Typography>
+                                  <Typography variant="body2" gutterBottom>
+                                    Vehicle ID : {item.vehicle_id}
+                                  </Typography>
+                                  <Typography variant="subtitle1" gutterBottom>
+                                    Status : {item.status}
+                                  </Typography>
+                                </Grid>
+                              </Grid>
+                              <Grid
+                                item
+                                alignItems="center"
+                                justifyContent="center"
+                              >
+                                <ReturnCarButton
+                                  title={item.vehicle_id}
+                                  img={item.vehicle_img}
+                                  id={item.vehicle_id}
+                                  brand={item.brand}
+                                  year={item.year}
+                                />
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                        </Paper>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Paper>
       </ListItem>
     </Stack>
   );
