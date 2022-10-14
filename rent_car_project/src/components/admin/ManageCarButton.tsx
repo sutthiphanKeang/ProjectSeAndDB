@@ -16,9 +16,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { TransitionProps } from "@mui/material/transitions/transition";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import { type } from "@testing-library/user-event/dist/type";
+
 import axios from "axios";
-import { boolean } from "yup";
+
 
 type props = {
   title?: any;
@@ -63,7 +63,7 @@ const ManageCarButton: React.FC<props> = ({
   des,
   review,
   price,
-  type
+  type,
 }) => {
   const options = [
     "Sedan",
@@ -94,7 +94,8 @@ const ManageCarButton: React.FC<props> = ({
     ["Sport", "9"],
     ["Super", "10"],
   ]);
-
+  
+  
   const [values, setValues] = React.useState<State>({
     carName: brand + " " + title + " " + year,
     carID: id,
@@ -103,7 +104,7 @@ const ManageCarButton: React.FC<props> = ({
     price: price,
     preview: "",
     raw: "",
-    typeID: options[type-1],
+    typeID: options[type - 1],
   });
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,7 +138,7 @@ const ManageCarButton: React.FC<props> = ({
     body.append("description", values.description);
     body.append("review", values.review);
     body.append("price", values.price);
-    body.append("typeId", typeCar);
+    body.append("typeId", typeId.get(values.typeID)!);
     body.append("file", values.raw);
 
     const token = JSON.parse(
@@ -189,12 +190,13 @@ const ManageCarButton: React.FC<props> = ({
       price: price,
       preview: "",
       raw: "",
-      typeID: options[type-1],
+      typeID: options[type - 1],
     });
+    setDelete(!deleted);
   };
   const handleClose2 = () => {
     setOpen2(false);
-    setDelete(true);
+    setDelete(!deleted);
   };
   return (
     <>
