@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, {useState } from "react";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -6,16 +6,16 @@ import CardMedia from "@mui/material/CardMedia";
 import { Box, ThemeProvider, createTheme } from "@mui/system";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import SendIcon from "@mui/icons-material/Send";
 import Autocomplete from "@mui/material/Autocomplete";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { DialogActions, Typography } from "@mui/material";
+import { useNavigate} from "react-router-dom";
+import {Typography} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import SaveIcon from "@mui/icons-material/Save";
 import LoadingButton from "@mui/lab/LoadingButton";
 import axios from "axios";
 
+//ทำทีมสีให้ส่วนแสดงผลข้อมูล
 const theme = createTheme({
   palette: {
     background: {
@@ -34,6 +34,7 @@ const theme = createTheme({
   },
 });
 
+//set state เอาไปใช้ใน const
 interface State {
   carName: string;
   carId: string;
@@ -42,9 +43,9 @@ interface State {
   price: string;
 }
 
+//ฟังชั่นหลัก
 const AddCar: React.FC = () => {
-  // const [onLoginadmin] = useOutletContext<any>();
-  const navigate = useNavigate();
+  //ตัวเลือกประเภทรถ
   const options = [
     "Sedan",
     "Van",
@@ -57,9 +58,10 @@ const AddCar: React.FC = () => {
     "Sport",
     "Super",
   ];
-  const [value, setValue] = React.useState<string | null>();
-  const [inputValue, setInputValue] = React.useState('');
+  const [value, setValue] = React.useState<string | null>(); //เซ็ทค่าในตัวเลือกประเภทรถ
+  const [inputValue, setInputValue] = React.useState(''); 
 
+  //ตัว state ของชนิดรถ
   const [values, setValues] = React.useState<State>({
     carName: "",
     carId: "",
@@ -68,15 +70,17 @@ const AddCar: React.FC = () => {
     price: "",
   });
 
-  const [loading, setLoading] = React.useState(false);
-
+  const [loading, setLoading] = React.useState(false); //state ของตัวโหลดปุ่ม save
+  
+  //ฟังชั่นส่ง state มาเซ็ทใน setValues
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setValues({ ...values, [prop]: event.target.value });
     };
+  
+  const [file, setfile] = useState<FileList | null>();  //state เก็บรูปภาพ
 
-  const [file, setfile] = useState<FileList | null>();
-
+  //ตัว map ชนิดรถให้เป็นเลข ส่งไปหลังบ้าน
   const typeId = new Map<string, string>([
     ["Sedan", "1"],
     ["Van", "2"],
@@ -89,13 +93,15 @@ const AddCar: React.FC = () => {
     ["Sport", "9"],
     ["Super", "10"],
   ]);
-  const [typeCar, settypeCar] = React.useState("");
 
+  const [typeCar, settypeCar] = React.useState(""); //ตัวเก็บ state หลังการ map ส่งไปหลังบ้าน
+
+  //ฟังชั่นตอนกด save ส่งไปหลังบ้าน
   const handleSubmit = (e: React.MouseEvent) => {
     setLoading(true);
     e.preventDefault();
     console.log(`handleSubmit`);
-    var body = new FormData();
+    var body = new FormData(); //ทำ formdata
     body.append("carName", values.carName);
     body.append("carId", values.carId);
     body.append("description", values.description);
@@ -103,12 +109,14 @@ const AddCar: React.FC = () => {
     body.append("price", values.price);
     body.append("typeId", typeCar);
     body.append("file", file ? file[0] : "img/Car1.jpg");
-
+    
+    //เก็บ token เพื่อนำมาใช้
     const token = JSON.parse(
       localStorage.getItem("admin") ?? '{token:""}'
     ).token;
     console.log("token", token);
 
+    //ส่งข้อมูลเข้าหลังบ้าน
     axios({
       method: "post",
       url: "https://carleasing.azurewebsites.net/vehicle/",
