@@ -13,6 +13,7 @@ import TextField from "@mui/material/TextField";
 import { Button, DialogContent } from "@mui/material";
 import axios from "axios";
 import { type } from "@testing-library/user-event/dist/type";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#eeeeee",
@@ -30,11 +31,20 @@ interface User {
 }
 
 const UserPage: React.FC = () => {
+  const [onLoginuser] = useOutletContext<any>();
+  const navigate = useNavigate();
+
   const [edited,setEdit] = useState(false);
   const [data2, setData] = useState("");
 
   const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
   console.log("token", token);
+
+  useEffect(() =>{
+    if (!onLoginuser){
+      navigate("/Login")
+    }
+  },[onLoginuser])
 
   useEffect(() => {
     axios
@@ -247,10 +257,11 @@ const UserPage: React.FC = () => {
                 <h1>Notify</h1>
               </Typography>
               <Typography variant="subtitle2" color="#212121">
-                {jsonObj.daylefts >= 0 && (
+                {!jsonObj.daylefts &&(<h2>ไม่มีรายการเช่ารถ</h2>)}
+                {(jsonObj.daylefts  >= 0 && jsonObj.daylefts != null)  && (
                   <h2>เหลือเวลาอีก {jsonObj.daylefts} วัน</h2>
                 )}
-                {jsonObj.daylefts < 0 && (
+                {(jsonObj.daylefts < 0 && jsonObj.daylefts != null) && (
                   <h2>เกินกำหนดคืนรถมา {Math.abs(jsonObj.daylefts)} วัน</h2>
                 )}
               </Typography>
