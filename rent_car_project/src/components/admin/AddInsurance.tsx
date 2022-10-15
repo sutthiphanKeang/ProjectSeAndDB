@@ -85,8 +85,7 @@ export default function Insurance() {
 
   const rhandleSubmit = () => {
     console.log(`rhandleSubmit`);
-    
-    
+      
     axios({
       method: "post",
       url: "https://carleasing.azurewebsites.net/insurance/admin/add",
@@ -99,19 +98,12 @@ export default function Insurance() {
         Authorization: `Bearer ${token}`,
       },
     })
-
       .then((response) => {
         console.log("regis res", response);
         return response.data;
       })
-
       .then((data) => console.log(data))
       .then(handleClose);
-
-
-      
-      
-      
   };
 
   return (

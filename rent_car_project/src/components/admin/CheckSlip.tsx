@@ -17,26 +17,87 @@ import {
     DialogActions
   } from "@mui/material";
  
-
+import axios from "axios";
 
 
 export default function CheckSlip() {
   const token = JSON.parse(localStorage.getItem("admin") ?? '{token:""}').token;
     console.log("token", token);
-
+    
   const [data2, setData] = useState<any[]>([]);
+  const [loaded, setLoad] = useState(false);
   useEffect(() => {
-    fetch("http://localhost:5500/payment/admin",{
-      mode: "cors",
+    
+    axios({
       method: "GET",
+      url: "https://carleasing.azurewebsites.net/payment/admin",
       headers: {
         Authorization: `Bearer ${token}`,
-      },})
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-      });
-  }, []);
+      },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .then((data) => {
+      setData(data);
+      console.log(data);
+    })
+    .catch((error) => {
+      if (error.response.status == "401") {
+        localStorage.clear();
+      }
+    });
+  }, [loaded]);
+
+  interface State {
+    billID: string;
+    billStatus: string;
+    BillCost: string;
+  }
+  
+  const dataJson = JSON.stringify(data2);
+  let data: string = dataJson;
+  let jsonObj = JSON.parse(data);
+  console.log(jsonObj)
+  
+  const handleChange =
+    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
+
+  const [values, setValues] = React.useState<State>({
+    billID: jsonObj.billID,
+    billStatus: jsonObj.billStatus,
+    BillCost: jsonObj.billCost
+  });
+  
+  console.log(values.billID)
+  const handleSuccess = () => {
+    console.log(values.billID)
+    console.log(`handleSuccess`);
+    const token = JSON.parse(
+      localStorage.getItem("admin") ?? '{token:""}'
+    ).token;
+    console.log("token", token);
+    axios({
+      method: "put",
+      url: "https://carleasing.azurewebsites.net/payment/admin/approve",
+      data: {
+        bill_id: values.billID,
+        
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        console.log("regis res", response);
+        return response.data;
+      })
+
+      .then((data) => console.log(data))
+      .then(handleClose);
+  };
 
   
   const [open,setOpen] = React.useState(false);
@@ -45,10 +106,6 @@ export default function CheckSlip() {
     const handleClose = () => {
       setOpen(false);
     };
-    
-
-    
-  
   
   return (
     
@@ -99,17 +156,13 @@ export default function CheckSlip() {
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div" color='#1a237e'>
-                Booking ID : {item.bill_id}
+                Bill ID : {item.bill_id}
               </Typography>
               <Typography gutterBottom variant="subtitle2" component="div">
-                Status : ยังบ่ได้ใส่ตัวแปร
+                Status : {item.bill_status}
               </Typography>
-              <Typography variant="body2" gutterBottom>
-                - 
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                ID : {item.bill_id}
-              </Typography>
+              
+              
             </Grid>
           </Grid>
           <Grid item>
@@ -137,11 +190,11 @@ export default function CheckSlip() {
 
                 </Box>
                 <Typography gutterBottom variant="subtitle1" component="div" color='#1a237e'>
-                Booking ID : {item.bill_id} 
+                Bill ID ID : {item.bill_id} 
                 </Typography>
                 <DialogActions>
                 <Button onClick={handleClose} variant="contained" color="error">Cancel</Button>
-                <Button onClick={handleClose} variant="contained" color="success">Payment Success</Button>
+                <Button onClick={handleSuccess} variant="contained" color="success">Payment Success</Button>
                 </DialogActions>
               </DialogContent>
               <Button>

@@ -84,14 +84,14 @@ export default function Insurance(){
           };
           const [values, setValues] = React.useState<State>({
             Name: "",
-            ID: "",
+            ID: "" ,
             Detail: "",
             Price: "",
             InsurClass: "",
           });
        
       axios
-      .post("https://carleasing.azurewebsites.net/insurance/add", {
+      .post("https://carleasing.azurewebsites.net/insurance", {
         Name: values.Name,
         ID: values.ID,
         Datail: values.Detail,
@@ -102,6 +102,30 @@ export default function Insurance(){
         },
         
       })
+      
+      const handleSkip = () => {
+        console.log(`rhandleSubmit`);
+          
+        axios({
+          method: "post",
+          url: "https://carleasing.azurewebsites.net/insurance/admin/add",
+          data: { 
+            Name: values.Name,
+        ID: values.ID,
+        Datail: values.Detail,
+        Price: values.Price,
+        InsurClass: values.InsurClass,},
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => {
+            console.log("regis res", response);
+            return response.data;
+          })
+          .then((data) => console.log(data))
+          .then(handleClose);
+      };
 
 
     return (
@@ -175,7 +199,7 @@ export default function Insurance(){
         
         <DialogActions>
           <Button color='primary' variant='outlined' onClick={handleClose}>Cancel</Button>
-          <Button color='primary' variant='contained' onClick={handleClose} autoFocus>
+          <Button color='primary' variant='contained' onClick={handleSubmit} autoFocus>
             Confirm
           </Button>
         </DialogActions>
@@ -190,7 +214,7 @@ export default function Insurance(){
     
      </List>
      <ListItem><h2 color='error'>ไม่เลือก กรุณากดข้าม</h2>
-     <Button color="error" component="div" variant="contained" onClick={handleClickOpen1} sx={{ml:1}}>ข้าม</Button></ListItem>
+     <Button color="error" component="div" variant="contained" onClick={handleSkip} sx={{ml:1}}>ข้าม</Button></ListItem>
      <Dialog
         open={open1}
         onClose={handleClose1}
