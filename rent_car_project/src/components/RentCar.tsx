@@ -21,7 +21,9 @@ export default function RentCar() {
   const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
   const [onLoginuser] = useOutletContext<any>();
   const navigate = useNavigate();
+  // เซ็ตข้อมูล
   const [data2, setData] = useState<any[]>([]);
+  // ดึงข้อมูล
   useEffect(() => {
     axios({
       method: "GET",
@@ -52,6 +54,7 @@ export default function RentCar() {
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "row-reverse" ,height: "50%"}}>
+        {/* ช่องสำหรับค้นหา */}
         <TextField
           className="search-bar"
           sx={{ mt: 5, mb: 5 }}
@@ -88,6 +91,7 @@ export default function RentCar() {
           }}
           subheader={<li />}
         >
+          {/* mapข้อมูลที่ดึงมา ใส่ในList */}
           {data2.map((item, index) => (
             <ListItem>
               <Paper
@@ -102,6 +106,7 @@ export default function RentCar() {
               >
                 <Grid container spacing={2}>
                   <Grid item xs>
+                    {/* แสดงรูป */}
                     <ButtonBase>
                       <img
                         alt="complex"
@@ -114,6 +119,7 @@ export default function RentCar() {
                   </Grid>
                   <Grid item xs={12} sm container>
                     <Grid item xs container direction="column" spacing={2}>
+                      {/* แสดงข้อมูลต่างๆของรถ */}
                       <Grid
                         item
                         xs
@@ -138,6 +144,7 @@ export default function RentCar() {
                       </Grid>
                     </Grid>
                     <Grid item alignItems="center" justifyContent="center">
+                      {/* เรียกcompenentย่อยโดยมีการส่ง props */}
                       <RentCarButton
                         title={item.brand}
                         img={item.vehicle_img}

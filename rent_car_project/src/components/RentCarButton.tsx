@@ -44,22 +44,25 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
     startDate: "",
     endDate: "",
   };
-
+  // เปิดหน้าต่าง
   const handleOpen2 = () => {
     setOpen2(true);
   };
+  // ปิดหน้าต่าง
   const handleClose2 = () => {
     setOpen2(false);
     setStartDate(new Date());
     setEndDate(new Date());
   };
-
+  // เซตค่าวันแรก
   const handleOnStartDate = (a: any) => {
     setStartDate(a);
   };
+  // เซตค่าวันสุดท้าย
   const handleOnEndDate = (a: any) => {
     setEndDate(a);
   };
+  // ทดลอง ยังไม่ได้ใช้
   const handleOnSend = (e: React.MouseEvent) => {
     e.preventDefault();
     const startText = startDate.toISOString().slice(0, 10);
@@ -71,6 +74,7 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
 
   return (
     <>
+      {/* ปุ่มจอง */}
       <Button
         color="success"
         fullWidth
@@ -79,6 +83,7 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
       >
         Rent
       </Button>
+      {/* หน้าต่างหลังกดปุ่มจอง */}
       <Dialog
         open={open2}
         TransitionComponent={Transition}
@@ -98,6 +103,7 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
             />
           </Box>
           <Typography>Start rent from</Typography>
+          {/* ปฏิทันเลือกวันเริ่มจอง */}
           <DatePicker
             onChange={handleOnStartDate}
             value={startDate}
@@ -106,14 +112,16 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
           />
 
           <Typography>To</Typography>
+          {/* ปฏิทินเลือกจองถึงวันไหน */}
           <DatePicker
             onChange={handleOnEndDate}
             value={endDate}
             format={"y-MM-dd"}
-            minDate={new Date()}
+            minDate={startDate}
           />
         </DialogContent>
         <DialogActions>
+          {/* ปุ่มไปหน้าต่อไป */}
           <Button
             variant="contained"
             color="success"
@@ -122,6 +130,7 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
           >
             Next
           </Button>
+          {/* ปุ่มยกเลิก */}
           <Button
             variant="contained"
             color="error"

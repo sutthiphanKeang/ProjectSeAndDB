@@ -33,6 +33,7 @@ type props = {
   price: any;
   type: any;
 };
+// ฟังก์ชันการเลื่อนเมื่อเปิดdialog
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement<any, any>;
@@ -41,6 +42,7 @@ const Transition = React.forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+// ค่าตัวแปร
 interface State {
   carName: string;
   carID: string;
@@ -95,7 +97,7 @@ const ManageCarButton: React.FC<props> = ({
     ["Super", "10"],
   ]);
   
-  
+  // เซ็ตค่าเริ่มต้น
   const [values, setValues] = React.useState<State>({
     carName: brand + " " + title + " " + year,
     carID: id,
@@ -106,10 +108,12 @@ const ManageCarButton: React.FC<props> = ({
     raw: "",
     typeID: options[type - 1],
   });
+  // เปลี่ยนแปลงค่า
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setValues({ ...values, [prop]: event.target.value });
     };
+  //เปลี่ยนรูป
   const handleChangeImage = (e: any) => {
     if (e.target.files.length) {
       setValues({
@@ -130,6 +134,7 @@ const ManageCarButton: React.FC<props> = ({
   const handleOpen2 = () => {
     setOpen2(true);
   };
+  // เมื่อกดปุ่มยืนยัน
   const handleNext = (e: React.MouseEvent) => {
     e.preventDefault();
     var body = new FormData();
@@ -167,6 +172,7 @@ const ManageCarButton: React.FC<props> = ({
     })
     .then(handleClose);
   };
+  // เมื่อกดปุ่มลบ
   const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault();
     const token = JSON.parse(
@@ -189,6 +195,7 @@ const ManageCarButton: React.FC<props> = ({
       .then((data) => console.log(data))
       .then(handleClose2);
   };
+  // เมื่อปิดหน้าต่าง จะเซ็ตค่าเริ่มต้นใหม่
   const handleClose = () => {
     setOpen(false);
     setValues({
@@ -203,12 +210,14 @@ const ManageCarButton: React.FC<props> = ({
     });
     setDelete(!deleted);
   };
+  // เมื่อปิดหน้าต่างลบ
   const handleClose2 = () => {
     setOpen2(false);
     setDelete(!deleted);
   };
   return (
     <>
+    {/* ปุ่มedit */}
       <Button
         color="primary"
         fullWidth
@@ -218,6 +227,7 @@ const ManageCarButton: React.FC<props> = ({
       >
         Edit
       </Button>
+      {/* หน้าต่างหลังกดปุ่ม */}
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -229,6 +239,7 @@ const ManageCarButton: React.FC<props> = ({
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Grid container alignItems="center">
+              {/* Gridสำหรับแสดงรูปภาพ */}
               <Grid
                 item
                 style={{ flexGrow: "1" }}
@@ -304,7 +315,7 @@ const ManageCarButton: React.FC<props> = ({
                   </>
                 )}
               </Grid>
-
+              {/* Gridสำหรับกรอกฟอร์ม */}
               <Grid item xs={6} justifyContent="center" alignItems="center">
                 <Box
                   component="form"
@@ -379,6 +390,7 @@ const ManageCarButton: React.FC<props> = ({
           </Button>
         </DialogActions>
       </Dialog>
+      {/* ปุ่มลบ */}
       <Button
         color="error"
         fullWidth
@@ -389,6 +401,7 @@ const ManageCarButton: React.FC<props> = ({
       >
         Delete
       </Button>
+      {/* หน้าต่างหลังกดDelete */}
       <Dialog
         open={open2}
         TransitionComponent={Transition}

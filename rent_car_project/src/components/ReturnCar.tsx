@@ -1,7 +1,6 @@
 import {
   Box,
   ButtonBase,
-  Container,
   Grid,
   List,
   ListItem,
@@ -19,7 +18,9 @@ import axios from "axios";
 
 export default function ReturnCar() {
   const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+  // สร้างstateสำหรับเซ็ตข้อมูล
   const [data2, setData] = useState<any[]>([]);
+  // ดึงข้อมูล
   useEffect(() => {
     axios({
       method: "GET",
@@ -45,6 +46,7 @@ export default function ReturnCar() {
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "row-reverse", height: "50%" }}>
+        {/* ช่องสำหรับค้นหา */}
         <TextField
           className="search-bar"
           sx={{ mt: 5, mb: 5 }}
@@ -81,6 +83,7 @@ export default function ReturnCar() {
           }}
           subheader={<li />}
         >
+          {/* mapข้อมูลสำหรับใส่ลง List */}
           {data2.map((item, index) => (
             <ListItem>
               <Paper
@@ -95,6 +98,7 @@ export default function ReturnCar() {
               >
                 <Grid container spacing={2}>
                   <Grid item xs>
+                    {/* แสดงรูปภาพ */}
                     <ButtonBase>
                       <img
                         alt="complex"
@@ -107,6 +111,7 @@ export default function ReturnCar() {
                   </Grid>
                   <Grid item xs={12} sm container>
                     <Grid item xs container direction="column" spacing={2}>
+                      {/* แสดงข้อมูลต่างๆ */}
                       <Grid
                         item
                         xs
@@ -134,6 +139,7 @@ export default function ReturnCar() {
                       </Grid>
                     </Grid>
                     <Grid item alignItems="center" justifyContent="center">
+                      {/* สร้างcomponentย่อย โดยส่งค่า propsไป */}
                       <ReturnCarButton
                         title={item.name}
                         img={item.vehicle_img}

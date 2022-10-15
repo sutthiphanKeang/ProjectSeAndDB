@@ -6,10 +6,12 @@ import ManageCarButton from "./ManageCarButton";
 
 export default function ManageCar() {
   const token = JSON.parse(localStorage.getItem("admin") ?? '{token:""}').token;
+  // stateสำหรับเซ็ตข้อมูล
   const [data2, setData] = useState<any[]>([])
+  // stateสำหรับรีเฟรชเมื่อเปลี่ยนแปลงค่า
   const [deleted,setDelete] = useState(false);
+  // ดึงข้อมูล
   useEffect(() => {
-    
     axios({
       method: "GET",
       url: "https://carleasing.azurewebsites.net/vehicle",
@@ -51,6 +53,7 @@ export default function ManageCar() {
           }}
           subheader={<li />}
         >
+          {/* mapข้อมูลสำหรับใส่ลงlist */}
           {data2.map((item) => (
             <ListItem>
               <Paper
@@ -65,6 +68,7 @@ export default function ManageCar() {
               >
                 <Grid container spacing={2}>
                   <Grid item xs>
+                    {/* แสดงรูปภาพ */}
                     <ButtonBase>
                       <img
                         alt="complex"
@@ -77,6 +81,7 @@ export default function ManageCar() {
                   </Grid>
                   <Grid item xs={12} sm container>
                     <Grid item xs container direction="column" spacing={2}>
+                      {/* แสดงข้อมูลต่างๆ */}
                       <Grid
                         item
                         xs
@@ -105,6 +110,7 @@ export default function ManageCar() {
                       </Grid>
                     </Grid>
                     <Grid item alignItems="right" justifyContent="center">
+                      {/* สร้างcomponentแยกโดยส่งค่าpropsไป */}
                       <ManageCarButton
                         title={item.name}
                         img={item.vehicle_img}

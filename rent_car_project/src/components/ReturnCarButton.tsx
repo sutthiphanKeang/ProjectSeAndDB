@@ -1,32 +1,17 @@
 import {
   ButtonBase,
-  Backdrop,
-  Box,
   Button,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  Modal,
-  OutlinedInput,
   Typography,
   Grid,
   Slide,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { animated, useSpring } from "react-spring";
 import * as React from "react";
-import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { TransitionProps } from "@mui/material/transitions";
-
-interface State {
-  password: string;
-  showPassword: boolean;
-}
+// ฟังก์ชันเอฟเฟกเมื่อเปิดหน้าต่าง
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement<any, any>;
@@ -43,38 +28,19 @@ type props = {
   brand?: any;
   year?: any;
 };
+// ฟังก์ชันหลัก
 const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
+  // stateสำหรับเปิดหน้าต่าง
   const [open2, setOpen2] = React.useState(false);
+  // ฟังก์ชันเมื่อกดเปิด
   const handleOpen2 = () => setOpen2(true);
+  // ฟังก์ชันเมื่อกดปิด
   const handleClose2 = () => {
     setOpen2(false);
-    setValues({
-      ...values,
-      password: "",
-      showPassword: false,
-    });
-  };
-  const [values, setValues] = React.useState<State>({
-    password: "",
-    showPassword: false,
-  });
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({ ...values, [prop]: event.target.value });
-    };
-  const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
-  };
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
   };
   return (
     <>
+      {/* ปุ่มreturn */}
       <Button
         color="warning"
         fullWidth
@@ -83,6 +49,7 @@ const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
       >
         Return
       </Button>
+      {/* หน้าต่างหลังจากกดreturn */}
       <Dialog
         open={open2}
         TransitionComponent={Transition}
@@ -93,6 +60,7 @@ const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
       >
         <DialogTitle>{"Return Car"}</DialogTitle>
         <DialogContent>
+          {/* แสดงรูปภาพ */}
           <ButtonBase>
             <img
               alt="complex"
@@ -102,6 +70,7 @@ const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
               height="160"
             />
           </ButtonBase>
+          {/* แสดงข้อมูลต่างๆ */}
           <Grid item xs container direction="column" spacing={2}>
             <Grid
               item
@@ -129,10 +98,11 @@ const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
           <Typography variant="h6">Are you sure to return this car?</Typography>
         </DialogActions>
         <DialogActions>
-          
+          {/* ปุ่มยืนยัน */}
           <Button variant="contained" color="success" sx={{ ml: 1}}>
             Confirm
           </Button>
+          {/* ปุ่มยกเลิก */}
           <Button
             variant="contained"
             color="error"
