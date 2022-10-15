@@ -14,6 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-date-picker";
 import { useState } from "react";
 import { TransitionProps } from "@mui/material/transitions/transition";
+import Insurance from "./Insurance";
 
 interface rentDate {
   startDate: string;
@@ -38,8 +39,12 @@ type props = {
 
 const RentCarButton: React.FC<props> = ({ title, img, id }) => {
   const [startDate, setStartDate] = useState(new Date());
+  const [dialogStep,setdialogStep] = React.useState(true);
   const [endDate, setEndDate] = useState(new Date());
   const [open2, setOpen2] = React.useState(false);
+  const handleDialog = () => {
+    setdialogStep(false)
+  }
   const objDate: rentDate = {
     startDate: "",
     endDate: "",
@@ -47,6 +52,7 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
   // เปิดหน้าต่าง
   const handleOpen2 = () => {
     setOpen2(true);
+    setdialogStep(true)
   };
   // ปิดหน้าต่าง
   const handleClose2 = () => {
@@ -64,6 +70,7 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
   };
   // ทดลอง ยังไม่ได้ใช้
   const handleOnSend = (e: React.MouseEvent) => {
+    setdialogStep(false)
     e.preventDefault();
     const startText = startDate.toISOString().slice(0, 10);
     const endText = endDate.toISOString().slice(0, 10);
@@ -90,17 +97,16 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
         keepMounted
         onClose={handleClose2}
         aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>{"Rent Detail"}</DialogTitle>
-        <DialogContent>
+      >{dialogStep ? (
+      <>
+      <DialogTitle>{"Rent Detail"}</DialogTitle><DialogContent>
           <Box>
             <img
               alt="complex"
               src={`${img}?w=50&h=50&fit=crop&auto=format`}
               srcSet={`${img}?w=50&h=50&fit=crop&auto=format&dpr=2 2x`}
               width="200"
-              height="160"
-            />
+              height="160" />
           </Box>
           <Typography>Start rent from</Typography>
           {/* ปฏิทันเลือกวันเริ่มจอง */}
@@ -108,8 +114,7 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
             onChange={handleOnStartDate}
             value={startDate}
             format={"y-MM-dd"}
-            minDate={new Date()}
-          />
+            minDate={new Date()} />
 
           <Typography>To</Typography>
           {/* ปฏิทินเลือกจองถึงวันไหน */}
@@ -117,29 +122,29 @@ const RentCarButton: React.FC<props> = ({ title, img, id }) => {
             onChange={handleOnEndDate}
             value={endDate}
             format={"y-MM-dd"}
-            minDate={startDate}
-          />
-        </DialogContent>
-        <DialogActions>
-          {/* ปุ่มไปหน้าต่อไป */}
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ ml: 2 }}
-            onClick={handleOnSend}
-          >
-            Next
-          </Button>
-          {/* ปุ่มยกเลิก */}
-          <Button
-            variant="contained"
-            color="error"
-            sx={{ ml: 2 }}
-            onClick={handleClose2}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
+            minDate={startDate} />
+        </DialogContent><DialogActions>
+            {/* ปุ่มไปหน้าต่อไป */}
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ ml: 2 }}
+              onClick={handleOnSend}
+            >
+              Next
+            </Button>
+            {/* ปุ่มยกเลิก */}
+            <Button
+              variant="contained"
+              color="error"
+              sx={{ ml: 2 }}
+              onClick={handleClose2}
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+          </>):(<DialogContent><Insurance/></DialogContent>)}
+        
       </Dialog>
     </>
   );

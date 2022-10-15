@@ -28,8 +28,11 @@ type props = {
   brand?: any;
   year?: any;
 };
+
 // ฟังก์ชันหลัก
 const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
+ 
+  const [step,setStep] = React.useState(1);
   // stateสำหรับเปิดหน้าต่าง
   const [open2, setOpen2] = React.useState(false);
   // ฟังก์ชันเมื่อกดเปิด
