@@ -15,17 +15,33 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import RentCarButton from "./RentCarButton";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import axios from "axios";
 
-export default function ReturnCar() {
+export default function RentCar() {
+  const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
   const [onLoginuser] = useOutletContext<any>();
   const navigate = useNavigate();
   const [data2, setData] = useState<any[]>([]);
   useEffect(() => {
-    fetch("https://carleasing.azurewebsites.net/vehicle")
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-      });
+    axios({
+      method: "GET",
+      url: "https://carleasing.azurewebsites.net/vehicle",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .then((data) => {
+      setData(data);
+      console.log(data);
+    })
+    .catch((error) => {
+      if (error.response.status == "401") {
+        localStorage.clear();
+      }
+    });
   }, []);
 
   useEffect(() => {

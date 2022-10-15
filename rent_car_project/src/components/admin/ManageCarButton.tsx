@@ -145,18 +145,27 @@ const ManageCarButton: React.FC<props> = ({
       localStorage.getItem("admin") ?? '{token:""}'
     ).token;
     console.log("token", token);
-
-    fetch("https://carleasing.azurewebsites.net/vehicle/edit", {
-      mode: "cors",
-      body: body,
+    axios({
       method: "PUT",
+      url: "https://carleasing.azurewebsites.net/vehicle/edit",
+      data: body,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .then(handleClose);
+    
+    .then((response) => {
+      return response.data;
+    })
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      if (error.response.status == "401") {
+        localStorage.clear();
+      }
+    })
+    .then(handleClose);
   };
   const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault();

@@ -1,18 +1,34 @@
 import { List, ListItem, Paper, Grid, ButtonBase, Typography } from "@mui/material";
 import { Container, Stack } from "@mui/system";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ManageCarButton from "./ManageCarButton";
 
 export default function ManageCar() {
+  const token = JSON.parse(localStorage.getItem("admin") ?? '{token:""}').token;
   const [data2, setData] = useState<any[]>([])
   const [deleted,setDelete] = useState(false);
   useEffect(() => {
-    fetch("https://carleasing.azurewebsites.net/vehicle")
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        
-      });
+    
+    axios({
+      method: "GET",
+      url: "https://carleasing.azurewebsites.net/vehicle",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .then((data) => {
+      setData(data);
+      console.log(data);
+    })
+    .catch((error) => {
+      if (error.response.status == "401") {
+        localStorage.clear();
+      }
+    });
   }, [deleted]);
   return(
     <Container fixed>
