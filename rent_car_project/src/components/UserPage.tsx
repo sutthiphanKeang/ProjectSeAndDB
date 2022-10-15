@@ -22,6 +22,7 @@ import CardMedia from "@mui/material/CardMedia";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import ReturnCarButton from "./ReturnCarButton";
+import PaymentButton from "./PaymentUserButton";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#eeeeee",
@@ -97,6 +98,32 @@ const UserPage: React.FC = () => {
       phone: jsonObj.phone,
     });
   };
+
+  const [dataPay, setDataPay] = useState<any[]>([]);
+  useEffect(() => {
+    axios
+      .get("https://carleasing.azurewebsites.net/user/payment", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        setDataPay(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
+      });
+  }, [edited]);
 
   const [dataBook, setDataBook] = useState<any[]>([]);
   useEffect(() => {
@@ -209,11 +236,12 @@ const UserPage: React.FC = () => {
                   <Grid item>
                     <Button
                       component="div"
+                      fullWidth
                       color="primary"
                       variant="contained"
                       onClick={handleClickOpen}
                       startIcon={<EditIcon />}
-                      sx={{ ml: 1 }}
+                      
                     >
                       Edit
                     </Button>
@@ -276,29 +304,53 @@ const UserPage: React.FC = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm container>
                 <Grid item xs container direction="column" spacing={2}>
-                  <Grid item xs sx={{ maxWidth: 345 }}>
-                    
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image="/static/images/cards/contemplative-reptile.jpg"
-                        alt="green iguana"
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                          Lizard
+                  <Grid>
+                    {dataPay.map((item, index) => (
+                      <>
+                        <Typography
+                          gutterBottom
+                          variant="subtitle1"
+                          component="div"
+                          color="#ff0000"
+                        >
+                          <h1> Payment Check </h1>
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Lizards are a widespread group of squamate reptiles,
-                          with over 6,000 species, ranging across all continents
-                          except Antarctica
+
+                        <Typography
+                          gutterBottom
+                          variant="subtitle2"
+                          component="div"
+                        >
+                          {/* [{"bill_id":"6149d594-0ff0-4bf3-be22-1336a14ea03b","bill_status":"complete","book_id":"8f015de7-7500-44cf-8260-508159cf10a1","amount_balance":2000,"total_amount":2140,"tax_amount":140,"slip":"https://carleasing.blob.core.windows.net/payment/file-1665693865092.jpg"}] */}
+                          <h2>Vehicle ID : {item.vehicle_id}</h2>
                         </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button size="small">Share</Button>
-                        <Button size="small">Learn More</Button>
-                      </CardActions>
-                    
+                        <Typography
+                          gutterBottom
+                          variant="subtitle2"
+                          component="div"
+                        >
+                          <h2>Bill Status : {item.bill_status} </h2>
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary">
+                          <h2>Total amount : {item.total_amount}</h2>
+                        </Typography>
+                        <Grid item>
+                          <Grid
+                            item
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <PaymentButton
+                              img={item.slip}
+                              bill_id={item.bill_id}
+                              book_id={item.book_id}
+                              total_amount={item.total_amount}
+                              bill_status={item.bill_status}
+                            />
+                          </Grid>
+                        </Grid>
+                      </>
+                    ))}
                   </Grid>
                 </Grid>
               </Grid>
