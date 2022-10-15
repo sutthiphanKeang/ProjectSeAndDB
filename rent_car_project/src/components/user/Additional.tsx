@@ -12,23 +12,15 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-
-
-
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
+import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
 
 export default function Additional() {
   return (
     <div>
-      <div className='head'>
-      <Box sx={{ width: '100%', maxWidth: 500,marginTop:3, }}>
+      {/* เเสดงหัวข้อ */}
+      <div className='head'> 
+      <Box sx={{ width: '100%', maxWidth: 500,marginTop:3,marginLeft:'15%' }}>
         <Typography variant="h5" gutterBottom>
         ค่าใช้จ่ายเพิ่มเติม
         </Typography>
@@ -37,8 +29,9 @@ export default function Additional() {
       
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
+        {/* เเสดง QR code */}
         <Grid item xs={7} className='image'>
-          <ImageList sx={{ width: '130%', height: '140%',marginLeft:'10%'}} >
+        <ImageList sx={{ width: '80%', height: '100%',marginLeft:'24%'}} >
           {itemData.map((item) => (
          <ImageListItem key={item.img}>
            <img
@@ -52,32 +45,35 @@ export default function Additional() {
        ))}
        </ImageList> 
         </Grid>
-
+        
+        {/* เเสดงรายละเอียดค่าปรับ */}
         <Grid item xs={5} className='card1'>
-        <Card sx={{ minWidth: '50%' ,minHeight:'50%',backgroundColor:'#7DCEA0',borderRadius: '10px',marginRight:'15%',marginTop:'5%',marginLeft:'-10%' }}>
+        <Card sx={{ minWidth: '50%' ,minHeight:'50%',backgroundColor:'#7DCEA0',borderRadius: '10px',marginRight:'50%',marginTop:'3%',marginLeft:'-46%' }}>
         <CardContent>
-        <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
-          Word of the Day
+        <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
+          รายละเอียดค่าปรับ
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          adjective
+          
         </Typography>
       </CardContent>
       </Card>
         </Grid>
-
+        
+        {/* กล่องว่างเพื่อจัดหน้า */}
         <Grid item xs={5} className='card2'>
         <Card sx={{ minWidth: '0%' ,minHeight:'0%'}}> </Card>
         </Grid>
-
+        
+        {/* สรุปราคาค่าปรับ */}
         <Grid item xs={6} className='card3'>
-        <Card sx={{ minWidth: '50%' ,minHeight:'50%',backgroundColor:'#CACFD2',borderRadius: '10px',marginLeft:'28%',marginRight:'30%',marginTop:'-10%' }}>
+        <Card sx={{ minWidth: '50%' ,minHeight:'50%',backgroundColor:'#CACFD2',borderRadius: '10px',marginLeft:'-4%',marginRight:'50%',marginTop:'-28%' }}>
         <CardContent>
         <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
-          Word of the Day
+          สรุปราคา
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          adjective
+          
         </Typography>
       </CardContent>
       </Card>
@@ -85,18 +81,26 @@ export default function Additional() {
       </Grid>
     </Box>
 
-    <Stack direction="row" alignItems="center" spacing={2} marginLeft='85%' marginTop={'-7%'}>
+    {/* ปุ่มอัพโหลดสลิป */}
+    <Stack direction="row" alignItems="center" spacing={2} marginLeft='40%' marginTop={'-3%'}>
       <Button variant="contained" component="label">
         Upload
         <input hidden accept="image/*" multiple type="file" />
+      </Button>
+    </Stack>
+    {/* ปุ่มส่งสลิป */}
+    <Stack direction="row" spacing={2}marginLeft='50%' marginTop={'-3%'}>
+      <Button variant="contained" endIcon={<SendIcon />}>
+        Send
       </Button>
     </Stack>
     </div>
   );
 }
 
+// รูป qr code
 const itemData = [
   {
-    img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+    img: 'img/qr.jpg',
     title: 'Bike',
   }]
