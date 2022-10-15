@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component,useEffect,useState } from 'react'
 import ListItem from '@mui/material/ListItem';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -9,9 +9,38 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import List from '@mui/material/List';
+import axios from "axios";
 
 export default function Insurance(){
-  
+  const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+    console.log("token", token);
+
+  const [data2, setData] = useState<any[]>([]);
+  const [loaded, setLoad] = useState(false);
+  useEffect(() => {
+    
+    axios({
+      method: "GET",
+      url: "https://carleasing.azurewebsites.net/insurance",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .then((data) => {
+      setData(data);
+      console.log(data);
+    })
+    .catch((error) => {
+      if (error.response.status == "401") {
+        localStorage.clear();
+      }
+    });
+  }, [loaded]);
+
+
     const [open,setOpen] = React.useState(false);
     const handleClickOpen = () => {
       setOpen(true);};
@@ -24,6 +53,56 @@ export default function Insurance(){
     const handleClose1 = () => {
           setOpen1(false);
         };
+        
+        
+        
+        const [loading, setLoading] = React.useState(false);
+
+        const handleSubmit = (e: React.MouseEvent) => {
+          setLoading(true);
+          e.preventDefault();
+          console.log(`handleSubmit`);
+          var body = new FormData();
+          body.append("insurance_name", values.Name);
+          body.append("Id", values.ID);
+          body.append("insurance_class", values.InsurClass);
+          body.append("insurance_price", values.Price);
+          body.append("insurance_info", values.Detail);
+        }
+
+
+          interface State {
+            Name: string;
+            ID: string;
+            Detail: string;
+            Price: string;
+            InsurClass: string;
+          }
+          const handleChange =
+          (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+            setValues({ ...values, [prop]: event.target.value });
+          };
+          const [values, setValues] = React.useState<State>({
+            Name: "",
+            ID: "",
+            Detail: "",
+            Price: "",
+            InsurClass: "",
+          });
+       
+      axios
+      .post("https://carleasing.azurewebsites.net/insurance/add", {
+        Name: values.Name,
+        ID: values.ID,
+        Datail: values.Detail,
+        Price: values.Price,
+        InsurClass: values.InsurClass,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        
+      })
+
 
     return (
 
@@ -44,7 +123,7 @@ export default function Insurance(){
       }}
       subheader={<li />}
     >
-      {LISTDATA.map((item) => (
+      {data2.map((item) => (
       <ListItem>  
         <Paper sx={{
         p: 2,
@@ -62,22 +141,22 @@ export default function Insurance(){
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div" color='#1a237e'>
-                Name :  {item.Name}
+                Name :  {item.name}
               </Typography>
               <Typography gutterBottom variant="subtitle2" component="div">
                 ประกันภัยชั้นที่ {item.class}
               </Typography>
               <Typography variant="body2" gutterBottom>
-                - {item.Detail}
+                - {item.info}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                ID : {item.id}
+                ID : {item.in_id}
               </Typography>
             </Grid>
           </Grid>
           <Grid item>
             <Typography variant="subtitle1" component="div">
-              {item.Price} บาท
+              {item.cost} บาท
             </Typography>
           </Grid>
           <Grid item>
@@ -108,6 +187,7 @@ export default function Insurance(){
        
     </ListItem>)
     )}
+    
      </List>
      <ListItem><h2 color='error'>ไม่เลือก กรุณากดข้าม</h2>
      <Button color="error" component="div" variant="contained" onClick={handleClickOpen1} sx={{ml:1}}>ข้าม</Button></ListItem>
@@ -123,7 +203,11 @@ export default function Insurance(){
         
         <DialogActions>
           <Button color='primary' variant='outlined' onClick={handleClose1}>Cancel</Button>
-          <Button color='primary' variant='contained' onClick={handleClose1} autoFocus>
+          <Button 
+          color='primary' 
+          variant='contained' 
+          onClick={handleSubmit} autoFocus
+          >
             Confirm
           </Button>
         </DialogActions>
@@ -131,55 +215,3 @@ export default function Insurance(){
     </Stack>
     )
 }
-
-const LISTDATA = [
-{
-  Name: "วิริยะประกันภัย",
-  class: 1,
-  Detail: "ถูกและดี",
-  id:147,
-  Price: 19
-},
-{
-  Name: "วิริยะประกันภัย 2",
-  class: 3,
-  Detail: "ถูกและดี 2",
-  id:456,
-  Price: 30
-},
-{
-  Name: "วิริยะประกันภัย 3",
-  class: 2,
-  Detail: "ถูกและดี 3",
-  id:123,
-  Price: 30
-},
-{
-  Name: "วิริยะประกันภัย 2",
-  class: 3,
-  Detail: "ถูกและดี 2",
-  id:456,
-  Price: 30
-},
-{
-  Name: "วิริยะประกันภัย 3",
-  class: 2,
-  Detail: "ถูกและดี 3",
-  id:123,
-  Price: 30
-},
-{
-  Name: "วิริยะประกันภัย 2",
-  class: 3,
-  Detail: "ถูกและดี 2",
-  id:456,
-  Price: 30
-},
-{
-  Name: "วิริยะประกันภัย 3",
-  class: 2,
-  Detail: "ถูกและดี 3",
-  id:123,
-  Price: 30
-}
-]

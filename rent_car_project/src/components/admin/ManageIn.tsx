@@ -11,17 +11,101 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import EditIcon from "@mui/icons-material/Edit";
+import Slide from "@mui/material/Slide";
 import List from "@mui/material/List";
 import axios from "axios";
-
+import { TransitionProps } from "@mui/material/transitions/transition";
+import ManageInButton from "./ManageInButton";
 export default function ManageIN() {
-  axios({
-    method: 'get',
-    url: 'https://carleasing.azurewebsites.net/insurance/admin',
-    responseType: 'stream'
-  })
+
+  const token = JSON.parse(localStorage.getItem("admin") ?? '{token:""}').token;
+  const [data2, setData] = useState<any[]>([])
+  const [deleted,setDelete] = useState(false);
+  const [loaded, setLoad] = useState(false);
+  useEffect(() => {
     
-  
+    axios({
+      method: "GET",
+      url: "https://carleasing.azurewebsites.net/insurance/admin",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .then((data) => {
+      setData(data);
+      console.log(data);
+    })
+    .catch((error) => {
+      if (error.response.status == "401") {
+        localStorage.clear();
+      }
+    });
+  }, [loaded]);
+
+  interface State {
+    inName: string;
+    inID: string;
+    inDetail: string;
+    inCost: number;
+    inClass: string;
+  }
+
+  const dataJson = JSON.stringify(data2);
+  let data: string = dataJson;
+  let jsonObj = JSON.parse(data);
+  console.log(jsonObj);
+  const handleChange =
+    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
+
+  const [values, setValues] = React.useState<State>({
+    inName: jsonObj.inName,
+    inID: jsonObj.inID,
+    inDetail: jsonObj.inDetail,
+    inCost: jsonObj.inCOst,
+    inClass: jsonObj.inClass,
+    // inID:jsonObj.inID
+  });
+  const getItem = (props: any) => {
+    setValues({
+      inName: props.name,
+      inID: props.in_id,
+      inDetail: props.info,
+      inCost: props.cost,
+      inClass: props.class,
+    });
+  };
+  const handleEdit = () => {
+    console.log(`handleEdit`);
+
+    axios({
+      method: "put",
+      url: "https://carleasing.azurewebsites.net/insurance/admin/edit",
+      data: {
+        insurance_id: values.inID,
+        insurance_name: values.inName,
+        insurance_info: values.inDetail,
+        insurance_price: values.inCost,
+        insurance_class: values.inClass,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        console.log("regis res", response);
+        return response.data;
+      })
+
+      .then((data) => console.log(data))
+      .then(handleClose2);
+  };
+
+  // ปุ่ม cancel
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -88,139 +172,38 @@ export default function ManageIN() {
                         component="div"
                         color="#1a237e"
                       >
-                        Name :
+                        Name : {item.name}
                       </Typography>
                       <Typography
                         gutterBottom
                         variant="subtitle2"
                         component="div"
                       >
-                        ประกันภัยชั้นที่
+                        ประกันภัยชั้นที่ {item.class}
                       </Typography>
                       <Typography variant="body2" gutterBottom>
-                        -
+                        {item.info}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        ID :
+                        ID : {item.in_id}
                       </Typography>
                     </Grid>
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle1" component="div">
-                      บาท
+                      {item.cost} บาท
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Button
-                      component="div"
-                      color="primary"
-                      variant="contained"
-                      onClick={handleClickOpen2}
-                      startIcon={<EditIcon />}
-                      sx={{ ml: 1 }}
-                    >
-                      Edit
-                    </Button>
-                    <Dialog open={open2} onClose={handleClickOpen2}>
-                      <DialogTitle> Edit Insurance กรอกที่นี่</DialogTitle>
-                      <DialogContent>
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="Name"
-                          label="Insurance Name"
-                          fullWidth
-                          variant="standard"
-                        />
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="Class"
-                          label="Class of Insurance "
-                          fullWidth
-                          variant="standard"
-                        />
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="Detail"
-                          label="Insurance Detail"
-                          fullWidth
-                          variant="standard"
-                        />
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="ID"
-                          label="Insurance ID"
-                          fullWidth
-                          variant="standard"
-                        />
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="Price"
-                          label="Price of Insurance"
-                          fullWidth
-                          variant="standard"
-                        />
-                      </DialogContent>
-                      <DialogActions>
-                        <Button
-                          color="primary"
-                          variant="outlined"
-                          onClick={handleClose2}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          color="primary"
-                          variant="contained"
-                          onClick={handleClose2}
-                        >
-                          Edit
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
+                    <ManageInButton 
+                    in_id={item.in_id}
+                    name = {item.name}
+                    info = {item.info}
+                    class_ = {item.class}
+                    cost = {item.cost}
+                    loaded = {loaded}
+                    setLoad = {setLoad}/>
 
-                    <Button
-                      component="div"
-                      color="error"
-                      variant="contained"
-                      onClick={handleClickOpen}
-                      startIcon={<DeleteIcon />}
-                      sx={{ ml: 1 }}
-                    >
-                      Delete
-                    </Button>
-                    <Dialog
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        {"Confirm to delete this insurance?"}
-                      </DialogTitle>
-
-                      <DialogActions>
-                        <Button
-                          color="primary"
-                          variant="outlined"
-                          onClick={handleClose}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          color="primary"
-                          variant="contained"
-                          onClick={handleClose}
-                          autoFocus
-                        >
-                          Delete
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
                   </Grid>
                 </Grid>
               </Grid>
@@ -231,20 +214,3 @@ export default function ManageIN() {
     </Stack>
   );
 }
-
-const data2 = [
-  {
-    Name: "วิริยะประกันภัย",
-    class: 1,
-    Detail: "ถูกและดี",
-    id:147,
-    Price: 19
-  },
-  {
-    Name: "วิริยะประกันภัย 2",
-    class: 3,
-    Detail: "ถูกและดี 2",
-    id:456,
-    Price: 30
-  }
-]

@@ -21,7 +21,7 @@ import Payment from './components/user/Payment';
 import Additional from './components/user/Additional';
 
 
-// import Insurance from './components/Insurance';
+import Insurance from './components/Insurance';
 import UserPage from './components/UserPage';
 import RentCar from './components/RentCar';
 
@@ -35,7 +35,7 @@ function App() {
         <Route path='Costsummary' element={<Costsummary/>}></Route>
         <Route path='Payment' element={<Payment/>}></Route>
         <Route path='Additional' element={<Additional/>}></Route>
-        {/* <Route path='Insurance' element={<Insurance/>}></Route> */}
+        <Route path='Insurance' element={<Insurance/>}></Route> 
         <Route path='UserPage' element={<UserPage/>}></Route>
         <Route path='RentCar' element={<RentCar/>}></Route>
         <Route path="Login" element={<Login />}></Route>
