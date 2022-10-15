@@ -18,7 +18,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
 
 export default function RentCar() {
-  const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+  const token = JSON.parse(localStorage.getItem("user") ?? ' { "token": "" }').token;
   const [onLoginuser] = useOutletContext<any>();
   const navigate = useNavigate();
   // เซ็ตข้อมูล
