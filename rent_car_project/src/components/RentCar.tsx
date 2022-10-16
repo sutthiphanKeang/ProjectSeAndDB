@@ -163,7 +163,7 @@ export default function RentCar() {
                         </Typography>
                         <Typography variant="body2" gutterBottom sx={{fontSize: 22,
                   fontWeight: "bold"}}>
-                          Price per day: {item.cost}
+                          Price / Day : {item.cost}
                         </Typography>
                       </Grid>
                     </Grid>
