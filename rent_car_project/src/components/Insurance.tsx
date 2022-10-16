@@ -10,6 +10,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import List from "@mui/material/List";
 import axios from "axios";
+import InsuranceButton from "./InsuranceButton";
 type props = {
   bookData?: any;
 };
@@ -42,9 +43,7 @@ const Insurance: React.FC<props> = ({ bookData }) => {
   }, [loaded]);
 
   const [open, setOpen] = React.useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  
 
   const handleClose = () => {
     setOpen(false);
@@ -57,12 +56,15 @@ const Insurance: React.FC<props> = ({ bookData }) => {
   const handleClose1 = () => {
     setOpen1(false);
   };
+  const [insurancee_id,setState] = React.useState("");
+
   interface State {
     inName: string;
     inID: string;
     inDetail: string;
     inCost: string;
     inClass: string;
+
   }
   const dataJson = JSON.stringify(data2);
   let data: string = dataJson;
@@ -77,21 +79,39 @@ const Insurance: React.FC<props> = ({ bookData }) => {
     inClass: jsonObj.inClass,
   });
   console.log(values.inName);
-  // console.log(values.Name+"NIne1")
+  
   const [loading, setLoading] = React.useState(false);
 
   const rhandleSubmit = () => {
     console.log(`rhandleSubmit`);
-    console.log(values.inName);
     axios({
       method: "get",
       url: "https://carleasing.azurewebsites.net/insurance",
       data: {
-        insurance_name: values.inName,
-        insurance_id: values.inID,
-        insurance_info: values.inDetail,
-        insurance_price: values.inCost,
-        insurance_class: values.inClass,
+        
+        insurance_id: insurancee_id,
+        
+      },
+
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        console.log("regis res", response);
+        return response.data;
+      })
+      .then((data) => console.log(data))
+      .then(handleClose);
+  };
+
+  const rhandleSkip = () => {
+    console.log(`rhandleSkip`);
+    axios({
+      method: "post",
+      url: "https://carleasing.azurewebsites.net/insurance",
+      data: {
+        insurance_id: insurancee_id,
       },
 
       headers: {
@@ -176,42 +196,7 @@ const Insurance: React.FC<props> = ({ bookData }) => {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Button
-                      color="success"
-                      component="div"
-                      variant="contained"
-                      onClick={handleClickOpen}
-                      sx={{ ml: 1 }}
-                    >
-                      Book
-                    </Button>
-                    <Dialog
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        {"Confirm to book this insurance?"}
-                      </DialogTitle>
-
-                      <DialogActions>
-                        <Button
-                          color="primary"
-                          variant="outlined"
-                          onClick={handleClose}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          color="primary"
-                          variant="contained"
-                          onClick={rhandleSubmit}
-                        >
-                          Confirm
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
+                    <InsuranceButton in_id = {item.in_id} bookData = {bookData}/>
                   </Grid>
                 </Grid>
               </Grid>
@@ -225,7 +210,7 @@ const Insurance: React.FC<props> = ({ bookData }) => {
           color="error"
           component="div"
           variant="contained"
-          onClick={handleClose}
+          onClick={rhandleSkip}
           sx={{ ml: 1 }}
         >
           ข้าม
