@@ -17,8 +17,24 @@ import RentCarButton from "./RentCarButton";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
 
+interface userBook {
+  carId: string;
+  bookDate: string;
+  returnDate: string;
+  insuranceId: string;
+}
+
 export default function RentCar() {
-  const token = JSON.parse(localStorage.getItem("user") ?? ' { "token": "" }').token;
+  const token = JSON.parse(
+    localStorage.getItem("user") ?? ' { "token": "" }'
+  ).token;
+  const [bookData, setBookData] = useState<userBook>({
+    carId: "",
+    bookDate: "",
+    returnDate: "",
+    insuranceId: "",
+  });
+  console.log(bookData)
   const [onLoginuser] = useOutletContext<any>();
   const navigate = useNavigate();
   // เซ็ตข้อมูล
@@ -32,18 +48,18 @@ export default function RentCar() {
         Authorization: `Bearer ${token}`,
       },
     })
-    .then((response) => {
-      return response.data;
-    })
-    .then((data) => {
-      setData(data);
-      console.log(data);
-    })
-    .catch((error) => {
-      if (error.response.status == "401") {
-        localStorage.clear();
-      }
-    });
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        setData(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+        }
+      });
   }, []);
 
   useEffect(() => {
@@ -53,7 +69,9 @@ export default function RentCar() {
   }, [onLoginuser]);
   return (
     <>
-      <Box sx={{ display: "flex", flexDirection: "row-reverse" ,height: "50%"}}>
+      <Box
+        sx={{ display: "flex", flexDirection: "row-reverse", height: "50%" }}
+      >
         {/* ช่องสำหรับค้นหา */}
         <TextField
           className="search-bar"
@@ -149,6 +167,8 @@ export default function RentCar() {
                         title={item.brand}
                         img={item.vehicle_img}
                         id={item.vehicle_id}
+                        bookData={bookData}
+                        setBookData={setBookData}
                       />
                     </Grid>
                   </Grid>

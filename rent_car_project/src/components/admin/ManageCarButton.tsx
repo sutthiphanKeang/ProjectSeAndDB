@@ -170,7 +170,7 @@ const ManageCarButton: React.FC<props> = ({
         localStorage.clear();
       }
     })
-    .then(handleClose);
+    .then(handleClose2);
   };
   // เมื่อกดปุ่มลบ
   const handleDelete = (e: React.MouseEvent) => {
@@ -212,6 +212,7 @@ const ManageCarButton: React.FC<props> = ({
   };
   // เมื่อปิดหน้าต่างลบ
   const handleClose2 = () => {
+    setOpen(false)
     setOpen2(false);
     setDelete(!deleted);
   };
@@ -328,7 +329,7 @@ const ManageCarButton: React.FC<props> = ({
                   <TextField
                     id="carName"
                     label="carName"
-                    variant="standard"
+                    variant="outlined"
                     value={values.carName}
                     onChange={handleChange("carName")}
                   />
@@ -336,21 +337,21 @@ const ManageCarButton: React.FC<props> = ({
                   <TextField
                     id="description"
                     label="description"
-                    variant="standard"
+                    variant="outlined"
                     value={values.description}
                     onChange={handleChange("description")}
                   />
                   <TextField
                     id="review"
                     label="review"
-                    variant="standard"
+                    variant="outlined"
                     value={values.review}
                     onChange={handleChange("review")}
                   />
                   <TextField
                     id="price"
                     label="price"
-                    variant="standard"
+                    variant="outlined"
                     value={values.price}
                     onChange={handleChange("price")}
                   />
@@ -360,6 +361,16 @@ const ManageCarButton: React.FC<props> = ({
                       if (newValue) {
                         settypeCar(typeId.get(newValue)!);
                       }
+                      setValues({
+                        carName: values.carName,
+                        carID: values.carID,
+                        description: values.description,
+                        review: values.review,
+                        price: values.price,
+                        preview: values.preview,
+                        raw: values.raw,
+                        typeID: newValue!,
+                      });
                     }}
                     inputValue={inputValue}
                     onInputChange={(event, newInputValue) => {
@@ -372,7 +383,7 @@ const ManageCarButton: React.FC<props> = ({
                       <TextField
                         {...params}
                         label="Type Car"
-                        variant="standard"
+                        variant="outlined"
                       />
                     )}
                   />
