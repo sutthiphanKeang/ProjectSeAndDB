@@ -35,6 +35,7 @@ type props = {
   title?: any;
   img?: any;
   id?: any;
+  cost?: any;
   bookData?: any;
   setBookData?: any;
 };
@@ -43,6 +44,7 @@ const RentCarButton: React.FC<props> = ({
   title,
   img,
   id,
+  cost,
   bookData,
   setBookData,
 }) => {
@@ -85,6 +87,7 @@ const RentCarButton: React.FC<props> = ({
       bookDate: startText,
       returnDate: endText,
       insuranceId: "",
+      cost: cost
     });
     setdialogStep(false);
     console.log(bookData);

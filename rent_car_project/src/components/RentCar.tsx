@@ -22,6 +22,7 @@ interface userBook {
   bookDate: string;
   returnDate: string;
   insuranceId: string;
+  cost: number;
 }
 
 export default function RentCar() {
@@ -33,6 +34,7 @@ export default function RentCar() {
     bookDate: "",
     returnDate: "",
     insuranceId: "",
+    cost: 0
   });
   console.log(bookData)
   const [onLoginuser] = useOutletContext<any>();
@@ -159,6 +161,10 @@ export default function RentCar() {
                         <Typography variant="body2" gutterBottom>
                           Model Year: {item.year}
                         </Typography>
+                        <Typography variant="body2" gutterBottom sx={{fontSize: 22,
+                  fontWeight: "bold"}}>
+                          Price per day: {item.cost}
+                        </Typography>
                       </Grid>
                     </Grid>
                     <Grid item alignItems="center" justifyContent="center">
@@ -167,6 +173,7 @@ export default function RentCar() {
                         title={item.brand}
                         img={item.vehicle_img}
                         id={item.vehicle_id}
+                        cost = {item.cost}
                         bookData={bookData}
                         setBookData={setBookData}
                       />
