@@ -44,10 +44,17 @@ export default function Insurance() {
     });
   }, [loaded]);
 
+  interface State {
+    inName: string;
+    inID: string;
+    inDetail: string;
+    inCost: string;
+    inClass: string;
+  }
   const dataJson = JSON.stringify(data2);
   let data: string = dataJson;
   let jsonObj = JSON.parse(data);
-  console.log(jsonObj)
+  console.log(jsonObj+":)")
 
 
   const [open1, setOpen1] = React.useState(false);
@@ -62,13 +69,6 @@ export default function Insurance() {
     setLoad(!loaded)
   }
 
-  interface State {
-    inName: string;
-    inID: string;
-    inDetail: string;
-    inCost: string;
-    inClass: string;
-  }
 
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,6 +82,7 @@ export default function Insurance() {
     inCost: jsonObj.inCOst,
     inClass: jsonObj.inClass,
   });
+  
 
   const rhandleSubmit = () => {
     console.log(`rhandleSubmit`);

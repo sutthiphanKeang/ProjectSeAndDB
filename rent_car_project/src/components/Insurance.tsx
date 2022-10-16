@@ -44,88 +44,70 @@ export default function Insurance(){
     const [open,setOpen] = React.useState(false);
     const handleClickOpen = () => {
       setOpen(true);};
+
     const handleClose = () => {
         setOpen(false);
       };
     const [open1,setOpen1] = React.useState(false);
       const handleClickOpen1 = () => {
         setOpen1(true);};
+
     const handleClose1 = () => {
           setOpen1(false);
         };
+        interface State {
+            inName: string;
+            inID: string;
+            inDetail: string;
+            inCost: string;
+            inClass: string;
+          }
+        const dataJson = JSON.stringify(data2);
+        let data: string = dataJson;
+        let jsonObj = JSON.parse(data);
         
-        
-        
+        // console.log(jsonObj)    
+        const [values, setValues] = React.useState<State>({
+            inName: jsonObj.inName,
+            inID: jsonObj.inID ,
+            inDetail: jsonObj.inDetail,
+            inCost: jsonObj.inCost,
+            inClass: jsonObj.inClass
+            
+          });
+          console.log(values.inName)
+          // console.log(values.Name+"NIne1")
         const [loading, setLoading] = React.useState(false);
 
-        const handleSubmit = (e: React.MouseEvent) => {
-          setLoading(true);
-          e.preventDefault();
-          console.log(`handleSubmit`);
-          var body = new FormData();
-          body.append("insurance_name", values.Name);
-          body.append("Id", values.ID);
-          body.append("insurance_class", values.InsurClass);
-          body.append("insurance_price", values.Price);
-          body.append("insurance_info", values.Detail);
-        }
-
-
-          interface State {
-            Name: string;
-            ID: string;
-            Detail: string;
-            Price: string;
-            InsurClass: string;
-          }
-          const handleChange =
-          (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-            setValues({ ...values, [prop]: event.target.value });
-          };
-          const [values, setValues] = React.useState<State>({
-            Name: "",
-            ID: "" ,
-            Detail: "",
-            Price: "",
-            InsurClass: "",
-          });
-       
-      axios
-      .post("https://carleasing.azurewebsites.net/insurance", {
-        Name: values.Name,
-        ID: values.ID,
-        Datail: values.Detail,
-        Price: values.Price,
-        InsurClass: values.InsurClass,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        
-      })
-      
-      const handleSkip = () => {
-        console.log(`rhandleSubmit`);
-          
-        axios({
-          method: "post",
-          url: "https://carleasing.azurewebsites.net/insurance/admin/add",
-          data: { 
-            Name: values.Name,
-        ID: values.ID,
-        Datail: values.Detail,
-        Price: values.Price,
-        InsurClass: values.InsurClass,},
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((response) => {
-            console.log("regis res", response);
-            return response.data;
+        const rhandleSubmit = () => {
+          console.log(`rhandleSubmit`);
+          console.log(values.inName)
+          axios({
+            method: "get",
+            url: "https://carleasing.azurewebsites.net/insurance",
+            data: { 
+              insurance_name: values.inName,
+              insurance_id: values.inID,
+              insurance_info: values.inDetail,
+              insurance_price: values.inCost,
+              insurance_class: values.inClass,
+            },
+              
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           })
-          .then((data) => console.log(data))
-          .then(handleClose);
-      };
+            .then((response) => {
+              console.log("regis res", response);
+              return response.data;
+            })
+            .then((data) => console.log(data))
+            .then(handleClose);
+        };
+          
+
+
+
 
 
     return (
@@ -199,7 +181,7 @@ export default function Insurance(){
         
         <DialogActions>
           <Button color='primary' variant='outlined' onClick={handleClose}>Cancel</Button>
-          <Button color='primary' variant='contained' onClick={handleSubmit} autoFocus>
+          <Button color='primary' variant='contained' onClick={rhandleSubmit}>
             Confirm
           </Button>
         </DialogActions>
@@ -209,12 +191,12 @@ export default function Insurance(){
       </Grid>
       </Paper>
        
-    </ListItem>)
-    )}
+    </ListItem>
+    ))}
     
      </List>
      <ListItem><h2 color='error'>ไม่เลือก กรุณากดข้าม</h2>
-     <Button color="error" component="div" variant="contained" onClick={handleSkip} sx={{ml:1}}>ข้าม</Button></ListItem>
+     <Button color="error" component="div" variant="contained" onClick={handleClose} sx={{ml:1}}>ข้าม</Button></ListItem>
      <Dialog
         open={open1}
         onClose={handleClose1}
@@ -230,7 +212,7 @@ export default function Insurance(){
           <Button 
           color='primary' 
           variant='contained' 
-          onClick={handleSubmit} autoFocus
+          onClick={handleClose} autoFocus
           >
             Confirm
           </Button>
