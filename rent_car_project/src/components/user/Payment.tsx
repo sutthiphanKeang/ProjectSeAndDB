@@ -14,16 +14,17 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { count } from "console";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Payment() {
+  const [setonLoginuser] = useOutletContext<any>();
+  const navigate = useNavigate();
   const token = JSON.parse(
     localStorage.getItem("user") ?? ' { "token": "" }'
   ).token;
-  const navigate = useNavigate();
   const [file, setfile] = useState<FileList | null>();
   const [dataPay, setDataPay] = useState<any[]>([]);
   useEffect(() => {
@@ -39,16 +40,16 @@ export default function Payment() {
       .then((data) => {
         setDataPay(data);
         console.log(data);
-      });
-    // .catch((error) => {
-    //   if (error.response.status == "401") {
-    //     localStorage.clear();
-    //     setonLoginuser(false);
-    //     alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-    //     console.log("มาละจ้า");
-    //     navigate("/Login");
-    //   }
-    // });
+      })
+    .catch((error) => {
+      if (error.response.status == "401") {
+        localStorage.clear();
+        setonLoginuser(false);
+        alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+        console.log("มาละจ้า");
+        navigate("/Login");
+      }
+    });
   }, []);
 
   const handleSubmit = () => {
@@ -59,22 +60,23 @@ export default function Payment() {
         file: file ? file[0] : "img/Car1.jpg",
       },
       headers: {
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
         navigate("/UserPage");
         return response.data;
-      });
-    // .catch((error) => {
-    //   if (error.response.status == "401") {
-    //     localStorage.clear();
-    //     setonLoginuser(false);
-    //     alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-    //     console.log("มาละจ้า");
-    //     navigate("/Login");
-    //   }
-    // });
+      })
+    .catch((error) => {
+      if (error.response.status == "401") {
+        localStorage.clear();
+        setonLoginuser(false);
+        alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+        console.log("มาละจ้า");
+        navigate("/Login");
+      }
+    });
     }
 
   return (

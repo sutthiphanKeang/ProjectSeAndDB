@@ -10,6 +10,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React from "react";
 import axios from "axios";
+import { useNavigate, useOutletContext } from "react-router-dom";
+
 type props = {
   in_id?: any;
   name?: any;
@@ -27,8 +29,13 @@ const ManageInButton: React.FC<props> = ({
   cost,
   class_,
   loaded,
-  setLoad
+  setLoad,
 }) => {
+  const [setonLoginadmin] = useOutletContext<any>();
+  const navigate = useNavigate();
+  const token = JSON.parse(
+    localStorage.getItem("admin") ?? ' { "token": "" }'
+  ).token;
   interface State {
     inName: string;
     inID: string;
@@ -65,18 +72,15 @@ const ManageInButton: React.FC<props> = ({
       inCost: cost,
       inClass: class_,
     });
-    setLoad(!loaded)
+    setLoad(!loaded);
   };
   const handleClose2 = () => {
     setOpen2(false);
-    setLoad(!loaded)
+    setLoad(!loaded);
   };
 
   const handleEdit = () => {
     console.log(`handleEdit`);
-    const token = JSON.parse(
-      localStorage.getItem("admin") ?? '{token:""}'
-    ).token;
     console.log("token", token);
     axios({
       method: "put",
@@ -98,6 +102,14 @@ const ManageInButton: React.FC<props> = ({
       })
 
       .then((data) => console.log(data))
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginadmin(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          navigate("/Admin");
+        }
+      })
       .then(handleClose);
   };
 
@@ -111,9 +123,7 @@ const ManageInButton: React.FC<props> = ({
     axios({
       method: "delete",
       url: "https://carleasing.azurewebsites.net/insurance/admin/delete",
-      data: { insurance_id: in_id,
-        
-      },
+      data: { insurance_id: in_id },
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -123,6 +133,14 @@ const ManageInButton: React.FC<props> = ({
         return response.data;
       })
       .then((data) => console.log(data))
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginadmin(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          navigate("/Admin");
+        }
+      })
       .then(handleClose2);
   };
 

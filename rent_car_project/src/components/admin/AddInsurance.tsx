@@ -13,16 +13,20 @@ import { DialogContent } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import List from "@mui/material/List";
 import axios from "axios";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 export default function Insurance() {
-  const token = JSON.parse(localStorage.getItem("admin") ?? '{token:""}').token;
+  const [setonLoginadmin] = useOutletContext<any>();
+  const navigate = useNavigate();
+  const token = JSON.parse(
+    localStorage.getItem("admin") ?? ' { "token": "" }'
+  ).token;
   console.log("token", token);
 
   const [data2, setData] = useState<any[]>([]);
-  const [deleted,setDelete] = useState(false);
+  const [deleted, setDelete] = useState(false);
   const [loaded, setLoad] = useState(false);
   useEffect(() => {
-    
     axios({
       method: "GET",
       url: "https://carleasing.azurewebsites.net/insurance/admin",
@@ -30,18 +34,21 @@ export default function Insurance() {
         Authorization: `Bearer ${token}`,
       },
     })
-    .then((response) => {
-      return response.data;
-    })
-    .then((data) => {
-      setData(data);
-      console.log(data);
-    })
-    .catch((error) => {
-      if (error.response.status == "401") {
-        localStorage.clear();
-      }
-    });
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        setData(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginadmin(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          navigate("/Admin");
+        }
+      });
   }, [loaded]);
 
   interface State {
@@ -54,8 +61,7 @@ export default function Insurance() {
   const dataJson = JSON.stringify(data2);
   let data: string = dataJson;
   let jsonObj = JSON.parse(data);
-  console.log(jsonObj+":)")
-
+  console.log(jsonObj + ":)");
 
   const [open1, setOpen1] = React.useState(false);
   const handleClickOpen1 = () => {
@@ -64,11 +70,10 @@ export default function Insurance() {
   const handleClose1 = () => {
     setOpen1(false);
   };
-  const handleClose = () =>{
+  const handleClose = () => {
     setOpen1(false);
-    setLoad(!loaded)
-  }
-
+    setLoad(!loaded);
+  };
 
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,28 +87,35 @@ export default function Insurance() {
     inCost: jsonObj.inCOst,
     inClass: jsonObj.inClass,
   });
-  
 
   const rhandleSubmit = () => {
     console.log(`rhandleSubmit`);
-      
+
     axios({
       method: "post",
       url: "https://carleasing.azurewebsites.net/insurance/admin/add",
-      data: { 
+      data: {
         insurance_name: values.inName,
         insurance_info: values.inDetail,
         insurance_price: values.inCost,
-        insurance_class: values.inClass,},
+        insurance_class: values.inClass,
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
-        console.log("regis res", response);
         return response.data;
       })
       .then((data) => console.log(data))
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginadmin(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          navigate("/Login");
+        }
+      })
       .then(handleClose);
   };
 
@@ -250,4 +262,3 @@ export default function Insurance() {
 function then(handleClose1: () => void) {
   throw new Error("Function not implemented.");
 }
-

@@ -16,6 +16,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { TransitionProps } from "@mui/material/transitions/transition";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 import axios from "axios";
 
@@ -67,6 +68,8 @@ const ManageCarButton: React.FC<props> = ({
   price,
   type,
 }) => {
+  const [setonLoginadmin] = useOutletContext<any>();
+  const navigate = useNavigate();
   const options = [
     "Sedan",
     "Van",
@@ -147,7 +150,7 @@ const ManageCarButton: React.FC<props> = ({
     body.append("file", values.raw);
 
     const token = JSON.parse(
-      localStorage.getItem("admin") ?? '{token:""}'
+      localStorage.getItem("admin") ?? ' { "token": "" }'
     ).token;
     console.log("token", token);
     axios({
@@ -168,6 +171,9 @@ const ManageCarButton: React.FC<props> = ({
     .catch((error) => {
       if (error.response.status == "401") {
         localStorage.clear();
+        setonLoginadmin(false);
+        alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+        navigate("/Admin");
       }
     })
     .then(handleClose2);
@@ -193,6 +199,14 @@ const ManageCarButton: React.FC<props> = ({
         return response.data;
       })
       .then((data) => console.log(data))
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginadmin(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          navigate("/Admin");
+        }
+    })
       .then(handleClose2);
   };
   // เมื่อปิดหน้าต่าง จะเซ็ตค่าเริ่มต้นใหม่

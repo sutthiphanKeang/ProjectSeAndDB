@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -7,12 +7,13 @@ import { Box, ThemeProvider, createTheme } from "@mui/system";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
-import {Typography} from "@mui/material";
+import { Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import SaveIcon from "@mui/icons-material/Save";
 import LoadingButton from "@mui/lab/LoadingButton";
 import axios from "axios";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 //ทำทีมสีให้ส่วนแสดงผลข้อมูล
 const theme = createTheme({
@@ -44,6 +45,8 @@ interface State {
 
 //ฟังชั่นหลัก
 const AddCar: React.FC = () => {
+  const [setonLoginadmin] = useOutletContext<any>();
+  const navigate = useNavigate();
   //ตัวเลือกประเภทรถ
   const options = [
     "Sedan",
@@ -58,7 +61,7 @@ const AddCar: React.FC = () => {
     "Super",
   ];
   const [value, setValue] = React.useState<string | null>(); //เซ็ทค่าในตัวเลือกประเภทรถ
-  const [inputValue, setInputValue] = React.useState(''); 
+  const [inputValue, setInputValue] = React.useState("");
 
   //ตัว state ของชนิดรถ
   const [values, setValues] = React.useState<State>({
@@ -70,14 +73,14 @@ const AddCar: React.FC = () => {
   });
 
   const [loading, setLoading] = React.useState(false); //state ของตัวโหลดปุ่ม save
-  
+
   //ฟังชั่นส่ง state มาเซ็ทใน setValues
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setValues({ ...values, [prop]: event.target.value });
     };
-  
-  const [file, setfile] = useState<FileList | null>();  //state เก็บรูปภาพ
+
+  const [file, setfile] = useState<FileList | null>(); //state เก็บรูปภาพ
 
   //ตัว map ชนิดรถให้เป็นเลข ส่งไปหลังบ้าน
   const typeId = new Map<string, string>([
@@ -108,10 +111,10 @@ const AddCar: React.FC = () => {
     body.append("price", values.price);
     body.append("typeId", typeCar);
     body.append("file", file ? file[0] : "img/Car1.jpg");
-    
+
     //เก็บ token เพื่อนำมาใช้
     const token = JSON.parse(
-      localStorage.getItem("admin") ?? '{token:""}'
+      localStorage.getItem("admin") ?? ' { "token": "" }'
     ).token;
     console.log("token", token);
 
@@ -122,7 +125,7 @@ const AddCar: React.FC = () => {
       data: body,
       headers: {
         "Content-Type": "multipart/form-data",
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
@@ -133,12 +136,18 @@ const AddCar: React.FC = () => {
       })
       .then((data) => console.log(data))
       .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginadmin(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Admin");
+        }
         console.error("found error", error);
         setLoading(false);
         alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
       });
   };
-
 
   return (
     <Stack

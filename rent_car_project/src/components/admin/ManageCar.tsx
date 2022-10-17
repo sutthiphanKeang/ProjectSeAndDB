@@ -3,9 +3,14 @@ import { Container, Stack } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ManageCarButton from "./ManageCarButton";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 export default function ManageCar() {
-  const token = JSON.parse(localStorage.getItem("admin") ?? '{token:""}').token;
+  const [setonLoginadmin] = useOutletContext<any>();
+  const navigate = useNavigate();
+  const token = JSON.parse(
+    localStorage.getItem("admin") ?? ' { "token": "" }'
+  ).token;
   // stateสำหรับเซ็ตข้อมูล
   const [data2, setData] = useState<any[]>([])
   // stateสำหรับรีเฟรชเมื่อเปลี่ยนแปลงค่า
@@ -27,9 +32,12 @@ export default function ManageCar() {
       console.log(data);
     })
     .catch((error) => {
-      if (error.response.status == "401") {
-        localStorage.clear();
-      }
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginadmin(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          navigate("/Admin");
+        }
     });
   }, [deleted]);
   return(

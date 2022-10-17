@@ -16,9 +16,14 @@ import List from "@mui/material/List";
 import axios from "axios";
 import { TransitionProps } from "@mui/material/transitions/transition";
 import ManageInButton from "./ManageInButton";
-export default function ManageIN() {
+import { useNavigate, useOutletContext } from "react-router-dom";
 
-  const token = JSON.parse(localStorage.getItem("admin") ?? '{token:""}').token;
+export default function ManageIN() {
+  const [setonLoginadmin] = useOutletContext<any>();
+  const navigate = useNavigate();
+  const token = JSON.parse(
+    localStorage.getItem("admin") ?? ' { "token": "" }'
+  ).token;
   const [data2, setData] = useState<any[]>([])
   const [deleted,setDelete] = useState(false);
   const [loaded, setLoad] = useState(false);
@@ -41,6 +46,9 @@ export default function ManageIN() {
     .catch((error) => {
       if (error.response.status == "401") {
         localStorage.clear();
+        setonLoginadmin(false);
+        alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+        navigate("/Admin");
       }
     });
   }, [loaded]);
@@ -102,6 +110,14 @@ export default function ManageIN() {
       })
 
       .then((data) => console.log(data))
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginadmin(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          navigate("/Admin");
+        }
+    })
       .then(handleClose2);
   };
 
