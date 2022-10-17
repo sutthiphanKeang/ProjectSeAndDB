@@ -1,58 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import axios from "axios";
-import { useNavigate, useOutletContext } from "react-router-dom";
 
-export default function FirstHome() {
-  const [onLoginuser, setonLoginuser] = useOutletContext<any>();
-  const token = JSON.parse(
-    localStorage.getItem("user") ?? ' { "token": "" }'
-  ).token;
-  const navigate = useNavigate();
-  const [data2, setData] = useState<any[]>([]);
-  useEffect(() => {
-    axios({
-      method: "GET",
-      url: "https://carleasing.azurewebsites.net/vehicle/home",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        setData(data);
-      })
-      .catch((error) => {
-        if (error.response.status == "401") {
-          localStorage.clear();
-          setonLoginuser(false);
-          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-          console.log("มาละจ้า");
-          navigate("/Login");
-        }
-      });
-  }, []);
-  console.log(data2);
+const data2 = [
+  {
+    vehicle_img:
+      "https://file.chobrod.com/2020/09/03/cu1SOOcI/1579066047-61-64f7-cbc2.jpg",
+  },
+  {
+    vehicle_img:
+      "https://img.my-best.in.th/press_component/item_part_images/bd557ec16b35ef47eabff836b5e93b39.jpg?ixlib=rails-4.2.0&q=70&lossless=0&w=640&h=640&fit=clip",
+  },
+  {
+    vehicle_img:
+      "https://s.isanook.com/au/0/rp/rc/w670h402/yatxacm1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL2F1LzAvdWQvMTIvNjIyODEvMjAwLmpwZw==.jpg",
+  },
+  {
+    vehicle_img:
+      "https://images.autofun.co.th/file1/206a62568fe84b238b39f9a2ea9b600d_800.jpg",
+  },
+  {
+    vehicle_img:
+      "https://images.contentstack.io/v3/assets/blt04fb7dc282801dd0/blt932816c665312f36/63313eb52b80434a8b691a77/x-series.png",
+  },
+];
+export default function FristHome() {
   return (
     <>
       <Box sx={{ mt: 3 }}>
         <Slide>
-          {data2.map((slideImage, index) => (
-            <Box key={index} sx={{ textAlign: "center" }}>
-              <img
-                alt="complex"
-                src={`${slideImage.vehicle_img}`}
-                width="50%"
-                height="50%"
-              />
-            </Box>
-          ))}
+          {data2 &&
+            data2.map((slideImage, index) => (
+              <Box key={index} sx={{ textAlign: "center" }}>
+                <img
+                  alt="complex"
+                  src={slideImage.vehicle_img}
+                  width="50%"
+                  height="50%"
+                />
+              </Box>
+            ))}
         </Slide>
       </Box>
       <Stack
