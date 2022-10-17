@@ -207,7 +207,7 @@ export default function ManageIN() {
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle1" component="div">
-                      {item.cost} บาท
+                      {item.cost} บาท / วัน
                     </Typography>
                   </Grid>
                   <Grid item>

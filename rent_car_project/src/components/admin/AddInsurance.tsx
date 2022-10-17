@@ -247,7 +247,7 @@ export default function Insurance() {
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle1" component="div">
-                      {item.cost} บาท
+                      {item.cost} บาท / วัน
                     </Typography>
                   </Grid>
                 </Grid>
