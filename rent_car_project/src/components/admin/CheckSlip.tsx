@@ -1,24 +1,16 @@
-import React, { Component, useState, useEffect } from "react";
+import React, {  useState, useEffect } from "react";
 import {
-  DialogTitle,
-  Dialog,
-  Box,
   ButtonBase,
-  Container,
   Grid,
   List,
   ListItem,
   Paper,
   Stack,
-  TextField,
-  Typography,
-  Button,
-  DialogContent,
-  DialogActions,
+  Typography, 
 } from "@mui/material";
 import { useNavigate, useOutletContext } from "react-router-dom";
-
 import axios from "axios";
+import CheckSlipButton from "./CheckSlipButton";
 
 export default function CheckSlip() {
   const [setonLoginadmin] = useOutletContext<any>();
@@ -66,11 +58,6 @@ export default function CheckSlip() {
   let jsonObj = JSON.parse(data);
   console.log(jsonObj);
 
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({ ...values, [prop]: event.target.value });
-    };
-
   const [values, setValues] = React.useState<State>({
     billID: jsonObj.billID,
     billStatus: jsonObj.billStatus,
@@ -78,47 +65,6 @@ export default function CheckSlip() {
   });
 
   console.log(values.billID);
-  const handleSuccess = () => {
-    console.log(values.billID);
-    console.log(`handleSuccess`);
-    const token = JSON.parse(
-      localStorage.getItem("admin") ?? '{token:""}'
-    ).token;
-    console.log("token", token);
-    axios({
-      method: "put",
-      url: "https://carleasing.azurewebsites.net/payment/admin/approve",
-      data: {
-        bill_id: values.billID,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        console.log("regis res", response);
-        return response.data;
-      })
-
-      .then((data) => console.log(data))
-      .catch((error) => {
-        if (error.response.status == "401") {
-          localStorage.clear();
-          setonLoginadmin(false);
-          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-          navigate("/Admin");
-        }
-      })
-      .then(handleClose);
-  };
-
-  const [open, setOpen] = React.useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <Stack
@@ -188,54 +134,7 @@ export default function CheckSlip() {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Button
-                      variant="contained"
-                      component="div"
-                      color="success"
-                      sx={{ ml: 1 }}
-                      onClick={handleClickOpen}
-                    >
-                      ตรวจสอบ
-                    </Button>
-                    <Dialog open={open} keepMounted onClose={handleClose}>
-                      <DialogTitle>{"Payment status"}</DialogTitle>
-                      <DialogContent>
-                        <Box>
-                          <img
-                            alt="complex"
-                            src={`${item.slip}?w=50&h=50&fit=crop&auto=format`}
-                            srcSet={`${item.slip}?w=50&h=50&fit=crop&auto=format&dpr=2 2x`}
-                            height={440}
-                            width={400}
-                          />
-                        </Box>
-                        <Typography
-                          gutterBottom
-                          variant="subtitle1"
-                          component="div"
-                          color="#1a237e"
-                        >
-                          Bill ID ID : {item.bill_id}
-                        </Typography>
-                        <DialogActions>
-                          <Button
-                            onClick={handleClose}
-                            variant="contained"
-                            color="error"
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={handleSuccess}
-                            variant="contained"
-                            color="success"
-                          >
-                            Payment Success
-                          </Button>
-                        </DialogActions>
-                      </DialogContent>
-                      <Button></Button>
-                    </Dialog>
+                    <CheckSlipButton bill_id = {item.bill_id} slip = {item.slip} setLoad = {setLoad} loaded = {loaded}/>
                   </Grid>
                 </Grid>
               </Grid>
