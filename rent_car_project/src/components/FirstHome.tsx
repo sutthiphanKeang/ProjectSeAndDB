@@ -7,7 +7,9 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 
 export default function FristHome() {
-  const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+  const token = JSON.parse(
+    localStorage.getItem("user") ?? ' { "token": "" }'
+  ).token;
   const [data2, setData] = useState<any[]>([]);
   useEffect(() => {
     axios({

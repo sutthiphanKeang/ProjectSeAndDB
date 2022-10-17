@@ -11,13 +11,15 @@ import DialogTitle from "@mui/material/DialogTitle";
 import List from "@mui/material/List";
 import axios from "axios";
 import InsuranceButton from "./InsuranceButton";
+import { useNavigate } from "react-router-dom";
 type props = {
   bookData?: any;
 };
 const Insurance: React.FC<props> = ({ bookData }) => {
   const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
   console.log("token", token);
-
+  
+  const navigate = useNavigate();
   const [data2, setData] = useState<any[]>([]);
   const [loaded, setLoad] = useState(false);
   useEffect(() => {
@@ -107,23 +109,7 @@ const Insurance: React.FC<props> = ({ bookData }) => {
 
   const rhandleSkip = () => {
     console.log(`rhandleSkip`);
-    axios({
-      method: "post",
-      url: "https://carleasing.azurewebsites.net/insurance",
-      data: {
-        insurance_id: insurancee_id,
-      },
-
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        console.log("regis res", response);
-        return response.data;
-      })
-      .then((data) => console.log(data))
-      .then(handleClose);
+    navigate("/Costsummary", {state:{bookData:bookData ,in_id:""}})
   };
 
   return (

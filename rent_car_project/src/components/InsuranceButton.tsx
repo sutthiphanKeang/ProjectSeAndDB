@@ -1,7 +1,8 @@
 import { Button, Dialog, DialogTitle, DialogActions } from "@mui/material";
 import axios from "axios";
 import React, { Component, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+
 type props = {
   bookData?: any;
   in_id?: any;
@@ -20,7 +21,7 @@ const InsuranceButton: React.FC<props> = ({ bookData, in_id }) => {
   };
   const rhandleSubmit = () => {
     console.log(`rhandleSubmit`);
-    navigate("/Costsummary")
+    navigate("/Costsummary", {state:{bookData:bookData,in_id:in_id}})
     // axios({
     //   method: "get",
     //   url: "https://carleasing.azurewebsites.net/insurance",
