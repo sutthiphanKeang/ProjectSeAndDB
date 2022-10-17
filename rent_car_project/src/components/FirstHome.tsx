@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
@@ -7,12 +7,14 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 
 export default function FristHome() {
-  const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+  const token = JSON.parse(
+    localStorage.getItem("user") ?? ' { "token": "" }'
+  ).token;
   const [data2, setData] = useState<any[]>([]);
   useEffect(() => {
     axios({
       method: "GET",
-      url: "https://carleasing.azurewebsites.net/vehicle",
+      url: "https://carleasing.azurewebsites.net/vehicle/home",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -22,7 +24,6 @@ export default function FristHome() {
       })
       .then((data) => {
         setData(data);
-        console.log(data);
       })
       .catch((error) => {
         if (error.response.status == "401") {
@@ -36,14 +37,12 @@ export default function FristHome() {
       <Box sx={{ mt: 3 }}>
         <Slide>
           {data2.map((slideImage, index) => (
-            <Box key={index} sx={{textAlign:"center"}}>
+            <Box key={index} sx={{ textAlign: "center" }}>
               <img
                 alt="complex"
-                src={`${slideImage.vehicle_img}?w=50&h=50&fit=crop&auto=format`}
-                srcSet={`${slideImage.vehicle_img}?w=50&h=50&fit=crop&auto=format&dpr=2 2x`}
+                src={`${slideImage.vehicle_img}`}
                 width="50%"
                 height="50%"
-
               />
             </Box>
           ))}
