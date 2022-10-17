@@ -8,7 +8,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate ,useOutletContext} from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
 
@@ -29,6 +29,7 @@ export default function Costsummary() {
     vehicle_img?: any;
   };
 
+  const [onLoginuser, setonLoginuser] = useOutletContext<any>();
   const { state } = useLocation();
   console.log({ bookData: state["bookData"] });
   const book = { bookData: state["bookData"] };
@@ -60,6 +61,15 @@ export default function Costsummary() {
       .then((response) => {
         console.log(response.data);
         setcost(response.data);
+      })
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
       });
     
     console.log("data cost from api", cost.amount_balance!);
@@ -82,6 +92,15 @@ export default function Costsummary() {
       })
       .then((response) => {
         setdataCar(response.data);
+      })
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
       });
   }, []);
   console.log("data car from api", dataCar);
@@ -107,6 +126,15 @@ export default function Costsummary() {
       .then((response) => {
         navigate("/Payment", {state:{sum:sum}});
         return response.data;
+      })
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
       });
   };
 

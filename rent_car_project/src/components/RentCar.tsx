@@ -38,7 +38,7 @@ export default function RentCar() {
     insuranceId: "",
     cost: 0,
   });
-  const [onLoginuser] = useOutletContext<any>();
+  const [onLoginuser, setonLoginuser] = useOutletContext<any>();
   const navigate = useNavigate();
   // เซ็ตข้อมูล
   const [data2, setData] = useState<any[]>([]);
@@ -61,6 +61,10 @@ export default function RentCar() {
       .catch((error) => {
         if (error.response.status == "401") {
           localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
         }
       });
   }, []);
@@ -90,6 +94,10 @@ export default function RentCar() {
         .catch((error) => {
           if (error.response.status == "401") {
             localStorage.clear();
+            setonLoginuser(false);
+            alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+            console.log("มาละจ้า");
+            navigate("/Login");
           }
         });
     }

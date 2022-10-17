@@ -11,12 +11,15 @@ import DialogTitle from "@mui/material/DialogTitle";
 import List from "@mui/material/List";
 import axios from "axios";
 import InsuranceButton from "./InsuranceButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useOutletContext } from "react-router-dom";
 type props = {
   bookData?: any;
 };
 const Insurance: React.FC<props> = ({ bookData }) => {
-  const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+  const [onLoginuser, setonLoginuser] = useOutletContext<any>();
+  const token = JSON.parse(
+    localStorage.getItem("user") ?? ' { "token": "" }'
+  ).token;
   console.log("token", token);
   
   const navigate = useNavigate();
@@ -40,6 +43,10 @@ const Insurance: React.FC<props> = ({ bookData }) => {
       .catch((error) => {
         if (error.response.status == "401") {
           localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
         }
       });
   }, [loaded]);
@@ -104,6 +111,15 @@ const Insurance: React.FC<props> = ({ bookData }) => {
         return response.data;
       })
       .then((data) => console.log(data))
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
+      })
       .then(handleClose);
   };
 

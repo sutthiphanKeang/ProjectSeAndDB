@@ -5,11 +5,14 @@ import "react-slideshow-image/dist/styles.css";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import axios from "axios";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
-export default function FristHome() {
+export default function FirstHome() {
+  const [onLoginuser, setonLoginuser] = useOutletContext<any>();
   const token = JSON.parse(
     localStorage.getItem("user") ?? ' { "token": "" }'
   ).token;
+  const navigate = useNavigate();
   const [data2, setData] = useState<any[]>([]);
   useEffect(() => {
     axios({
@@ -28,6 +31,10 @@ export default function FristHome() {
       .catch((error) => {
         if (error.response.status == "401") {
           localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
         }
       });
   }, []);

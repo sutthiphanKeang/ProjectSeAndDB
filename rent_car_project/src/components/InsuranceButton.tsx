@@ -8,7 +8,9 @@ type props = {
   in_id?: any;
 };
 const InsuranceButton: React.FC<props> = ({ bookData, in_id }) => {
-  const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+  const token = JSON.parse(
+    localStorage.getItem("user") ?? ' { "token": "" }'
+  ).token;
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const handleClose = () => {

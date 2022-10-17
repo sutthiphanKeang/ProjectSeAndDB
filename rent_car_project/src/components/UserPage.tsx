@@ -46,7 +46,9 @@ const UserPage: React.FC = () => {
   const [edited, setEdit] = useState(false);
   const [data2, setData] = useState("");
 
-  const token = JSON.parse(localStorage.getItem("user") ?? '{token:""}').token;
+  const token = JSON.parse(
+    localStorage.getItem("user") ?? ' { "token": "" }'
+  ).token;
   console.log("token", token);
 
   useEffect(() => {

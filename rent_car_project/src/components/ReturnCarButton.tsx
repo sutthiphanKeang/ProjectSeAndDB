@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import { TransitionProps } from "@mui/material/transitions";
+
 // ฟังก์ชันเอฟเฟกเมื่อเปิดหน้าต่าง
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {

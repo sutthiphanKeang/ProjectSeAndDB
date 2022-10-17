@@ -29,7 +29,7 @@ interface State {
 }
 
 const RegisUser: React.FC = () => {
-  const [onLoginuser] = useOutletContext<any>();
+  const [onLoginuser, setonLoginuser] = useOutletContext<any>();
   const [values, setValues] = React.useState<State>({
     fname: "",
     lname: "",
@@ -93,6 +93,13 @@ const RegisUser: React.FC = () => {
         setpart("/Login");
       })
       .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
         console.error("found error", error);
         alert("กรุณาตรวจสอบข้อมูลอีกครั้ง" + Response);
       });
