@@ -1,7 +1,5 @@
 import * as React from "react";
-import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import ImageList from "@mui/material/ImageList";
@@ -9,11 +7,9 @@ import ImageListItem from "@mui/material/ImageListItem";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
-import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
-import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
+import {useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 

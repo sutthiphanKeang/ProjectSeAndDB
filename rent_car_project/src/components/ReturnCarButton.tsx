@@ -10,7 +10,9 @@ import {
   DialogTitle,
 } from "@mui/material";
 import * as React from "react";
+import axios from "axios";
 import { TransitionProps } from "@mui/material/transitions";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 // ฟังก์ชันเอฟเฟกเมื่อเปิดหน้าต่าง
 const Transition = React.forwardRef(function Transition(
@@ -32,8 +34,13 @@ type props = {
 
 // ฟังก์ชันหลัก
 const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
- 
-  const [step,setStep] = React.useState(1);
+  const [onLoginuser, setonLoginuser] = useOutletContext<any>();
+  const navigate = useNavigate();
+  const token = JSON.parse(
+    localStorage.getItem("user") ?? ' { "token": "" }'
+  ).token;
+  console.log("token", token);
+  const [step, setStep] = React.useState(1);
   // stateสำหรับเปิดหน้าต่าง
   const [open2, setOpen2] = React.useState(false);
   // ฟังก์ชันเมื่อกดเปิด
@@ -41,6 +48,36 @@ const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
   // ฟังก์ชันเมื่อกดปิด
   const handleClose2 = () => {
     setOpen2(false);
+  };
+
+  const handleRuturn = (e: React.MouseEvent) => {
+    e.preventDefault();
+    axios({
+      method: "put",
+      url: "https://carleasing.azurewebsites.net/booking/return",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        alert("คืนรถสำเร็จ");
+      })
+      .then(handleClose2)
+      
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }else{
+          alert("โปรดรอการตรวจสอบการชำระเงินจาก Admin")
+        }
+      });
   };
   return (
     <>
@@ -60,7 +97,7 @@ const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
         keepMounted
         onClose={handleClose2}
         aria-describedby="alert-dialog-slide-description"
-        fullWidth	
+        fullWidth
       >
         <DialogTitle>{"Return Car"}</DialogTitle>
         <DialogContent>
@@ -103,7 +140,12 @@ const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
         </DialogActions>
         <DialogActions>
           {/* ปุ่มยืนยัน */}
-          <Button variant="contained" color="success" sx={{ ml: 1}}>
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ ml: 1 }}
+            onClick={handleRuturn}
+          >
             Confirm
           </Button>
           {/* ปุ่มยกเลิก */}

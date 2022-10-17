@@ -140,8 +140,17 @@ const UserPage: React.FC = () => {
       })
       .then((data) => {
         setDataBook(data);
+      })
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
       });
-  }, [edited]);
+  }, []);
 
   const handleChange =
     (prop: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,9 +167,6 @@ const UserPage: React.FC = () => {
   };
   const handleEdit = (e: React.MouseEvent) => {
     e.preventDefault();
-    const token = JSON.parse(
-      localStorage.getItem("user") ?? '{token:""}'
-    ).token;
     console.log("token", token);
     axios({
       method: "put",
@@ -180,8 +186,18 @@ const UserPage: React.FC = () => {
         return response.data;
       })
       .then((data) => console.log(data))
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
+      })
       .then(handleClose);
   };
+
   return (
     <Stack
       direction="column"
@@ -243,7 +259,6 @@ const UserPage: React.FC = () => {
                       variant="contained"
                       onClick={handleClickOpen}
                       startIcon={<EditIcon />}
-                      
                     >
                       Edit
                     </Button>
@@ -307,52 +322,57 @@ const UserPage: React.FC = () => {
               <Grid item xs={12} sm container>
                 <Grid item xs container direction="column" spacing={2}>
                   <Grid>
-                    {dataPay.map((item, index) => (
-                      <>
-                        <Typography
-                          gutterBottom
-                          variant="subtitle1"
-                          component="div"
-                          color="#ff0000"
-                        >
-                          <h1> Payment Check </h1>
-                        </Typography>
-
-                        <Typography
-                          gutterBottom
-                          variant="subtitle2"
-                          component="div"
-                        >
-                          {/* [{"bill_id":"6149d594-0ff0-4bf3-be22-1336a14ea03b","bill_status":"complete","book_id":"8f015de7-7500-44cf-8260-508159cf10a1","amount_balance":2000,"total_amount":2140,"tax_amount":140,"slip":"https://carleasing.blob.core.windows.net/payment/file-1665693865092.jpg"}] */}
-                          <h2>Vehicle ID : {item.vehicle_id}</h2>
-                        </Typography>
-                        <Typography
-                          gutterBottom
-                          variant="subtitle2"
-                          component="div"
-                        >
-                          <h2>Bill Status : {item.bill_status} </h2>
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary">
-                          <h2>Total amount : {item.total_amount}</h2>
-                        </Typography>
-                        <Grid item>
-                          <Grid
-                            item
-                            alignItems="center"
-                            justifyContent="center"
+                    {!!dataPay.length &&
+                      dataPay.map((item, index) => (
+                        <>
+                          <Typography
+                            gutterBottom
+                            variant="subtitle1"
+                            component="div"
+                            color="#ff0000"
                           >
-                            <PaymentButton
-                              img={item.slip}
-                              bill_id={item.bill_id}
-                              book_id={item.book_id}
-                              total_amount={item.total_amount}
-                              bill_status={item.bill_status}
-                            />
+                            <h1> Payment Check </h1>
+                          </Typography>
+
+                          <Typography
+                            gutterBottom
+                            variant="subtitle2"
+                            component="div"
+                          >
+                            <h2>Vehicle ID : {item.vehicle_id}</h2>
+                          </Typography>
+                          <Typography
+                            gutterBottom
+                            variant="subtitle2"
+                            component="div"
+                          >
+                            <h2>Bill Status : {item.bill_status} </h2>
+                          </Typography>
+                          <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                          >
+                            <h2>Total amount : {item.total_amount}</h2>
+                          </Typography>
+                          <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                          >
+                            <h2>------------------------------------------------------</h2>
+                          </Typography>
+                          <Grid item>
+                            
+                              <PaymentButton
+                                img={item.slip}
+                                bill_id={item.bill_id}
+                                book_id={item.book_id}
+                                total_amount={item.total_amount}
+                                bill_status={item.bill_status}
+                              />
+                            
                           </Grid>
-                        </Grid>
-                      </>
-                    ))}
+                        </>
+                      ))}
                   </Grid>
                 </Grid>
               </Grid>
@@ -397,120 +417,125 @@ const UserPage: React.FC = () => {
           </Grid>
         </Grid>
       </ListItem>
-
-      <ListItem>
-        <Paper
-          sx={{
-            p: 2,
-            margin: "auto",
-            maxWidth: 800,
-            flexGrow: 1,
-            backgroundColor: (theme) =>
-              theme.palette.mode === "dark" ? "#1A2027" : "#eeeeee",
-          }}
-        >
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm container>
-              <Grid item xs container direction="column" spacing={2}>
-                <Grid item xs>
-                  <List
-                    sx={{
-                      width: "100%",
-                      maxWidth: "100%",
-                      bgcolor: "background.paper",
-                      position: "relative",
-                      overflow: "auto",
-                      maxHeight: 500,
-                      background: "#e0e0e0",
-                      "& ul": { padding: 0 },
-                    }}
-                    subheader={<li />}
-                  >
-                    {dataBook.map((item, index) => (
-                      <ListItem>
-                        <Paper
-                          sx={{
-                            p: 2,
-                            margin: "auto",
-                            maxWidth: 800,
-                            flexGrow: 1,
-                            backgroundColor: (theme) =>
-                              theme.palette.mode === "dark"
-                                ? "#1A2027"
-                                : "#f5f5f5",
-                          }}
-                        >
-                          <Grid container spacing={2}>
-                            <Grid item xs>
-                              <ButtonBase>
-                                <img
-                                  alt="complex"
-                                  src={`${item.vehicle_img}?w=50&h=50&fit=crop&auto=format`}
-                                  srcSet={`${item.vehicle_img}?w=50&h=50&fit=crop&auto=format&dpr=2 2x`}
-                                  width="200"
-                                  height="160"
-                                />
-                              </ButtonBase>
-                            </Grid>
-                            <Grid item xs={12} sm container>
-                              <Grid
-                                item
-                                xs
-                                container
-                                direction="column"
-                                spacing={2}
-                              >
-                                <Grid
-                                  item
-                                  xs
-                                  sx={{
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                  }}
-                                >
-                                  <Typography
-                                    gutterBottom
-                                    variant="subtitle1"
-                                    component="div"
+      {dataBook.length && (
+        <ListItem>
+          <Paper
+            sx={{
+              p: 2,
+              margin: "auto",
+              maxWidth: 800,
+              flexGrow: 1,
+              backgroundColor: (theme) =>
+                theme.palette.mode === "dark" ? "#1A2027" : "#eeeeee",
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm container>
+                <Grid item xs container direction="column" spacing={2}>
+                  <Grid item xs>
+                    <List
+                      sx={{
+                        width: "100%",
+                        maxWidth: "100%",
+                        bgcolor: "background.paper",
+                        position: "relative",
+                        overflow: "auto",
+                        maxHeight: 500,
+                        background: "#e0e0e0",
+                        "& ul": { padding: 0 },
+                      }}
+                      subheader={<li />}
+                    >
+                      {dataBook.length &&
+                        dataBook.map((item, index) => (
+                          <ListItem>
+                            <Paper
+                              sx={{
+                                p: 2,
+                                margin: "auto",
+                                maxWidth: 800,
+                                flexGrow: 1,
+                                backgroundColor: (theme) =>
+                                  theme.palette.mode === "dark"
+                                    ? "#1A2027"
+                                    : "#f5f5f5",
+                              }}
+                            >
+                              <Grid container spacing={2}>
+                                <Grid item xs>
+                                  <ButtonBase>
+                                    <img
+                                      alt="complex"
+                                      src={`${item.vehicle_img}?w=50&h=50&fit=crop&auto=format`}
+                                      srcSet={`${item.vehicle_img}?w=50&h=50&fit=crop&auto=format&dpr=2 2x`}
+                                      width="200"
+                                      height="160"
+                                    />
+                                  </ButtonBase>
+                                </Grid>
+                                <Grid item xs={12} sm container>
+                                  <Grid
+                                    item
+                                    xs
+                                    container
+                                    direction="column"
+                                    spacing={2}
                                   >
-                                    brand : {item.brand}
-                                  </Typography>
-                                  <Typography variant="body2" gutterBottom>
-                                    Model name : {item.model_name}
-                                  </Typography>
-                                  <Typography variant="body2" gutterBottom>
-                                    Vehicle ID : {item.vehicle_id}
-                                  </Typography>
-                                  <Typography variant="subtitle1" gutterBottom>
-                                    Status : {item.status}
-                                  </Typography>
+                                    <Grid
+                                      item
+                                      xs
+                                      sx={{
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <Typography
+                                        gutterBottom
+                                        variant="subtitle1"
+                                        component="div"
+                                      >
+                                        brand : {item.brand}
+                                      </Typography>
+                                      <Typography variant="body2" gutterBottom>
+                                        Model name : {item.model_name}
+                                      </Typography>
+                                      <Typography variant="body2" gutterBottom>
+                                        Vehicle ID : {item.vehicle_id}
+                                      </Typography>
+                                      <Typography
+                                        variant="subtitle1"
+                                        gutterBottom
+                                      >
+                                        Status : {item.status}
+                                      </Typography>
+                                    </Grid>
+                                  </Grid>
+                                  <Grid
+                                    item
+                                    alignItems="center"
+                                    justifyContent="center"
+                                  >
+                                    <ReturnCarButton
+                                      title={item.vehicle_id}
+                                      img={item.vehicle_img}
+                                      id={item.vehicle_id}
+                                      brand={item.brand}
+                                      year={item.year}
+                                    />
+                                  </Grid>
                                 </Grid>
                               </Grid>
-                              <Grid
-                                item
-                                alignItems="center"
-                                justifyContent="center"
-                              >
-                                <ReturnCarButton
-                                  title={item.vehicle_id}
-                                  img={item.vehicle_img}
-                                  id={item.vehicle_id}
-                                  brand={item.brand}
-                                  year={item.year}
-                                />
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                        </Paper>
-                      </ListItem>
-                    ))}
-                  </List>
+                            </Paper>
+                          </ListItem>
+                        ))}
+                    </List>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </Paper>
-      </ListItem>
+          </Paper>
+        </ListItem>
+      )}
     </Stack>
   );
 };

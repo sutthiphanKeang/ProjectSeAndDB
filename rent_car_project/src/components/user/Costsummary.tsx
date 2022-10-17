@@ -115,7 +115,7 @@ export default function Costsummary() {
         bookDate: book.bookData.bookDate,
         returnDate: book.bookData.returnDate,
         insuranceId: in_id.in_id,
-        amountBalance: cost.amount_balance!,
+        amount_balance: cost.amount_balance!,
         tax_amount: cost.tax_amount!,
         total_amount: cost.total_amount!,
       },
