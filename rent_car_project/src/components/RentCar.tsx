@@ -29,14 +29,15 @@ export default function RentCar() {
   const token = JSON.parse(
     localStorage.getItem("user") ?? ' { "token": "" }'
   ).token;
+  const [check, setCheck] = useState(false);
+  const [search, setSearch] = useState("");
   const [bookData, setBookData] = useState<userBook>({
     carId: "",
     bookDate: "",
     returnDate: "",
     insuranceId: "",
-    cost: 0
+    cost: 0,
   });
-  console.log(bookData)
   const [onLoginuser] = useOutletContext<any>();
   const navigate = useNavigate();
   // เซ็ตข้อมูล
@@ -63,12 +64,42 @@ export default function RentCar() {
         }
       });
   }, []);
-
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
+  const keyPress = (e: any) => {
+    if (e.keyCode == 13) {
+      console.log(e.target.value);
+      axios({
+        method: "GET",
+        url: "https://carleasing.azurewebsites.net/vehicle/search",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          brand: e.target.value,
+        },
+      })
+        .then((response) => {
+          return response.data;
+        })
+        .then((data) => {
+          setData(data);
+          setCheck(!check);
+        })
+        .catch((error) => {
+          if (error.response.status == "401") {
+            localStorage.clear();
+          }
+        });
+    }
+  };
   useEffect(() => {
     if (!onLoginuser) {
       navigate("/Login");
     }
   }, [onLoginuser]);
+
   return (
     <>
       <Box
@@ -81,6 +112,7 @@ export default function RentCar() {
           size="small"
           id="Search-basic"
           label="Search"
+          value={search}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -89,6 +121,8 @@ export default function RentCar() {
             ),
           }}
           variant="outlined"
+          onChange={handleSearch}
+          onKeyDown={keyPress}
         />
       </Box>
 
@@ -161,8 +195,11 @@ export default function RentCar() {
                         <Typography variant="body2" gutterBottom>
                           Model Year: {item.year}
                         </Typography>
-                        <Typography variant="body2" gutterBottom sx={{fontSize: 22,
-                  fontWeight: "bold"}}>
+                        <Typography
+                          variant="body2"
+                          gutterBottom
+                          sx={{ fontSize: 22, fontWeight: "bold" }}
+                        >
                           Price / Day : {item.cost}
                         </Typography>
                       </Grid>
@@ -173,7 +210,7 @@ export default function RentCar() {
                         title={item.brand}
                         img={item.vehicle_img}
                         id={item.vehicle_id}
-                        cost = {item.cost}
+                        cost={item.cost}
                         bookData={bookData}
                         setBookData={setBookData}
                       />

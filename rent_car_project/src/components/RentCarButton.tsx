@@ -52,6 +52,7 @@ const RentCarButton: React.FC<props> = ({
   const [dialogStep, setdialogStep] = React.useState(true);
   const [endDate, setEndDate] = useState(new Date());
   const [open2, setOpen2] = React.useState(false);
+
   const objDate: rentDate = {
     startDate: "",
     endDate: "",
@@ -69,25 +70,39 @@ const RentCarButton: React.FC<props> = ({
   };
   // เซตค่าวันแรก
   const handleOnStartDate = (a: any) => {
-    setStartDate(a);
+      setStartDate(a);
+    
   };
   // เซตค่าวันสุดท้าย
   const handleOnEndDate = (a: any) => {
     setEndDate(a);
   };
+  
   // ทดลอง ยังไม่ได้ใช้
   const handleOnSend = (e: React.MouseEvent) => {
     e.preventDefault();
-    const startText = startDate.toISOString().slice(0, 10);
-    const endText = endDate.toISOString().slice(0, 10);
+    
+    startDate.setHours(0,0,0,0)
+    endDate.setHours(0,0,0,0)
+    var newStart = new Date(startDate);
+    newStart.setDate(startDate.getDate()+1)
+    const startText = newStart.toISOString().slice(0, 10);
+    
+    
+    
+    var newEnd = new Date(endDate);
+    newEnd.setDate(endDate.getDate()+1)
+    const endText = newEnd.toISOString().slice(0, 10);
+    
     objDate.startDate = startText;
     objDate.endDate = endText;
+    console.log(startText,endText);
     setBookData?.({
       carId: id,
       bookDate: startText,
       returnDate: endText,
       insuranceId: "",
-      cost: cost
+      cost: cost,
     });
     setdialogStep(false);
     console.log(bookData);
