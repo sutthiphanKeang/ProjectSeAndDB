@@ -272,7 +272,8 @@ export default function Costsummary() {
               marginLeft={"150%"}
               marginTop={"20%"}
             >
-              <Button variant="contained" onClick={handleSubmit}>
+              <Button variant="contained"
+                component="label" size="large" sx={{ m: 1, width: "30ch", height: "5ch", fontWeight: "bold" }} onClick={handleSubmit}>
                 Submit
               </Button>
             </Stack>
