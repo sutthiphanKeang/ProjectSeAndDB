@@ -150,7 +150,7 @@ const UserPage: React.FC = () => {
           navigate("/Login");
         }
       });
-  }, []);
+  }, [edited]);
 
   const handleChange =
     (prop: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -521,6 +521,8 @@ const UserPage: React.FC = () => {
                                       id={item.vehicle_id}
                                       brand={item.brand}
                                       year={item.year}
+                                      setEdit = {setEdit}
+                                      edited = {edited}
                                     />
                                   </Grid>
                                 </Grid>

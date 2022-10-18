@@ -30,10 +30,12 @@ type props = {
   id?: any;
   brand?: any;
   year?: any;
+  setEdit?: any;
+  edited?: any;
 };
 
 // ฟังก์ชันหลัก
-const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
+const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year,setEdit,edited }) => {
   const [onLoginuser, setonLoginuser] = useOutletContext<any>();
   const navigate = useNavigate();
   const token = JSON.parse(
@@ -48,6 +50,7 @@ const ReturnCarButton: React.FC<props> = ({ title, img, id, brand, year }) => {
   // ฟังก์ชันเมื่อกดปิด
   const handleClose2 = () => {
     setOpen2(false);
+    setEdit(!edited)
   };
 
   const handleRuturn = (e: React.MouseEvent) => {
