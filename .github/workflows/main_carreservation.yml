@@ -60,5 +60,5 @@ jobs:
         with:
           app-name: "carReservation"
           slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E88Z7UD3EE54C5F9E8A9F0CJAFFA0 }}
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_ac12b51fbdca4175a204f28ea9adbcfe }}
           package: .
