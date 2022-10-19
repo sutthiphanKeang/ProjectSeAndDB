@@ -9,9 +9,10 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import SendIcon from "@mui/icons-material/Send";
-import {useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import CardMedia from "@mui/material/CardMedia";
 
 export default function Payment() {
   const [setonLoginuser] = useOutletContext<any>();
@@ -21,6 +22,7 @@ export default function Payment() {
   ).token;
   const [file, setfile] = useState<FileList | null>();
   const [dataPay, setDataPay] = useState<any[]>([]);
+
   useEffect(() => {
     axios
       .get("https://carleasing.azurewebsites.net/user/payment", {
@@ -35,15 +37,15 @@ export default function Payment() {
         setDataPay(data);
         console.log(data);
       })
-    .catch((error) => {
-      if (error.response.status == "401") {
-        localStorage.clear();
-        setonLoginuser(false);
-        alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-        console.log("มาละจ้า");
-        navigate("/Login");
-      }
-    });
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
+      });
   }, []);
 
   const handleSubmit = () => {
@@ -62,16 +64,16 @@ export default function Payment() {
         navigate("/UserPage");
         return response.data;
       })
-    .catch((error) => {
-      if (error.response.status == "401") {
-        localStorage.clear();
-        setonLoginuser(false);
-        alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-        console.log("มาละจ้า");
-        navigate("/Login");
-      }
-    });
-    }
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginuser(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          console.log("มาละจ้า");
+          navigate("/Login");
+        }
+      });
+  };
 
   return (
     <div>
@@ -90,18 +92,40 @@ export default function Payment() {
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
           <Grid item xs={7} className="image">
-            <ImageList sx={{ width: "80%", height: "100%", marginLeft: "24%" }}>
-              {itemData.map((item) => (
-                <ImageListItem key={item.img}>
-                  <img
-                    src={`${item.img}?w=248&fit=crop&auto=format`}
-                    srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    alt={item.title}
-                    loading="lazy"
-                  />
-                </ImageListItem>
-              ))}
-            </ImageList>
+            {!file && (
+              <ImageList
+                sx={{ width: "80%", height: "100%", marginLeft: "24%" }}
+              >
+                {itemData.map((item) => (
+                  <ImageListItem key={item.img}>
+                    <img
+                      src={`${item.img}?w=248&fit=crop&auto=format`}
+                      srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                      alt={item.title}
+                      loading="lazy"
+                    />
+                  </ImageListItem>
+                ))}
+              </ImageList>
+            )}
+            {file && (
+              <ImageList
+                sx={{ width: "80%", height: "100%", marginLeft: "24%" }}
+              >
+                <Card>
+                  <CardMedia
+                  component="img"
+                  height="340"
+                  image={
+                    file
+                      ? URL.createObjectURL(file[0])
+                      : "imageDefault/Default.jpeg"
+                  }
+                />
+                </Card>
+                
+              </ImageList>
+            )}
           </Grid>
 
           {/* เเสดงเลขบัญชีธนาคาร */}
@@ -191,7 +215,11 @@ export default function Payment() {
       </Stack>
       {/* ปุ่มส่งสลิป */}
       <Stack direction="row" spacing={2} marginLeft="50%" marginTop={"-3%"}>
-        <Button variant="contained" endIcon={<SendIcon />} onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          endIcon={<SendIcon />}
+          onClick={handleSubmit}
+        >
           Send
         </Button>
       </Stack>

@@ -101,7 +101,7 @@ const RegisUser: React.FC = () => {
           navigate("/Login");
         }
         console.error("found error", error);
-        alert("กรุณาตรวจสอบข้อมูลอีกครั้ง" + Response);
+        alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
       });
 
   };
