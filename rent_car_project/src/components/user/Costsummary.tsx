@@ -135,6 +135,9 @@ export default function Costsummary() {
           console.log("มาละจ้า");
           navigate("/Login");
         }
+        else if (error.response.status == "400"){
+          alert("คุณเคยจองรถไปแล้ว กรุณาคืนรถก่อน");
+        }
       });
   };
 
