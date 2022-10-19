@@ -21,18 +21,28 @@ jobs:
         with:
           node-version: "16.x"
 
-      - name: npm install, build, and test
-        env:
-          CI: false
-        run: |
-          npm install
-          npm run build --if-present
+      # Zip artifacts to speed things up
+      - name: Zip artifact for deployment
+        run: zip -r release.zip *
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: .
+          path: release.zip
+
+      # - name: npm install, build, and test
+      #   env:
+      #     CI: false
+      #   run: |
+      #     npm install
+      #     npm run build --if-present
+
+      # - name: Upload artifact for deployment job
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: node-app
+      #     path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -54,4 +64,4 @@ jobs:
           app-name: "carReservation"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_54A552CC57494CCABB38350BD32B2765 }}
-          package: .
+          package: release.zip
