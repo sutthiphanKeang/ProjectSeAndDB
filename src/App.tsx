@@ -25,13 +25,14 @@ import Insurance from './components/Insurance';
 import UserPage from './components/UserPage';
 import RentCar from './components/RentCar';
 
+import PaymentSystem from './components/Payment/PaymentSystem';
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<MainLayoutUser />}>
         <Route path="" element={<FirstHome />}/>
-        {/* <Route path='ReturnCar' element={<ReturnCar/>}></Route> */}
+        <Route path='PaymentSystem' element={<PaymentSystem/>}></Route>
         <Route path='Costsummary' element={<Costsummary/>}></Route>
         <Route path='Payment' element={<Payment/>}></Route>
         <Route path='Additional' element={<Additional/>}></Route>
