@@ -38,9 +38,10 @@ const theme = createTheme({
 interface State {
   carName: string;
   carId: string;
-  description: string;
-  review: string;
   price: string;
+  gear_type: string;
+  seats: string;
+  doors: string;
 }
 
 //ฟังชั่นหลัก
@@ -60,16 +61,19 @@ const AddCar: React.FC = () => {
     "Sport",
     "Super",
   ];
-  const [value, setValue] = React.useState<string | null>(); //เซ็ทค่าในตัวเลือกประเภทรถ
+  const gear = ["Auto", "Manual"];
+  const [value, setValue] = React.useState<string | null>();
+  const [value2, setValue2] = React.useState<string | null>(); //เซ็ทค่าในตัวเลือกประเภทรถ
   const [inputValue, setInputValue] = React.useState("");
-
+  const [inputValue2, setInputValue2] = React.useState("");
   //ตัว state ของชนิดรถ
   const [values, setValues] = React.useState<State>({
     carName: "",
     carId: "",
-    description: "",
-    review: "",
     price: "",
+    gear_type: "",
+    seats: "",
+    doors: "",
   });
 
   const [loading, setLoading] = React.useState(false); //state ของตัวโหลดปุ่ม save
@@ -95,7 +99,10 @@ const AddCar: React.FC = () => {
     ["Sport", "9"],
     ["Super", "10"],
   ]);
-
+  const typeGearId = new Map<string, string>([
+    ["Auto", "A"],
+    ["Manual", "M"],
+  ]);
   const [typeCar, settypeCar] = React.useState(""); //ตัวเก็บ state หลังการ map ส่งไปหลังบ้าน
 
   //ฟังชั่นตอนกด save ส่งไปหลังบ้าน
@@ -106,8 +113,8 @@ const AddCar: React.FC = () => {
     var body = new FormData(); //ทำ formdata
     body.append("carName", values.carName);
     body.append("carId", values.carId);
-    body.append("description", values.description);
-    body.append("review", values.review);
+    // body.append("description", values.description);
+    // body.append("review", values.review);
     body.append("price", values.price);
     body.append("typeId", typeCar);
     body.append("file", file ? file[0] : "img/Car1.jpg");
@@ -156,7 +163,7 @@ const AddCar: React.FC = () => {
       alignItems="center"
       spacing={12}
     >
-      <Card sx={{ Width: 345, height: 500 }}>
+      <Card sx={{ Width: 345 }}>
         <CardMedia
           component="img"
           height="225"
@@ -178,7 +185,7 @@ const AddCar: React.FC = () => {
               <Box
                 sx={{
                   color: "text.primary",
-                  fontSize: 22,
+                  fontSize: 25,
                   fontWeight: "bold",
                 }}
               >
@@ -196,22 +203,23 @@ const AddCar: React.FC = () => {
               <Box
                 sx={{
                   color: "text.secondary",
-                  fontSize: 25,
-                  fontWeight: "bold",
-                }}
-              >
-                Description : {values.description}
-              </Box>
-              <Box
-                sx={{
-                  color: "text.secondary",
                   display: "inline",
                   fontWeight: "bold",
                   fontSize: 25,
                 }}
               >
-                Review : {values.review}
+                Doors : {values.doors}
               </Box>
+              <Box
+                sx={{
+                  color: "text.secondary",
+                  fontSize: 25,
+                  fontWeight: "bold",
+                }}
+              >
+                Number of Seats : {values.seats}
+              </Box>
+
               <Box
                 sx={{
                   color: "success.dark",
@@ -228,7 +236,7 @@ const AddCar: React.FC = () => {
       <Card sx={{ Width: 345, height: 500 }}>
         <CardContent>
           <Typography variant="h4" component="div" align="center">
-            <b>Import Data</b>
+            <b>Add Car</b>
           </Typography>
           <>
             <br />
@@ -253,21 +261,19 @@ const AddCar: React.FC = () => {
             <div>
               <TextField
                 id="outlined-multiline-static"
-                label="Description"
+                label="Seats"
                 sx={{ m: 1, width: "25ch" }}
                 multiline
-                rows={4}
-                value={values.description}
-                onChange={handleChange("description")}
+                value={values.seats}
+                onChange={handleChange("seats")}
               />
               <TextField
                 id="outlined-multiline-static"
-                label="Review"
+                label="Doors"
                 sx={{ m: 1, width: "25ch" }}
                 multiline
-                rows={4}
-                value={values.review}
-                onChange={handleChange("review")}
+                value={values.doors}
+                onChange={handleChange("doors")}
               />
             </div>
             <div>
@@ -290,10 +296,32 @@ const AddCar: React.FC = () => {
                   <TextField {...params} label="Type Car" />
                 )}
               />
+              <Autocomplete
+                value={value2}
+                onChange={(event: any, newValue: string | null) => {
+                  if (newValue) {
+                    settypeCar(typeGearId.get(newValue)!);
+                  }
+                  setValue2(newValue);
+                }}
+                inputValue={inputValue2}
+                onInputChange={(event, newInputValue) => {
+                  setInputValue2(newInputValue);
+                }}
+                id="type-id-gear"
+                options={gear}
+                sx={{ m: 1, display: "inline-flex", width: "25ch" }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Type Gear" />
+                )}
+              />
+            </div>
+            <div></div>
+            <div>
               <TextField
                 label="Price"
                 id="outlined-start-adornment"
-                sx={{ m: 1, width: "25ch" }}
+                sx={{ m: 1, width: "97%" }}
                 value={values.price}
                 onChange={handleChange("price")}
               />
