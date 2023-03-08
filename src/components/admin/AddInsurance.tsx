@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ListItem from "@mui/material/ListItem";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -24,7 +24,6 @@ export default function Insurance() {
   console.log("token", token);
 
   const [data2, setData] = useState<any[]>([]);
-  const [deleted, setDelete] = useState(false);
   const [loaded, setLoad] = useState(false);
   useEffect(() => {
     axios({
@@ -42,7 +41,7 @@ export default function Insurance() {
         console.log(data);
       })
       .catch((error) => {
-        if (error.response.status == "401") {
+        if (error.response.status === "401") {
           localStorage.clear();
           setonLoginadmin(false);
           alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");

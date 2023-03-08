@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js app to Azure Web App - carReservation
+# Startup Command pm2 serve /home/site/wwwroot/build --no-daemon --spa
+name: Build and deploy Node.js app to Azure Web App - react-sample-app
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -22,17 +22,20 @@ jobs:
           node-version: "16.x"
 
       - name: npm install, build, and test
-        env:
-          CI: false
         run: |
+          unset CI
           npm install
           npm run build --if-present
-
+        #zip artifact
+      - name: Zip artifact for deployment
+        run:
+          zip release.zip ./build/* -r #get files and folder in build folder and
+          #compress into release.zip with linux zip command
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: .
+          path: release.zip #add release.zip to path
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,11 +50,15 @@ jobs:
         with:
           name: node-app
 
+      #unzip artifact when deploying
+      - name: Unzip artifact for deployment
+        run: unzip release.zip #Extract release.zip with unzip command
+
       - name: "Deploy to Azure Web App"
-        uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
         with:
           app-name: "carReservation"
           slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_54A552CC57494CCABB38350BD32B2765 }}
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_ac12b51fbdca4175a204f28ea9adbcfe }}
           package: .

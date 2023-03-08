@@ -136,7 +136,7 @@ const AddCar: React.FC = () => {
       })
       .then((data) => console.log(data))
       .catch((error) => {
-        if (error.response.status == "401") {
+        if (error.response.status === "401") {
           localStorage.clear();
           setonLoginadmin(false);
           alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
