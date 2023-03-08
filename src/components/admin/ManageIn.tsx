@@ -188,17 +188,17 @@ export default function ManageIN() {
                         component="div"
                         color="#1a237e"
                       >
-                        Name : {item.name}
+                        แพ็คเกจที่ Name : {item.name}
                       </Typography>
                       <Typography
                         gutterBottom
                         variant="subtitle2"
                         component="div"
                       >
-                        ประกันภัยชั้นที่ {item.class}
+                        เงินคุ้มครองค่าเสียหายแรก {item.class} บาท
                       </Typography>
                       <Typography variant="body2" gutterBottom>
-                        {item.info}
+                        ข้อมูลการคุ้มครอง : {item.info}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         ID : {item.in_id}
@@ -207,7 +207,7 @@ export default function ManageIN() {
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle1" component="div">
-                      {item.cost} บาท / วัน
+                      {item.cost} บาท
                     </Typography>
                   </Grid>
                   <Grid item>

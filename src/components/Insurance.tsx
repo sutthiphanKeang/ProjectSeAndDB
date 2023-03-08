@@ -137,7 +137,7 @@ const Insurance: React.FC<props> = ({ bookData }) => {
     >
       <ListItem>
         <div>
-          <h1>เลือกประกันภัย</h1>
+          <h1>เลือกแพ็คเกจพิเศษ</h1>
         </div>
       </ListItem>
       <List
@@ -175,17 +175,17 @@ const Insurance: React.FC<props> = ({ bookData }) => {
                         component="div"
                         color="#1a237e"
                       >
-                        Name : {item.name}
+                        Package name : {item.name}
                       </Typography>
                       <Typography
                         gutterBottom
                         variant="subtitle2"
                         component="div"
                       >
-                        ประกันภัยชั้นที่ {item.class}
+                        คุ้มครองค่าเสียหายส่วนแรก {item.class} บาท
                       </Typography>
                       <Typography variant="body2" gutterBottom>
-                        - {item.info}
+                        ข้อมูลการคุ้มครอง : {item.info}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         ID : {item.in_id}
@@ -194,7 +194,7 @@ const Insurance: React.FC<props> = ({ bookData }) => {
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle1" component="div">
-                      {item.cost} บาท / วัน
+                      {item.cost} บาท
                     </Typography>
                   </Grid>
                   <Grid item>

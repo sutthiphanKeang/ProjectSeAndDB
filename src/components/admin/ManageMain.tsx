@@ -71,9 +71,9 @@ export default function BasicTabs() {
           aria-label="basic tabs example"
         >
           <Tab label="จัดการรถ" {...a11yProps(0)} />
-          <Tab label="จัดการประกัน" {...a11yProps(1)} />
+          <Tab label="จัดการแพ็คเกจ" {...a11yProps(1)} />
           <Tab label="เพิ่มรถ" {...a11yProps(2)} />
-          <Tab label="เพิ่มประกัน" {...a11yProps(3)} />
+          <Tab label="เพิ่มแพ็คเกจ" {...a11yProps(3)} />
           <Tab label="ตรวจสอบสลิป" {...a11yProps(4)} />
         </Tabs>
       </Box>

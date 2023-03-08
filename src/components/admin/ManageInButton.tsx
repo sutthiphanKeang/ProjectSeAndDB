@@ -157,13 +157,13 @@ const ManageInButton: React.FC<props> = ({
         Edit
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle> Edit Insurance กรอกที่นี่</DialogTitle>
+        <DialogTitle> กรอกที่นี่เพื่อแก้ไขแพ็คเกจ</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
             id="Name"
-            label="Insurance Name"
+            label="Package Name"
             fullWidth
             variant="standard"
             value={values.inName}
@@ -173,7 +173,7 @@ const ManageInButton: React.FC<props> = ({
             autoFocus
             margin="dense"
             id="Class"
-            label="Class of Insurance "
+            label="Deductible"
             fullWidth
             variant="standard"
             value={values.inClass}

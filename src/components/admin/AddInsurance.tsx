@@ -133,7 +133,7 @@ export default function Insurance() {
           onClick={handleClickOpen1}
           startIcon={<AddIcon />}
         >
-          Insert Insurance
+          Insert Package
         </Button>
         <Dialog open={open1} onClose={handleClickOpen1}>
           <DialogTitle>Insert Insurance กรอกที่นี่</DialogTitle>
@@ -227,17 +227,17 @@ export default function Insurance() {
                         component="div"
                         color="#1a237e"
                       >
-                        Name : {item.name}
+                        Package name : {item.name}
                       </Typography>
                       <Typography
                         gutterBottom
                         variant="subtitle2"
                         component="div"
                       >
-                        ประกันภัยชั้นที่ {item.class}
+                        เงินคุ้มครองค่าเสียหายแรก {item.class} บาท
                       </Typography>
                       <Typography variant="body2" gutterBottom>
-                        - {item.info}
+                        ข้อมูลการคุ้มครอง {item.info}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         ID : {item.in_id}
@@ -246,7 +246,7 @@ export default function Insurance() {
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle1" component="div">
-                      {item.cost} บาท / วัน
+                      {item.cost} บาท 
                     </Typography>
                   </Grid>
                 </Grid>
