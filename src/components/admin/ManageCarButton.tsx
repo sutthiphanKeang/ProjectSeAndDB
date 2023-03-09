@@ -20,7 +20,6 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 
 import axios from "axios";
 
-
 type props = {
   title?: any;
   img?: any;
@@ -29,10 +28,13 @@ type props = {
   brand?: any;
   deleted: boolean;
   setDelete: (a: boolean) => void;
-  des: string;
-  review: string;
+  // des: string;
+  // review: string;
   price: any;
   type: any;
+  gear: any;
+  seats: any;
+  doors: any;
 };
 // ฟังก์ชันการเลื่อนเมื่อเปิดdialog
 const Transition = React.forwardRef(function Transition(
@@ -47,12 +49,13 @@ const Transition = React.forwardRef(function Transition(
 interface State {
   carName: string;
   carID: string;
-  description: string;
-  review: string;
   price: string;
   preview: any;
   raw: any;
   typeID: string;
+  gear_type: string;
+  seats: any;
+  doors: any;
 }
 
 const ManageCarButton: React.FC<props> = ({
@@ -63,10 +66,11 @@ const ManageCarButton: React.FC<props> = ({
   brand,
   deleted,
   setDelete,
-  des,
-  review,
   price,
   type,
+  gear,
+  seats,
+  doors,
 }) => {
   const [setonLoginadmin] = useOutletContext<any>();
   const navigate = useNavigate();
@@ -86,7 +90,9 @@ const ManageCarButton: React.FC<props> = ({
   const [open2, setOpen2] = useState(false);
 
   const [inputValue, setInputValue] = React.useState("");
+  const [inputGear, setInputGear] = React.useState("");
   const [typeCar, settypeCar] = React.useState("");
+  const [typeGear, setTypeGear] = React.useState("");
   const typeId = new Map<string, string>([
     ["Sedan", "1"],
     ["Van", "2"],
@@ -99,17 +105,21 @@ const ManageCarButton: React.FC<props> = ({
     ["Sport", "9"],
     ["Super", "10"],
   ]);
-  
+  const gearType = new Map<string, string>([
+    ["Auto", "A"],
+    ["Manual", "M"],
+  ]);
   // เซ็ตค่าเริ่มต้น
   const [values, setValues] = React.useState<State>({
     carName: brand + " " + title + " " + year,
     carID: id,
-    description: des,
-    review: review,
     price: price,
     preview: "",
     raw: "",
     typeID: options[type - 1],
+    gear_type: gear,
+    seats: seats,
+    doors: doors,
   });
   // เปลี่ยนแปลงค่า
   const handleChange =
@@ -122,12 +132,13 @@ const ManageCarButton: React.FC<props> = ({
       setValues({
         carName: values.carName,
         carID: values.carID,
-        description: values.description,
-        review: values.review,
         price: values.price,
         preview: URL.createObjectURL(e.target.files[0]),
         raw: e.target.files[0],
         typeID: values.typeID,
+        gear_type: values.gear_type,
+        seats: values.seats,
+        doors: values.doors,
       });
     }
   };
@@ -143,8 +154,8 @@ const ManageCarButton: React.FC<props> = ({
     var body = new FormData();
     body.append("carName", values.carName);
     body.append("carId", id);
-    body.append("description", values.description);
-    body.append("review", values.review);
+    // body.append("description", values.description);
+    // body.append("review", values.review);
     body.append("price", values.price);
     body.append("typeId", typeId.get(values.typeID)!);
     body.append("file", values.raw);
@@ -161,22 +172,21 @@ const ManageCarButton: React.FC<props> = ({
         Authorization: `Bearer ${token}`,
       },
     })
-    
-    .then((response) => {
-      return response.data;
-    })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      if (error.response.status == "401") {
-        localStorage.clear();
-        setonLoginadmin(false);
-        alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-        navigate("/Admin");
-      }
-    })
-    .then(handleClose2);
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        if (error.response.status == "401") {
+          localStorage.clear();
+          setonLoginadmin(false);
+          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+          navigate("/Admin");
+        }
+      })
+      .then(handleClose2);
   };
   // เมื่อกดปุ่มลบ
   const handleDelete = (e: React.MouseEvent) => {
@@ -206,7 +216,7 @@ const ManageCarButton: React.FC<props> = ({
           alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
           navigate("/Admin");
         }
-    })
+      })
       .then(handleClose2);
   };
   // เมื่อปิดหน้าต่าง จะเซ็ตค่าเริ่มต้นใหม่
@@ -215,24 +225,27 @@ const ManageCarButton: React.FC<props> = ({
     setValues({
       carName: brand + " " + title + " " + year,
       carID: id,
-      description: des,
-      review: review,
+      // description: des,
+      // review: review,
       price: price,
       preview: "",
       raw: "",
       typeID: options[type - 1],
+      gear_type: gear,
+      seats: seats,
+      doors: doors,
     });
     setDelete(!deleted);
   };
   // เมื่อปิดหน้าต่างลบ
   const handleClose2 = () => {
-    setOpen(false)
+    setOpen(false);
     setOpen2(false);
     setDelete(!deleted);
   };
   return (
     <>
-    {/* ปุ่มedit */}
+      {/* ปุ่มedit */}
       <Button
         color="primary"
         fullWidth
@@ -347,21 +360,21 @@ const ManageCarButton: React.FC<props> = ({
                     value={values.carName}
                     onChange={handleChange("carName")}
                   />
+                  <TextField
+                    id="doors"
+                    label="doors"
+                    variant="outlined"
+                    value={values.doors}
+                    onChange={handleChange("doors")}
+                  />
+                  <TextField
+                    id="seats"
+                    label="seats"
+                    variant="outlined"
+                    value={values.seats}
+                    onChange={handleChange("seats")}
+                  />
 
-                  <TextField
-                    id="description"
-                    label="description"
-                    variant="outlined"
-                    value={values.description}
-                    onChange={handleChange("description")}
-                  />
-                  <TextField
-                    id="review"
-                    label="review"
-                    variant="outlined"
-                    value={values.review}
-                    onChange={handleChange("review")}
-                  />
                   <TextField
                     id="price"
                     label="price"
@@ -378,12 +391,15 @@ const ManageCarButton: React.FC<props> = ({
                       setValues({
                         carName: values.carName,
                         carID: values.carID,
-                        description: values.description,
-                        review: values.review,
+                        // description: values.description,
+                        // review: values.review,
                         price: values.price,
                         preview: values.preview,
                         raw: values.raw,
                         typeID: newValue!,
+                        gear_type: values.gear_type,
+                        seats: values.seats,
+                        doors: values.doors,
                       });
                     }}
                     inputValue={inputValue}
@@ -397,6 +413,41 @@ const ManageCarButton: React.FC<props> = ({
                       <TextField
                         {...params}
                         label="Type Car"
+                        variant="outlined"
+                      />
+                    )}
+                  />
+                  <Autocomplete
+                    value={values.gear_type == "A" ? "Auto" : "Manual"}
+                    onChange={(event: any, newValue: string | null) => {
+                      if (newValue) {
+                        setTypeGear(gearType.get(newValue)!);
+                      }
+                      setValues({
+                        carName: values.carName,
+                        carID: values.carID,
+                        // description: values.description,
+                        // review: values.review,
+                        price: values.price,
+                        preview: values.preview,
+                        raw: values.raw,
+                        typeID: values.typeID,
+                        gear_type: newValue!,
+                        seats: values.seats,
+                        doors: values.doors,
+                      });
+                    }}
+                    inputValue={inputGear}
+                    onInputChange={(event, newInputValue) => {
+                      setInputGear(newInputValue);
+                    }}
+                    id="type-id-gear"
+                    options={["Auto", "Manual"]}
+                    sx={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Type Gear"
                         variant="outlined"
                       />
                     )}
