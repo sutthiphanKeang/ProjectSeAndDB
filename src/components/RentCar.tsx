@@ -154,13 +154,13 @@ export default function RentCar() {
           subheader={<li />}
         >
           {/* mapข้อมูลที่ดึงมา ใส่ในList */}
-          {data2.map((item, index) => (
+          {data.map((item, index) => (
             <ListItem>
               <Paper
                 sx={{
                   p: 2,
                   margin: "auto",
-                  maxWidth: 800,
+                  maxWidth: 900,
                   flexGrow: 1,
                   backgroundColor: (theme) =>
                     theme.palette.mode === "dark" ? "#1A2027" : "#f5f5f5",
@@ -169,46 +169,61 @@ export default function RentCar() {
                 <Grid container spacing={2}>
                   <Grid item xs>
                     {/* แสดงรูป */}
-                    <ButtonBase>
-                      <img
-                        alt="complex"
-                        src={`${item.vehicle_img}?w=50&h=50&fit=crop&auto=format`}
-                        srcSet={`${item.vehicle_img}?w=50&h=50&fit=crop&auto=format&dpr=2 2x`}
-                        width="200"
-                        height="160"
-                      />
-                    </ButtonBase>
+                    <Grid container direction={"row"} justifyContent={"center"}>
+                      <Grid pr={3}>
+                        <ButtonBase>
+                          <img
+                            alt="complex"
+                            src={`${item.vehicle_img}?w=50&h=50&fit=crop&auto=format`}
+                            srcSet={`${item.vehicle_img}?w=50&h=50&fit=crop&auto=format&dpr=2 2x`}
+                            width="200"
+                            height="160"
+                          />
+                        </ButtonBase>
+                      </Grid>
+
+                      <Grid item xs container direction="column" spacing={2}>
+                        {/* แสดงข้อมูลต่างๆ */}
+                        <Grid item xs sx={{ display: "inline-block" }}>
+                          <Typography gutterBottom variant="h5" component="div">
+                            {item.brand} {item.name} {item.year}
+                          </Typography>
+
+                          <Typography variant="body2" gutterBottom>
+                            Seats: {item.seats}
+                          </Typography>
+                          <Typography variant="body2" gutterBottom>
+                            Doors: {item.doors}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Grid>
                   </Grid>
                   <Grid item xs={12} sm container>
                     <Grid item xs container direction="column" spacing={2}>
-                      {/* แสดงข้อมูลต่างๆของรถ */}
+                      {/* แสดงข้อมูลต่างๆ */}
                       <Grid
                         item
                         xs
-                        sx={{ alignItems: "center", justifyContent: "center" }}
+                        sx={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
                       >
                         <Typography
                           gutterBottom
-                          variant="subtitle1"
+                          variant="h5"
                           component="div"
+                          sx={{ display: "flex", justifyContent: "left" }}
                         >
-                          Brand: {item.brand}
+                          Price / Day : {item.cost}
                         </Typography>
-                        <Typography variant="body2" gutterBottom>
-                          Model Name: {item.name}
-                        </Typography>
+
                         <Typography variant="body2" gutterBottom>
                           Vehicle ID: {item.vehicle_id}
                         </Typography>
                         <Typography variant="body2" gutterBottom>
-                          Model Year: {item.year}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          gutterBottom
-                          sx={{ fontSize: 22, fontWeight: "bold" }}
-                        >
-                          Price / Day : {item.cost}
+                          Gear type: {item.gear_type == "A" ? "Auto" : "Manual"}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -233,3 +248,18 @@ export default function RentCar() {
     </>
   );
 }
+let data = [
+  {
+    brand: "Nissan",
+    name: "Almera",
+    vehicle_id: "กข1234",
+    vehicle_img:
+      "https://www.headlightmag.com/hlmwp/wp-content/uploads/2022/03/2022_03_21_Nissan_Almera_VL_Sportech_01.jpg",
+    year: "2022",
+    cost: "2000",
+    type_id: "1",
+    gear_type: "A",
+    seats: "4",
+    doors: "4",
+  },
+];
