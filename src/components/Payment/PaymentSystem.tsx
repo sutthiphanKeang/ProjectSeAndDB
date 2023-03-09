@@ -2,6 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2';
 import Stack from '@mui/material/Stack';
+
 // for input payment
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
@@ -94,48 +95,45 @@ interface State {
 }
 const PaymentSystem: React.FC = () => {
   function createDataOption(
-    value: number,
     name: string,
     id: string,
     exdate: string,
     cvc: string,
   ) {
-    return {value, name, id, exdate, cvc};
+    return {name, id, exdate, cvc};
   }
 
   const Credit = [
-    createDataOption(0, 'New Card','', '', ''),
-    createDataOption(1, 'KBank','1234-1234-1234-1234', '12/23', '123'),
-    createDataOption(2, 'SCB', '2234-2234-2234-2234', '02/24', '321'),
-    createDataOption(3, 'TTB', '3234-3234-3234-3234', '22/25', '213'),
+    createDataOption('KBank','1234-1234-1234-1234', '12/23', '123'),
+    createDataOption('SCB', '2234-2234-2234-2234', '02/24', '321'),
+    createDataOption('TTB', '3234-3234-3234-3234', '22/25', '213'),
   ];
 
   function createDataInvice(
     name: string,
-    cost: number,
+    cost: string,
   ) {
     return { name, cost};
   }
   
   const Invice = [
-    createDataInvice('Number of Invoice', 12345678),
-    createDataInvice('Car rental*', 8000),
-    createDataInvice('Insurance*', 2000),
-    createDataInvice('Personal Insurance', 0),
-    createDataInvice('Additional', 0),
+    createDataInvice('Number of Invoice', '123456789'),
+    createDataInvice('Car rental*', '8000'),
+    createDataInvice('Personal Package', '0'),
+    createDataInvice('Additional', '0'),
   ];
 
   function createDataSum(
     name: string,
-    cost: number,
+    cost: string,
   ) {
     return { name, cost};
   }
   
   const Sum = [
-    createDataSum('Invice price', 10000),
-    createDataSum('Service fee', 500),
-    createDataSum('Tatal price**', 10500),
+    createDataSum('Invice price', '10000'),
+    createDataSum('Service fee', '500'),
+    createDataSum('Tatal price**', '10500'),
   ];
 
   const [values, setValues] = React.useState<State>({
@@ -158,11 +156,19 @@ const PaymentSystem: React.FC = () => {
 
   // ของปุ่ม option
   const [Option, setOption] = React.useState(Credit[0]);
+  const [newCard, setCard] = React.useState(true);
   const optionChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const value = event.target.value;
-      const x = Credit.findIndex((e) => e.value.toString() === value);
+    if(value != 0){
+      const x = Credit.findIndex((e) => e.name.toString() === value);
       setOption(Credit[x])
       console.log(x)
+      setCard(false);
+    }
+    else{
+      setCard(true);
+    }
+      
     
   };
   return (
@@ -191,8 +197,9 @@ const PaymentSystem: React.FC = () => {
                   id: 'uncontrolled-native',
                 }}
               >
+                <option value={0}>New Credit Card</option>
                 {Credit.map((Credit) => (
-                  <option value={Credit.value}>{Credit.name}</option>
+                  <option value={Credit.name}>{Credit.id}</option>
                 ))}
                 
               </NativeSelect>
@@ -206,7 +213,7 @@ const PaymentSystem: React.FC = () => {
                   <b>Credit Card Information</b>
                 </Typography>
               </CardContent>
-              {Option.value == 0 &&(<div>
+              {newCard &&(<div>
                 <FormControl variant="standard">
                   <InputLabel  sx={{ ml:2}} htmlFor="formatted-text-mask-input">Name of Card</InputLabel>
                   <Input
@@ -245,7 +252,6 @@ const PaymentSystem: React.FC = () => {
                 <FormControl variant="standard">
                   <InputLabel  sx={{ ml:2}} htmlFor="formatted-text-mask-input">CVV/CVC</InputLabel>
                   <Input
-                    error
                     sx={{ m: 2, width: "35ch" }}
                     value={values.cvc}
                     onChange={handleChange}
@@ -270,7 +276,7 @@ const PaymentSystem: React.FC = () => {
               </CardContent>
               </div>)}
 
-              {Option.value != 0  && Option &&(
+              {Option.name != ""  && Option &&(
                 <div>
                     <div>
                     <TextField
@@ -484,4 +490,5 @@ const PaymentSystem: React.FC = () => {
     </Box>
   );
 }
+
 export default PaymentSystem;
