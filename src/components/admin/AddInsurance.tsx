@@ -136,13 +136,13 @@ export default function Insurance() {
           Insert Package
         </Button>
         <Dialog open={open1} onClose={handleClickOpen1}>
-          <DialogTitle>Insert Insurance กรอกที่นี่</DialogTitle>
+          <DialogTitle>Insert Package กรอกที่นี่</DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
               margin="dense"
               id="Name"
-              label="Insurance Name"
+              label="Package Name"
               fullWidth
               variant="standard"
               value={values.inName}
@@ -151,8 +151,8 @@ export default function Insurance() {
             <TextField
               autoFocus
               margin="dense"
-              id="InsurClasss"
-              label="Class of Insurance "
+              id="Deductible"
+              label="Excess"
               fullWidth
               variant="standard"
               value={values.inClass}
@@ -162,7 +162,7 @@ export default function Insurance() {
               autoFocus
               margin="dense"
               id="Detail"
-              label="Insurance Detail"
+              label="Package Detail"
               fullWidth
               variant="standard"
               value={values.inDetail}

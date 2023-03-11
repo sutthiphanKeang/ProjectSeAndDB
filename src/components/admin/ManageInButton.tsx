@@ -173,7 +173,7 @@ const ManageInButton: React.FC<props> = ({
             autoFocus
             margin="dense"
             id="Class"
-            label="Deductible"
+            label="Excess"
             fullWidth
             variant="standard"
             value={values.inClass}

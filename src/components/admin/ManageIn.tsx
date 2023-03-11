@@ -195,7 +195,7 @@ export default function ManageIN() {
                         variant="subtitle2"
                         component="div"
                       >
-                        เงินคุ้มครองค่าเสียหายแรก {item.class} บาท
+                        เงินคุ้มครองค่าเสียหายแรก {item.class} 
                       </Typography>
                       <Typography variant="body2" gutterBottom>
                         ข้อมูลการคุ้มครอง : {item.info}
