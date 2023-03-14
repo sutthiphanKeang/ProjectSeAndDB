@@ -112,7 +112,7 @@ const AddCar: React.FC = () => {
         } else if (/^[a-zA-Z0-9ก-ฮ]+\s+[a-zA-Z0-9]+\s+\d{4}$/.test(value)) {
           setErrorName("");
         } else if (/^[a-zA-Z0-9ก-ฮ]+\s+[a-zA-Z0-9]+\s+\D*$/.test(value)) {
-          setErrorName("Error");
+          setErrorName("Invalid name field!");
         }
         setValues({ ...values, [prop]: value });
       } else if (prop == "seats") {
