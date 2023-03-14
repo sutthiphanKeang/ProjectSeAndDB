@@ -114,10 +114,10 @@ const ManageCarButton: React.FC<props> = ({
     carName: brand + " " + title + " " + year,
     carID: id,
     price: price,
-    preview: "",
-    raw: "",
+    preview: img,
+    raw: img,
     typeID: options[type - 1],
-    gear_type: gear,
+    gear_type: gear == "A" ? "Auto":"Manual",
     seats: seats,
     doors: doors,
   });
@@ -133,8 +133,8 @@ const ManageCarButton: React.FC<props> = ({
         carName: values.carName,
         carID: values.carID,
         price: values.price,
-        preview: URL.createObjectURL(e.target.files[0]),
-        raw: e.target.files[0],
+        preview: values.preview,//URL.createObjectURL(e.target.files[0]),
+        raw: values.raw,
         typeID: values.typeID,
         gear_type: values.gear_type,
         seats: values.seats,
@@ -152,22 +152,35 @@ const ManageCarButton: React.FC<props> = ({
   const handleNext = (e: React.MouseEvent) => {
     e.preventDefault();
     var body = new FormData();
-    body.append("carName", values.carName);
-    body.append("carId", id);
+    body.append("name", values.carName);
+    body.append("vehicle_id", id);
     // body.append("description", values.description);
     // body.append("review", values.review);
-    body.append("price", values.price);
-    body.append("typeId", typeId.get(values.typeID)!);
-    body.append("file", values.raw);
-
+    body.append("cost", values.price);
+    body.append("type_id", typeId.get(values.typeID)!);
+    body.append("vehicle_img", values.raw);
+    body.append("seats", values.seats);
+    body.append("doors", values.doors);
+    body.append("gear_type", values.gear_type);
+    console.log(body);
     const token = JSON.parse(
       localStorage.getItem("admin") ?? ' { "token": "" }'
     ).token;
     console.log("token", token);
+
     axios({
       method: "PUT",
-      url: "https://carleasing.azurewebsites.net/vehicle/edit",
-      data: body,
+      url: `http://localhost:3001/vehicle/edit/${values.carID}`,
+      data: {
+        name: values.carName,
+        vehicle_id: id,
+        cost: values.price,
+        type_id: typeId.get(values.typeID)!,
+        vehicle_img: values.raw,
+        seats: values.seats,
+        doors: values.doors,
+        gear_type: values.gear_type == "Auto" ? "A" : "M",
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -198,7 +211,7 @@ const ManageCarButton: React.FC<props> = ({
     console.log({ carId: values.carID });
     axios({
       method: "delete",
-      url: "https://carleasing.azurewebsites.net/vehicle/delete",
+      url: `http://localhost:3001/vehicle/delete/${values.carID}`,
       data: { carId: values.carID },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -231,7 +244,7 @@ const ManageCarButton: React.FC<props> = ({
       preview: "",
       raw: "",
       typeID: options[type - 1],
-      gear_type: gear,
+      gear_type: gear == "A" ? "Auto":"Manual",
       seats: seats,
       doors: doors,
     });
@@ -418,7 +431,7 @@ const ManageCarButton: React.FC<props> = ({
                     )}
                   />
                   <Autocomplete
-                    value={values.gear_type == "A" ? "Auto" : "Manual"}
+                    value={values.gear_type}
                     onChange={(event: any, newValue: string | null) => {
                       if (newValue) {
                         setTypeGear(gearType.get(newValue)!);

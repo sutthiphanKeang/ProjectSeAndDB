@@ -26,7 +26,7 @@ export default function ManageCar() {
   useEffect(() => {
     axios({
       method: "GET",
-      url: "https://carleasing.azurewebsites.net/vehicle",
+      url: "http://localhost:3001/vehicle/get",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -69,7 +69,7 @@ export default function ManageCar() {
           subheader={<li />}
         >
           {/* mapข้อมูลสำหรับใส่ลงlist */}
-          {data.map((item) => (
+          {data2.map((item) => (
             <ListItem>
               <Paper
                 sx={{
