@@ -36,9 +36,9 @@ const theme = createTheme({
 
 //set state เอาไปใช้ใน const
 interface State {
-  carName: string;
-  carId: string;
-  price: string;
+  name: string;
+  vehicle_id: string;
+  cost: string;
   gear_type: string;
   seats: string;
   doors: string;
@@ -66,11 +66,17 @@ const AddCar: React.FC = () => {
   const [value2, setValue2] = React.useState<string | null>(); //เซ็ทค่าในตัวเลือกประเภทรถ
   const [inputValue, setInputValue] = React.useState("");
   const [inputValue2, setInputValue2] = React.useState("");
+  const [errorVehicleID, setErrorVehicleID] = useState("");
+  const [errorName, setErrorName] = useState("");
+  const [errorSeats, setErrorSeats] = useState("");
+  const [errorDoors, setErrorDoors] = useState("");
+  const [errorCost, setErrorCost] = useState("");
+
   //ตัว state ของชนิดรถ
   const [values, setValues] = React.useState<State>({
-    carName: "",
-    carId: "",
-    price: "",
+    name: "",
+    vehicle_id: "",
+    cost: "",
     gear_type: "",
     seats: "",
     doors: "",
@@ -81,7 +87,68 @@ const AddCar: React.FC = () => {
   //ฟังชั่นส่ง state มาเซ็ทใน setValues
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({ ...values, [prop]: event.target.value });
+      const { value } = event.target;
+      console.log("input value:", (!!errorCost)||(!!errorDoors)||(!!errorName)||(!!errorSeats)||(!!errorVehicleID));
+      if (prop == "vehicle_id") {
+        if (value.length == 0) {
+          setErrorVehicleID("Vehicle id field should not empty!");
+        } else if (value.length > 6) {
+          setErrorVehicleID(
+            "Vehicle id length should not exceed 6 characters!"
+          );
+        } else if (/^[a-zA-Z\u0E00-\u0E7F]{2}\d{4}$/.test(value)) {
+          setErrorVehicleID("");
+        } else {
+          setErrorVehicleID(
+            "Invalid vehicle ID. Please enter 2 letters at the start and 4 numbers at the end!"
+          );
+        }
+        setValues({ ...values, [prop]: value });
+      } else if (prop == "name") {
+        if (value.length == 0) {
+          setErrorName("Car name field should not empty! ");
+        } else if (value == " ") {
+          setErrorName("first character shound not be space!");
+        } else if (/^[a-zA-Z0-9ก-ฮ]+\s+[a-zA-Z0-9]+\s+\d{4}$/.test(value)) {
+          setErrorName("");
+        } else if (/^[a-zA-Z0-9ก-ฮ]+\s+[a-zA-Z0-9]+\s+\D*$/.test(value)) {
+          setErrorName("Error");
+        }
+        setValues({ ...values, [prop]: value });
+      } else if (prop == "seats") {
+        if (value.length == 0) {
+          setErrorSeats("Seats field should not empty!");
+        } else if (event.target.value[0] == " ") {
+          setErrorSeats("first character shound not space!");
+        } else if (/^\d{1}$/.test(value)) {
+          setErrorSeats("");
+        } else {
+          setErrorSeats("Invalid seats field!");
+        }
+        setValues({ ...values, [prop]: value });
+      } else if (prop == "doors") {
+        if (value.length == 0) {
+          setErrorDoors("Doors field should not empty!");
+        } else if (event.target.value[0] == " ") {
+          setErrorDoors("first character shound not space!");
+        } else if (/^\d{1}$/.test(value)) {
+          setErrorDoors("");
+        } else {
+          setErrorDoors("Invalid doors field!");
+        }
+        setValues({ ...values, [prop]: value });
+      } else if (prop == "cost") {
+        if (value.length == 0) {
+          setErrorCost("Price field should not empty!");
+        } else if (event.target.value[0] == " ") {
+          setErrorCost("first character shound not space!");
+        } else if (/^\d+$/.test(value)) {
+          setErrorCost("");
+        } else {
+          setErrorCost("Invalid cost field!");
+        }
+        setValues({ ...values, [prop]: value });
+      }
     };
 
   const [file, setfile] = useState<FileList | null>(); //state เก็บรูปภาพ
@@ -110,28 +177,38 @@ const AddCar: React.FC = () => {
     setLoading(true);
     e.preventDefault();
     console.log(`handleSubmit`);
-    var body = new FormData(); //ทำ formdata
-    body.append("carName", values.carName);
-    body.append("carId", values.carId);
+    const body = new FormData(); //ทำ formdata
+    body.append("name", values.name);
+    body.append("vehicle_id", values.vehicle_id);
     // body.append("description", values.description);
     // body.append("review", values.review);
-    body.append("price", values.price);
+    body.append("cost", values.cost);
     body.append("typeId", typeCar);
     body.append("file", file ? file[0] : "img/Car1.jpg");
-
+    console.log(body);
     //เก็บ token เพื่อนำมาใช้
     const token = JSON.parse(
       localStorage.getItem("admin") ?? ' { "token": "" }'
     ).token;
     console.log("token", token);
-
+    console.log(file);
     //ส่งข้อมูลเข้าหลังบ้าน
-    axios({
+    if (!((!!errorCost)||(!!errorDoors)||(!!errorName)||(!!errorSeats)||(!!errorVehicleID))){
+      axios({
       method: "post",
-      url: "https://carleasing.azurewebsites.net/vehicle/",
-      data: body,
+      url: "http://localhost:3001/vehicle/post/",
+      data: {
+        name: values.name,
+        vehicle_id: values.vehicle_id,
+        cost: values.cost,
+        type_id: typeCar,
+        availability: 1,
+        vehicle_img: file ? file[0] : "img/Car1.jpg",
+        seats: values.seats,
+        doors: values.doors,
+        gear_type: values.gear_type == "Auto" ? "A" : "M",
+      },
       headers: {
-        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     })
@@ -154,6 +231,11 @@ const AddCar: React.FC = () => {
         setLoading(false);
         alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
       });
+    }else{
+      setLoading(false);
+      alert("กรุณาตรวจสอบข้อมูล");
+    }
+    
   };
 
   return (
@@ -189,7 +271,7 @@ const AddCar: React.FC = () => {
                   fontWeight: "bold",
                 }}
               >
-                Car Name : {values.carName}
+                Vehicle Name : {values.name}
               </Box>
               <Box
                 sx={{
@@ -198,7 +280,7 @@ const AddCar: React.FC = () => {
                   fontWeight: "bold",
                 }}
               >
-                Car ID : {values.carId}
+                Vehicle ID : {values.vehicle_id}
               </Box>
               <Box
                 sx={{
@@ -227,7 +309,7 @@ const AddCar: React.FC = () => {
                   fontSize: 25,
                 }}
               >
-                Price : {values.price}
+                Price : {values.cost}
               </Box>
             </Box>
           </ThemeProvider>
@@ -244,22 +326,28 @@ const AddCar: React.FC = () => {
           <form encType="multipart/form-data">
             <div>
               <TextField
-                label="Car Name"
+                error={!!errorName}
+                helperText={errorName}
+                label="Vehicle Name"
                 id="outlined-start-adornment"
                 sx={{ m: 1, width: "25ch" }}
-                value={values.carName}
-                onChange={handleChange("carName")}
+                value={values.name}
+                onChange={handleChange("name")}
               />
               <TextField
-                label="Car ID"
+                error={!!errorVehicleID}
+                helperText={errorVehicleID}
+                label="Vehicle ID"
                 id="outlined-start-adornment"
                 sx={{ m: 1, width: "25ch" }}
-                value={values.carId}
-                onChange={handleChange("carId")}
+                value={values.vehicle_id}
+                onChange={handleChange("vehicle_id")}
               />
             </div>
             <div>
               <TextField
+                error={!!errorSeats}
+                helperText={errorSeats}
                 id="outlined-multiline-static"
                 label="Seats"
                 sx={{ m: 1, width: "25ch" }}
@@ -268,6 +356,8 @@ const AddCar: React.FC = () => {
                 onChange={handleChange("seats")}
               />
               <TextField
+                error={!!errorDoors}
+                helperText={errorDoors}
                 id="outlined-multiline-static"
                 label="Doors"
                 sx={{ m: 1, width: "25ch" }}
@@ -319,11 +409,13 @@ const AddCar: React.FC = () => {
             <div></div>
             <div>
               <TextField
+                error={!!errorCost}
+                helperText={errorCost}
                 label="Price"
                 id="outlined-start-adornment"
                 sx={{ m: 1, width: "97%" }}
-                value={values.price}
-                onChange={handleChange("price")}
+                value={values.cost}
+                onChange={handleChange("cost")}
               />
             </div>
             <div>
