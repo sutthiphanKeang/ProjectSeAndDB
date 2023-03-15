@@ -196,14 +196,13 @@ const AddCar: React.FC = () => {
     if (!((!!errorCost)||(!!errorDoors)||(!!errorName)||(!!errorSeats)||(!!errorVehicleID))){
       axios({
       method: "post",
-      url: "http://localhost:3001/vehicle/post/",
+      url: "http://localhost:5500/vehicle/",
       data: {
-        name: values.name,
-        vehicle_id: values.vehicle_id,
-        cost: values.cost,
-        type_id: typeCar,
-        availability: 1,
-        vehicle_img: file ? file[0] : "img/Car1.jpg",
+        carName: values.name,
+        carId: values.vehicle_id,
+        price: values.cost,
+        typeId: typeCar,
+        file: file ? file[0] : "img/Car1.jpg",
         seats: values.seats,
         doors: values.doors,
         gear_type: values.gear_type == "Auto" ? "A" : "M",

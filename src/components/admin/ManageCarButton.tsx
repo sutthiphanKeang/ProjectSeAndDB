@@ -118,8 +118,8 @@ const ManageCarButton: React.FC<props> = ({
     carName: brand + " " + title + " " + year,
     carID: id,
     price: price,
-    preview: img,
-    raw: img,
+    preview: "",
+    raw: "",
     typeID: options[type - 1],
     gear_type: gear == "A" ? "Auto" : "Manual",
     seats: seats,
@@ -183,8 +183,8 @@ const ManageCarButton: React.FC<props> = ({
         carName: values.carName,
         carID: values.carID,
         price: values.price,
-        preview: values.preview, //URL.createObjectURL(e.target.files[0]),
-        raw: values.raw,
+        preview: URL.createObjectURL(e.target.files[0]),
+        raw: e.target.files[0],
         typeID: values.typeID,
         gear_type: values.gear_type,
         seats: values.seats,
@@ -202,35 +202,27 @@ const ManageCarButton: React.FC<props> = ({
   const handleNext = (e: React.MouseEvent) => {
     e.preventDefault();
     var body = new FormData();
-    body.append("name", values.carName);
-    body.append("vehicle_id", id);
+    body.append("carName", values.carName);
+    body.append("carId", id);
     // body.append("description", values.description);
     // body.append("review", values.review);
-    body.append("cost", values.price);
-    body.append("type_id", typeId.get(values.typeID)!);
-    body.append("vehicle_img", values.raw);
+    body.append("price", values.price);
+    body.append("typeId", typeId.get(values.typeID)!);
+    body.append("file", values.raw);
     body.append("seats", values.seats);
     body.append("doors", values.doors);
-    body.append("gear_type", values.gear_type);
-    console.log(body);
+    body.append("gear_type", values.gear_type == "Auto" ? "A" : "M");
+    console.log(body.values);
     const token = JSON.parse(
       localStorage.getItem("admin") ?? ' { "token": "" }'
     ).token;
     console.log("token", token);
+    console.log(id);
     if (!(!!errorCost || !!errorDoors || !!errorName || !!errorSeats)) {
       axios({
         method: "PUT",
-        url: `http://localhost:3001/vehicle/edit/${values.carID}`,
-        data: {
-          name: values.carName,
-          vehicle_id: id,
-          cost: values.price,
-          type_id: typeId.get(values.typeID)!,
-          vehicle_img: values.raw,
-          seats: values.seats,
-          doors: values.doors,
-          gear_type: values.gear_type == "Auto" ? "A" : "M",
-        },
+        url: `http://localhost:5500/vehicle/`,
+        data: body,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -264,7 +256,7 @@ const ManageCarButton: React.FC<props> = ({
     console.log({ carId: values.carID });
     axios({
       method: "delete",
-      url: `http://localhost:3001/vehicle/delete/${values.carID}`,
+      url: `http://localhost:5500/vehicle/delete/`,
       data: { carId: values.carID },
       headers: {
         Authorization: `Bearer ${token}`,

@@ -26,7 +26,7 @@ export default function ManageCar() {
   useEffect(() => {
     axios({
       method: "GET",
-      url: "http://localhost:3001/vehicle/get",
+      url: "http://localhost:5500/vehicle/",
       headers: {
         Authorization: `Bearer ${token}`,
       },
