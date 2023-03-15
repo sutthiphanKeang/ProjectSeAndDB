@@ -39,6 +39,7 @@ interface State {
   name: string;
   vehicle_id: string;
   cost: string;
+  vehicle_img: any;
   gear_type: string;
   seats: string;
   doors: string;
@@ -77,6 +78,7 @@ const AddCar: React.FC = () => {
     name: "",
     vehicle_id: "",
     cost: "",
+    vehicle_img: "",
     gear_type: "",
     seats: "",
     doors: "",
@@ -109,9 +111,9 @@ const AddCar: React.FC = () => {
           setErrorName("Car name field should not empty! ");
         } else if (value == " ") {
           setErrorName("first character shound not be space!");
-        } else if (/^[a-zA-Z0-9ก-ฮ]+\s+[a-zA-Z0-9]+\s+\d{4}$/.test(value)) {
+        } else if (/^[a-zA-Z0-9]+\s+[a-zA-Z0-9]+\s+\d{4}$/.test(value)) {
           setErrorName("");
-        } else if (/^[a-zA-Z0-9ก-ฮ]+\s+[a-zA-Z0-9]+\s+\D*$/.test(value)) {
+        } else {
           setErrorName("Invalid name field!");
         }
         setValues({ ...values, [prop]: value });
@@ -152,7 +154,20 @@ const AddCar: React.FC = () => {
     };
 
   const [file, setfile] = useState<FileList | null>(); //state เก็บรูปภาพ
-
+  const handleChangeImage = (e: any) => {
+    if (e.target.files.length) {
+      setValues({
+        name: values.name,
+        cost: values.cost,
+        vehicle_img: e.target.files[0],
+        vehicle_id: values.vehicle_id,
+        gear_type: values.gear_type,
+        seats: values.seats,
+        doors: values.doors,
+      });
+    }
+  };
+  
   //ตัว map ชนิดรถให้เป็นเลข ส่งไปหลังบ้าน
   const typeId = new Map<string, string>([
     ["Sedan", "1"],
@@ -178,35 +193,30 @@ const AddCar: React.FC = () => {
     e.preventDefault();
     console.log(`handleSubmit`);
     const body = new FormData(); //ทำ formdata
-    body.append("name", values.name);
-    body.append("vehicle_id", values.vehicle_id);
+    body.append("carName", values.name);
+    body.append("carId", values.vehicle_id);
     // body.append("description", values.description);
     // body.append("review", values.review);
-    body.append("cost", values.cost);
+    console.log(typeCar);
+    body.append("price", values.cost);
     body.append("typeId", typeCar);
-    body.append("file", file ? file[0] : "img/Car1.jpg");
-    console.log(body);
+    body.append("file", values.vehicle_img);
+    body.append("seats", values.seats);
+    body.append("doors", values.doors);
+    body.append("gear_type", values.gear_type == "Auto" ? "A" : "M");
+    console.log(values.vehicle_img ? values.vehicle_img : "img/Car1.jpg");
     //เก็บ token เพื่อนำมาใช้
     const token = JSON.parse(
       localStorage.getItem("admin") ?? ' { "token": "" }'
     ).token;
     console.log("token", token);
-    console.log(file);
+    console.log(values.vehicle_img);
     //ส่งข้อมูลเข้าหลังบ้าน
     if (!((!!errorCost)||(!!errorDoors)||(!!errorName)||(!!errorSeats)||(!!errorVehicleID))){
       axios({
       method: "post",
       url: "http://localhost:5500/vehicle/",
-      data: {
-        carName: values.name,
-        carId: values.vehicle_id,
-        price: values.cost,
-        typeId: typeCar,
-        file: file ? file[0] : "img/Car1.jpg",
-        seats: values.seats,
-        doors: values.doors,
-        gear_type: values.gear_type == "Auto" ? "A" : "M",
-      },
+      data: body,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -249,7 +259,7 @@ const AddCar: React.FC = () => {
           component="img"
           height="225"
           image={
-            file ? URL.createObjectURL(file[0]) : "imageDefault/Default.jpeg"
+            values.vehicle_img ? URL.createObjectURL(values.vehicle_img) : "imageDefault/Default.jpeg"
           }
         />
         <CardContent>
@@ -387,15 +397,15 @@ const AddCar: React.FC = () => {
               />
               <Autocomplete
                 value={value2}
-                onChange={(event: any, newValue: string | null) => {
-                  if (newValue) {
-                    settypeCar(typeGearId.get(newValue)!);
+                onChange={(event: any, newValue2: string | null) => {
+                  if (newValue2) {
+                    values.gear_type = (typeGearId.get(newValue2)!);
                   }
-                  setValue2(newValue);
+                  setValue2(newValue2);
                 }}
                 inputValue={inputValue2}
-                onInputChange={(event, newInputValue) => {
-                  setInputValue2(newInputValue);
+                onInputChange={(event, newInputValue2) => {
+                  setInputValue2(newInputValue2);
                 }}
                 id="type-id-gear"
                 options={gear}
@@ -429,7 +439,7 @@ const AddCar: React.FC = () => {
                   accept="image/*"
                   multiple
                   type="file"
-                  onChange={(event) => setfile(event.target.files)}
+                  onChange={handleChangeImage}
                 />
               </Button>
               <IconButton
@@ -441,7 +451,7 @@ const AddCar: React.FC = () => {
                   hidden
                   accept="image/*"
                   type="file"
-                  onChange={(event) => setfile(event.target.files)}
+                  onChange={handleChangeImage}
                 />
                 <PhotoCamera />
               </IconButton>
