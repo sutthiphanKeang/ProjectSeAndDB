@@ -27,7 +27,10 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 import Button from '@mui/material/Button';
-
+import axios from 'axios';
+import { useEffect } from 'react';
+import { Navigate, useLocation, useNavigate ,useOutletContext} from "react-router-dom";
+import { stat } from 'fs';
 
 
 
@@ -88,25 +91,60 @@ const TextMaskCustomCVC = React.forwardRef<HTMLElement, CustomProps>(
 );
 
 interface State {
-  name: string;
-  cardid: string;
+  name_holder: string;
+  card_num: string;
   exdate: string;
   cvc: string;
 }
+
 const PaymentSystem: React.FC = () => {
+  const { state } = useLocation();
+  console.log({ bill_id: state["bill_id"] });
+  //ทดสอบnavigateเข้าหน้า payment
+  const navigate = useNavigate();
+  //  useEffect(() => {
+  //   navigate("/PaymentSystem", {state:{bill_id: '62388656-4b78-4c7a-a0ca-26febdebce66'}})
+  // },[])
+
+  
+    
+  //เข้ามาในหน้า payment
+  // const {state} = useLocation();
+  // const bill = state.bill_id;
+  // console.log(state.bill_id);
+  
+  //รับข้อมูลของการชำระเงิน
+  const bill_id = { bill_id: state["bill_id"] };
+  const [BillData, setBillData] = React.useState<any[]>([]);
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: `http://localhost:3001/bill/get/${bill_id}`,
+    })
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        setBillData(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("found error", error);
+        alert("Error for Get Bill");
+      });
+  },[])
+  console.log(BillData)
   function createDataOption(
-    name: string,
-    id: string,
+    name_holder: string,
+    card_num: string,
     exdate: string,
     cvc: string,
   ) {
-    return {name, id, exdate, cvc};
+    return {name_holder, card_num, exdate, cvc};
   }
 
   const Credit = [
-    createDataOption('KBank','1234-1234-1234-1234', '12/23', '123'),
-    createDataOption('SCB', '2234-2234-2234-2234', '02/24', '321'),
-    createDataOption('TTB', '3234-3234-3234-3234', '22/25', '213'),
+    createDataOption('','', '', ''),
   ];
 
   function createDataInvice(
@@ -137,8 +175,8 @@ const PaymentSystem: React.FC = () => {
   ];
 
   const [values, setValues] = React.useState<State>({
-    name: '',
-    cardid: '',
+    name_holder: '',
+    card_num: '',
     exdate: '',
     cvc: '',
   });
@@ -147,30 +185,149 @@ const PaymentSystem: React.FC = () => {
   // console.log(values.cardid)
   // console.log(values.exdate)
   // console.log(values.cvc)
+  //post credit card
+  const cardhandleSubmit = () => {
+    axios
+      .post("http://localhost:3001/credit/post", {
+        name_holder: values.name_holder,
+        card_num: values.card_num,
+        exdate: values.exdate,
+        cvc: values.cvc,
+      })
+      
+      .then((response) => {
+        console.log("Credit Card information: ", response);
+        return response.data;
+      })
+      .then((data) => {
+        getCredit();
+        console.log("data>>",data.card_num)
+        alert("Success for Add Credit Card");
+        setValues({
+          name_holder: '',
+          card_num: '',
+          exdate: '',
+          cvc: '',
+        })
+      })
+      .catch((error) => {
+        console.error("found error", error);
+        alert("Error for Post Credit Card \n" + error);
+      });
+    
+  };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({
       ...values,
       [event.target.name]: event.target.value,
     });
   };
+  //ที่เลือก card
+  const [Default, setDefault] = React.useState('0');
 
   // ของปุ่ม option
+  const [DataOption, setDataOption] = React.useState<any[]>([]);
   const [Option, setOption] = React.useState(Credit[0]);
   const [newCard, setCard] = React.useState(true);
+ 
   const optionChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const value = event.target.value;
-    if(value != 0){
-      const x = Credit.findIndex((e) => e.name.toString() === value);
-      setOption(Credit[x])
-      console.log(x)
+    console.log(value)
+    if(value != '0'){
+      const x = DataOption.findIndex((e) => e.name_holder.toString() === value);
+      setOption(DataOption[x])
+      setDelete(DataOption[x].card_num)
+      console.log(Option)
       setCard(false);
     }
     else{
       setCard(true);
     }
-      
-    
   };
+
+  useEffect(() => {
+    getCredit();
+  },[])
+
+  const PaymentSummit = () => {
+    if(newCard){
+      alert("Please select your credit card before SUMMIT your payment")
+    }else{
+      axios.put("http://localhost:3001/paymentgateway", {
+        bill_id: bill_id,
+        card_num: Option.card_num
+      })
+      .then((response) => {
+        console.log(response);
+        alert("Payment successfully");
+        navigate("/UserPage");
+        return response.data;
+      })
+      .catch((error) => {
+        console.error("found error", error);
+        alert("Error for payment \n" + error);
+      });
+    }
+  }
+
+  const PaymentCancle = () => {
+      axios.delete(`http://localhost:3001/bill/cancle/${bill_id}`)
+      .then((response) => {
+        console.log(response);
+        alert("Bill cencle successfully");
+        navigate("/UserPage"); 
+        return response.data;
+      })
+      .catch((error) => {
+        console.error("found error", error);
+        alert("Error for cancle \n" + error);
+      });
+
+  }
+
+  //get credit card
+  const getCredit = () => {
+    axios({
+      method: "GET",
+      url: "http://localhost:3001/credit/get",
+    })
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        setDataOption(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("found error", error);
+        alert("Error for Get Credit Card");
+      });
+    };
+
+  // ของปุ่ม delete
+  const [Delete, setDelete] = React.useState("");
+  console.log(Delete)
+  const deleteChange = () => {
+    axios({
+      method: "DELETE",
+      url: `http://localhost:3001/credit/delete/${Delete}`,
+    })
+      .then((response) => {
+        setCard(true);
+        getCredit();
+        return response.data;
+      })
+      .then((data) => {
+        setDefault('0');
+        alert("Success for Delete Credit Card");
+      })
+      .catch((error) => {
+        console.error("found error", error);
+        alert("Error for Delete Credit Card");
+      });
+  };
+
+
   return (
     <Box sx={{ mt:6 }}>
       <Grid container spacing={2}>
@@ -191,15 +348,15 @@ const PaymentSystem: React.FC = () => {
               </InputLabel>
               <NativeSelect
                 onChange={optionChange}
-                defaultValue={0}
+                defaultValue={Default}
                 inputProps={{
                   name: 'Credit Card Option',
                   id: 'uncontrolled-native',
                 }}
               >
-                <option value={0}>New Credit Card</option>
-                {Credit.map((Credit) => (
-                  <option value={Credit.name}>{Credit.id}</option>
+                <option value={Default}>New Credit Card</option>
+                {DataOption.map((Credit) => (
+                  <option value={Credit.name_holder}>{Credit.card_num}</option>
                 ))}
                 
               </NativeSelect>
@@ -218,9 +375,9 @@ const PaymentSystem: React.FC = () => {
                   <InputLabel  sx={{ ml:2}} htmlFor="formatted-text-mask-input">Name of Card</InputLabel>
                   <Input
                     sx={{ m: 2, width: "35ch" }}
-                    value={values.name}
+                    value={values.name_holder}
                     onChange={handleChange}
-                    name="name"
+                    name="name_holder"
                     id="formatted-text-mask-input"
                   />
                 </FormControl>
@@ -229,9 +386,9 @@ const PaymentSystem: React.FC = () => {
                   <InputLabel  sx={{ ml:2}} htmlFor="formatted-text-mask-input">Credit Card ID</InputLabel>
                   <Input
                     sx={{ m: 2, width: "35ch" }}
-                    value={values.cardid}
+                    value={values.card_num}
                     onChange={handleChange}
-                    name="cardid"
+                    name="card_num"
                     id="formatted-text-mask-input"
                     inputComponent={TextMaskCustomID as any}
                   />
@@ -265,6 +422,7 @@ const PaymentSystem: React.FC = () => {
                   variant="contained"
                   type="submit"
                   color="success"
+                  onClick={cardhandleSubmit}
                   sx={{ m: 2, width: "40ch" }}
                 >
                   SAVE YOUR CARD
@@ -276,13 +434,13 @@ const PaymentSystem: React.FC = () => {
               </CardContent>
               </div>)}
 
-              {Option.name != ""  && Option &&(
+              {!newCard &&(
                 <div>
                     <div>
                     <TextField
                     sx={{ m: 2, width: "32ch" }}
                     label="Name of Card"
-                    value={Option.name}
+                    value={Option.name_holder}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -292,7 +450,7 @@ const PaymentSystem: React.FC = () => {
                     <TextField
                       sx={{ m: 2, width: "32ch" }}
                       label="Credit Card ID"
-                      value={Option.id}
+                      value={Option.card_num}
                       InputProps={{
                         readOnly: true,
                       }}
@@ -323,6 +481,7 @@ const PaymentSystem: React.FC = () => {
                     variant="contained"
                     color="error"
                     sx={{ m: 2, width: "40ch" }}
+                    onClick={deleteChange}
                   >
                     DELETE YOUR CARD
                   </Button>
@@ -365,8 +524,8 @@ const PaymentSystem: React.FC = () => {
                 <Card sx={{ width: 350, height: 300 }}>
                   <CardMedia
                     component="img"
-                    height="250"
-                    image="img/car.PNG"
+                    height="300"
+                    image="img/promo.png"
                     alt="QR code"
                   />
                 </Card>
@@ -381,16 +540,48 @@ const PaymentSystem: React.FC = () => {
                   <TableContainer component={Paper}>
                     <Table sx={{ Width: 300, height: 240 }} size="small" aria-label="a dense table">
                       <TableBody>
-                        {Invice.map((row) => (
-                          <TableRow
-                            key={row.name}
+                        {BillData.map((row) => (
+                          <>
+                            <TableRow
+                            key={row.bill_id}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
                             <TableCell component="th" scope="row">
-                              {row.name}
+                              Number of Invoice
                             </TableCell>
-                            <TableCell align="right">{row.cost}</TableCell>
+                            <TableCell align="right">{row.bill_id}</TableCell>
                           </TableRow>
+
+                          <TableRow
+                            key={row.car_rent}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell component="th" scope="row">
+                            Car rental*
+                            </TableCell>
+                            <TableCell align="right">{row.car_rent}</TableCell>
+                          </TableRow>
+                          
+                          <TableRow
+                            key={row.package_cost}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell component="th" scope="row">
+                            Personal Package
+                            </TableCell>
+                            <TableCell align="right">{row.package_cost}</TableCell>
+                          </TableRow>
+
+                          <TableRow
+                            key={0}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell component="th" scope="row">
+                            Additional
+                            </TableCell>
+                            <TableCell align="right">0</TableCell>
+                          </TableRow>
+                          </>
                         ))}
                       </TableBody>
                     </Table>
@@ -428,16 +619,40 @@ const PaymentSystem: React.FC = () => {
                   <TableContainer component={Paper}>
                     <Table sx={{ Width: 300, height: 100 }} size="small" aria-label="a dense table">
                       <TableBody>
-                        {Sum.map((row) => (
+                        {BillData.map((row) => (
+                          <>
                           <TableRow
-                            key={row.name}
+                            key={row.amount_balance}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
                             <TableCell component="th" scope="row">
-                              {row.name}
+                            Invice price
                             </TableCell>
-                            <TableCell align="right">{row.cost}</TableCell>
+                            <TableCell align="right">{row.amount_balance}</TableCell>
                           </TableRow>
+
+                          <TableRow
+                            key={row.tax_amount}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell component="th" scope="row">
+                            Service fee
+                            </TableCell>
+                            <TableCell align="right">{row.tax_amount}</TableCell>
+                          </TableRow>
+
+                          <TableRow
+                            key={row.total_amount}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                              <TableCell component="th" scope="row">
+                            Tatal price**
+                            </TableCell>
+                            <TableCell align="right">{row.total_amount}</TableCell>
+                            
+                          </TableRow>
+                          </>
+                          
                         ))}
                       </TableBody>
                     </Table>
@@ -451,7 +666,7 @@ const PaymentSystem: React.FC = () => {
                       <b>Pay off debt</b>
                     </Typography>
                     <Typography variant="caption" component="div" align="center">
-                    Click 'SUMMIT' to confirm your information <br/>or 'CANCEL' to cancel.
+                    Please select the credit card you want before <br/> Click 'SUMMIT' .
                     </Typography>
                   </CardContent>
                   <Stack
@@ -462,8 +677,8 @@ const PaymentSystem: React.FC = () => {
                   >
                     <Button
                       variant="contained"
-                      type="submit"
                       color="error"
+                      onClick={PaymentCancle}
                       sx={{width: "15ch" }}
                     >
                       CANCEL
@@ -473,6 +688,7 @@ const PaymentSystem: React.FC = () => {
                       variant="contained"
                       type="submit"
                       color="success"
+                      onClick={PaymentSummit}
                       sx={{width: "15ch" }}
                     >
                       Submit
