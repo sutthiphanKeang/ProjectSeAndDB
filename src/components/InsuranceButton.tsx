@@ -5,9 +5,10 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 type props = {
   bookData?: any;
-  in_id?: any;
+  // in_id?: any;
+  packageID?:any;
 };
-const InsuranceButton: React.FC<props> = ({ bookData, in_id }) => {
+const InsuranceButton: React.FC<props> = ({ bookData, packageID }) => {
   const token = JSON.parse(
     localStorage.getItem("user") ?? ' { "token": "" }'
   ).token;
@@ -19,11 +20,12 @@ const InsuranceButton: React.FC<props> = ({ bookData, in_id }) => {
   const handleClickOpen = () => {
     setOpen(true);
     console.log(bookData)
-    console.log(in_id)
+    console.log(packageID)
   };
   const rhandleSubmit = () => {
     console.log(`rhandleSubmit`);
-    navigate("/Costsummary", {state:{bookData:bookData,in_id:in_id}})
+    // navigate("/Costsummary", {state:{bookData:bookData,in_id:in_id}})
+    navigate("/Costsummary", {state:{bookData:bookData,packageID:packageID}})
     // axios({
     //   method: "get",
     //   url: "https://carleasing.azurewebsites.net/insurance",

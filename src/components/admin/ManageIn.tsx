@@ -31,7 +31,8 @@ export default function ManageIN() {
     
     axios({
       method: "GET",
-      url: "https://carleasing.azurewebsites.net/insurance/admin",
+      // url: "https://carleasing.azurewebsites.net/insurance/admin",
+      url:"http://localhost:3001/package/display",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -54,11 +55,11 @@ export default function ManageIN() {
   }, [loaded]);
 
   interface State {
-    inName: string;
-    inID: string;
-    inDetail: string;
-    inCost: number;
-    inClass: string;
+    packageID: any,
+    packageName: any,
+    packageInfo: any,
+    packageExcess: any,
+    packageCost: any
   }
 
   const dataJson = JSON.stringify(data2);
@@ -71,20 +72,20 @@ export default function ManageIN() {
     };
 
   const [values, setValues] = React.useState<State>({
-    inName: jsonObj.inName,
-    inID: jsonObj.inID,
-    inDetail: jsonObj.inDetail,
-    inCost: jsonObj.inCOst,
-    inClass: jsonObj.inClass,
+    packageID: jsonObj.packageID,
+    packageName: jsonObj.packageName,
+    packageInfo: jsonObj.packageInfo,
+    packageExcess: jsonObj.packageExcess,
+    packageCost: jsonObj.packageCost
     // inID:jsonObj.inID
   });
   const getItem = (props: any) => {
     setValues({
-      inName: props.name,
-      inID: props.in_id,
-      inDetail: props.info,
-      inCost: props.cost,
-      inClass: props.class,
+      packageName: props.packageName,
+      packageID: props.packageID,
+      packageInfo: props.packageInfo,
+      packageCost: props.packageCost,
+      packageExcess: props.packageExcess,
     });
   };
   const handleEdit = () => {
@@ -94,11 +95,11 @@ export default function ManageIN() {
       method: "put",
       url: "https://carleasing.azurewebsites.net/insurance/admin/edit",
       data: {
-        insurance_id: values.inID,
-        insurance_name: values.inName,
-        insurance_info: values.inDetail,
-        insurance_price: values.inCost,
-        insurance_class: values.inClass,
+        packageID: values.packageID,
+        packageName: values.packageName,
+        packageInfo: values.packageInfo,
+        packageCost: values.packageCost,
+        packageExcess: values.packageExcess,
       },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -188,35 +189,35 @@ export default function ManageIN() {
                         component="div"
                         color="#1a237e"
                       >
-                        แพ็คเกจที่ Name : {item.name}
+                        แพ็คเกจที่ Name : {item.packageName}
                       </Typography>
                       <Typography
                         gutterBottom
                         variant="subtitle2"
                         component="div"
                       >
-                        เงินคุ้มครองค่าเสียหายแรก {item.class} 
+                        เงินคุ้มครองค่าเสียหายแรก {item.packageExcess} 
                       </Typography>
                       <Typography variant="body2" gutterBottom>
-                        ข้อมูลการคุ้มครอง : {item.info}
+                        ข้อมูลการคุ้มครอง : {item.packageInfo}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        ID : {item.in_id}
+                        ID : {item.packageID}
                       </Typography>
                     </Grid>
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle1" component="div">
-                      {item.cost} บาท
+                      {item.packageCost} บาท/วัน
                     </Typography>
                   </Grid>
                   <Grid item>
                     <ManageInButton 
-                    in_id={item.in_id}
-                    name = {item.name}
-                    info = {item.info}
-                    class_ = {item.class}
-                    cost = {item.cost}
+                    packageID={item.packageID}
+                    packageName = {item.packageName}
+                    packageInfo = {item.packageInfo}
+                    packageExcess = {item.packageExcess}
+                    packageCost = {item.packageCost}
                     loaded = {loaded}
                     setLoad = {setLoad}/>
 

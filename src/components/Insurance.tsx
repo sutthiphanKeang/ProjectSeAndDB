@@ -28,7 +28,7 @@ const Insurance: React.FC<props> = ({ bookData }) => {
   useEffect(() => {
     axios({
       method: "GET",
-      url: "https://carleasing.azurewebsites.net/insurance",
+      url: "http://localhost:3001/package/display",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -68,11 +68,12 @@ const Insurance: React.FC<props> = ({ bookData }) => {
   const [insurancee_id,setState] = React.useState("");
 
   interface State {
-    inName: string;
-    inID: string;
-    inDetail: string;
-    inCost: string;
-    inClass: string;
+    packageID: any;
+    packageName: any;
+    packageInfo: any;
+    packageExcess: any;
+    packageCost: any;
+    
 
   }
   const dataJson = JSON.stringify(data2);
@@ -81,13 +82,14 @@ const Insurance: React.FC<props> = ({ bookData }) => {
 
   // console.log(jsonObj)
   const [values, setValues] = React.useState<State>({
-    inName: jsonObj.inName,
-    inID: jsonObj.inID,
-    inDetail: jsonObj.inDetail,
-    inCost: jsonObj.inCost,
-    inClass: jsonObj.inClass,
+    packageID: jsonObj.packageID,
+    packageName: jsonObj.packageName,
+    packageInfo: jsonObj.packageInfo,
+    packageExcess: jsonObj.packageExcess,
+    packageCost: jsonObj.packageCost
+    
   });
-  console.log(values.inName);
+  console.log(values.packageName);
   
   const [loading, setLoading] = React.useState(false);
 
@@ -125,7 +127,7 @@ const Insurance: React.FC<props> = ({ bookData }) => {
 
   const rhandleSkip = () => {
     console.log(`rhandleSkip`);
-    navigate("/Costsummary", {state:{bookData:bookData ,in_id:""}})
+    navigate("/Costsummary", {state:{bookData:bookData ,packageID:""}})
   };
 
   return (
@@ -175,30 +177,30 @@ const Insurance: React.FC<props> = ({ bookData }) => {
                         component="div"
                         color="#1a237e"
                       >
-                        Package name : {item.name}
+                        Package name : {item.packageName}
                       </Typography>
                       <Typography
                         gutterBottom
                         variant="subtitle2"
                         component="div"
                       >
-                        คุ้มครองค่าเสียหายส่วนแรก {item.class} บาท
+                        คุ้มครองค่าเสียหายส่วนแรก {item.packageExcess} บาท
                       </Typography>
                       <Typography variant="body2" gutterBottom>
-                        ข้อมูลการคุ้มครอง : {item.info}
+                        ข้อมูลการคุ้มครอง : {item.packageInfo}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        ID : {item.in_id}
+                        ID : {item.packageID}
                       </Typography>
                     </Grid>
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle1" component="div">
-                      {item.cost} บาท
+                      {item.packageCost} บาท/วัน
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <InsuranceButton in_id = {item.in_id} bookData = {bookData}/>
+                    <InsuranceButton packageID = {item.packageID} bookData = {bookData}/>
                   </Grid>
                 </Grid>
               </Grid>

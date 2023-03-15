@@ -28,7 +28,8 @@ export default function Insurance() {
   useEffect(() => {
     axios({
       method: "GET",
-      url: "https://carleasing.azurewebsites.net/insurance/admin",
+      // url: "https://carleasing.azurewebsites.net/insurance/admin",
+      url:"http://localhost:3001/package/display",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -51,11 +52,11 @@ export default function Insurance() {
   }, [loaded]);
 
   interface State {
-    inName: string;
-    inID: string;
-    inDetail: string;
-    inCost: string;
-    inClass: string;
+    packageID: any,
+    packageName: any,
+    packageInfo: any,
+    packageExcess: any,
+    packageCost: any
   }
   const dataJson = JSON.stringify(data2);
   let data: string = dataJson;
@@ -80,11 +81,11 @@ export default function Insurance() {
     };
 
   const [values, setValues] = React.useState<State>({
-    inName: jsonObj.inName,
-    inID: jsonObj.inID,
-    inDetail: jsonObj.inDetail,
-    inCost: jsonObj.inCOst,
-    inClass: jsonObj.inClass,
+    packageID: jsonObj.packageID,
+    packageName: jsonObj.packageName,
+    packageInfo: jsonObj.packageInfo,
+    packageExcess: jsonObj.packageExcess,
+    packageCost: jsonObj.packageCost
   });
 
   const rhandleSubmit = () => {
@@ -92,12 +93,12 @@ export default function Insurance() {
 
     axios({
       method: "post",
-      url: "https://carleasing.azurewebsites.net/insurance/admin/add",
+      url: "http://localhost:3001/package/insert",
       data: {
-        insurance_name: values.inName,
-        insurance_info: values.inDetail,
-        insurance_price: values.inCost,
-        insurance_class: values.inClass,
+        packageName: values.packageName,
+        packageInfo: values.packageInfo,
+        packageCost: values.packageCost,
+        packageExcess: values.packageExcess
       },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -145,8 +146,8 @@ export default function Insurance() {
               label="Package Name"
               fullWidth
               variant="standard"
-              value={values.inName}
-              onChange={handleChange("inName")}
+              value={values.packageName}
+              onChange={handleChange("packageName")}
             />
             <TextField
               autoFocus
@@ -155,8 +156,8 @@ export default function Insurance() {
               label="Excess"
               fullWidth
               variant="standard"
-              value={values.inClass}
-              onChange={handleChange("inClass")}
+              value={values.packageExcess}
+              onChange={handleChange("packageExcess")}
             />
             <TextField
               autoFocus
@@ -165,8 +166,8 @@ export default function Insurance() {
               label="Package Detail"
               fullWidth
               variant="standard"
-              value={values.inDetail}
-              onChange={handleChange("inDetail")}
+              value={values.packageInfo}
+              onChange={handleChange("packageInfo")}
             />
             <TextField
               autoFocus
@@ -175,8 +176,8 @@ export default function Insurance() {
               label="Price of Insurance"
               fullWidth
               variant="standard"
-              value={values.inCost}
-              onChange={handleChange("inCost")}
+              value={values.packageCost}
+              onChange={handleChange("packageCost")}
             />
           </DialogContent>
           <DialogActions>
@@ -227,26 +228,26 @@ export default function Insurance() {
                         component="div"
                         color="#1a237e"
                       >
-                        Package name : {item.name}
+                        Package name : {item.packageName}
                       </Typography>
                       <Typography
                         gutterBottom
                         variant="subtitle2"
                         component="div"
                       >
-                        เงินคุ้มครองค่าเสียหายแรก {item.class} บาท
+                        เงินคุ้มครองค่าเสียหายแรก {item.packageExcess} บาท
                       </Typography>
                       <Typography variant="body2" gutterBottom>
-                        ข้อมูลการคุ้มครอง {item.info}
+                        ข้อมูลการคุ้มครอง {item.packageInfo}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        ID : {item.in_id}
+                        ID : {item.packageID}
                       </Typography>
                     </Grid>
                   </Grid>
                   <Grid item>
                     <Typography variant="subtitle1" component="div">
-                      {item.cost} บาท 
+                      {item.packageCost} บาท/วัน
                     </Typography>
                   </Grid>
                 </Grid>

@@ -11,23 +11,34 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import React from "react";
 import axios from "axios";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { AnyMxRecord } from "dns";
 
 type props = {
-  in_id?: any;
-  name?: any;
-  info?: any;
-  class_?: any;
-  cost?: any;
+  // in_id?: any;
+  // name?: any;
+  // info?: any;
+  // class_?: any;
+  // cost?: any;
+  packageID: any;
+  packageName: any;
+  packageInfo: any;
+  packageCost: any;
+  packageExcess: any;
   loaded?: boolean;
   setLoad?: any;
 };
 
 const ManageInButton: React.FC<props> = ({
-  in_id,
-  name,
-  info,
-  cost,
-  class_,
+  // in_id,
+  // name,
+  // info,
+  // cost,
+  // class_,
+  packageID,
+  packageName,
+  packageInfo,
+  packageCost,
+  packageExcess,
   loaded,
   setLoad,
 }) => {
@@ -37,18 +48,23 @@ const ManageInButton: React.FC<props> = ({
     localStorage.getItem("admin") ?? ' { "token": "" }'
   ).token;
   interface State {
-    inName: string;
-    inID: string;
-    inDetail: string;
-    inCost: number;
-    inClass: string;
+    // inName: string;
+    // inID: string;
+    // inDetail: string;
+    // inCost: number;
+    // inClass: string;
+    packageID: any,
+    packageName: any,
+    packageInfo: any,
+    packageCost: any,
+    packageExcess: any,
   }
   const [values, setValues] = React.useState<State>({
-    inName: name,
-    inID: in_id,
-    inDetail: info,
-    inCost: cost,
-    inClass: class_,
+    packageID: packageID,
+    packageName: packageName,
+    packageInfo: packageInfo,
+    packageCost: packageCost,
+    packageExcess: packageExcess,
     // inID:jsonObj.inID
   });
   const handleChange =
@@ -66,11 +82,11 @@ const ManageInButton: React.FC<props> = ({
   const handleClose = () => {
     setOpen(false);
     setValues({
-      inName: name,
-      inID: in_id,
-      inDetail: info,
-      inCost: cost,
-      inClass: class_,
+      packageID:packageID,
+      packageName:packageName,
+      packageInfo:packageInfo,
+      packageExcess:packageExcess,
+      packageCost:packageCost,
     });
     setLoad(!loaded);
   };
@@ -84,13 +100,13 @@ const ManageInButton: React.FC<props> = ({
     console.log("token", token);
     axios({
       method: "put",
-      url: "https://carleasing.azurewebsites.net/insurance/admin/edit",
+      url: "http://localhost:3001/package/update",
       data: {
-        insurance_id: values.inID,
-        insurance_name: values.inName,
-        insurance_info: values.inDetail,
-        insurance_price: values.inCost,
-        insurance_class: values.inClass,
+        packageID: values.packageID,
+        packageName: values.packageName,
+        packageInfo: values.packageInfo,
+        packageCost: values.packageCost,
+        packageExcess: values.packageExcess,
       },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -119,11 +135,11 @@ const ManageInButton: React.FC<props> = ({
       localStorage.getItem("admin") ?? '{token:""}'
     ).token;
     console.log("token", token);
-    console.log({ insurance_id: values.inID });
+    console.log({ packageID: values.packageID });
     axios({
       method: "delete",
-      url: "https://carleasing.azurewebsites.net/insurance/admin/delete",
-      data: { insurance_id: in_id },
+      url: `http://localhost:3001/package/delete/${packageID}`,
+      data: { packageID: packageID },
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -162,43 +178,43 @@ const ManageInButton: React.FC<props> = ({
           <TextField
             autoFocus
             margin="dense"
-            id="Name"
+            id="packageName"
             label="Package Name"
             fullWidth
             variant="standard"
-            value={values.inName}
-            onChange={handleChange("inName")}
+            value={values.packageName}
+            onChange={handleChange("packageName")}
           />
           <TextField
             autoFocus
             margin="dense"
-            id="Class"
+            id="packageExcess"
             label="Excess"
             fullWidth
             variant="standard"
-            value={values.inClass}
-            onChange={handleChange("inClass")}
+            value={values.packageExcess}
+            onChange={handleChange("packageExcess")}
           />
           <TextField
             autoFocus
             margin="dense"
-            id="Detail"
-            label="Insurance Detail"
+            id="packageInfo"
+            label="package info"
             fullWidth
             variant="standard"
-            value={values.inDetail}
-            onChange={handleChange("inDetail")}
+            value={values.packageInfo}
+            onChange={handleChange("packageInfo")}
           />
 
           <TextField
             autoFocus
             margin="dense"
-            id="Price"
-            label="Price of Insurance"
+            id="packageCost"
+            label="Price of package"
             fullWidth
             variant="standard"
-            value={values.inCost}
-            onChange={handleChange("inCost")}
+            value={values.packageCost}
+            onChange={handleChange("packageCost")}
           />
         </DialogContent>
         <DialogActions>
