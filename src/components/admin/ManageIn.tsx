@@ -61,6 +61,10 @@ export default function ManageIN() {
     packageExcess: any,
     packageCost: any
   }
+  // const [errorPackageName, setErrorPackageName] = useState("");
+  // const [errorPackageInfo, setErrorPackageInfo] = useState("");
+  // const [errorPackageExcess, setErrorPackageExcess] = useState("");
+  // const [errorPackageCost, setErrorPackageCost] = useState("");
 
   const dataJson = JSON.stringify(data2);
   let data: string = dataJson;
@@ -189,14 +193,14 @@ export default function ManageIN() {
                         component="div"
                         color="#1a237e"
                       >
-                        แพ็คเกจที่ Name : {item.packageName}
+                        Name : {item.packageName}
                       </Typography>
                       <Typography
                         gutterBottom
                         variant="subtitle2"
                         component="div"
                       >
-                        เงินคุ้มครองค่าเสียหายแรก {item.packageExcess} 
+                        เงินคุ้มครองค่าเสียหายแรก {item.packageExcess} บาท
                       </Typography>
                       <Typography variant="body2" gutterBottom>
                         ข้อมูลการคุ้มครอง : {item.packageInfo}

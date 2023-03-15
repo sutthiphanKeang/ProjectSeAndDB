@@ -8,10 +8,11 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React from "react";
+// import React from "react";
 import axios from "axios";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { AnyMxRecord } from "dns";
+import React, { Component, useEffect, useState } from "react";
 
 type props = {
   // in_id?: any;
@@ -59,6 +60,7 @@ const ManageInButton: React.FC<props> = ({
     packageCost: any,
     packageExcess: any,
   }
+  const [loading, setLoading] = React.useState(false);
   const [values, setValues] = React.useState<State>({
     packageID: packageID,
     packageName: packageName,
@@ -67,10 +69,60 @@ const ManageInButton: React.FC<props> = ({
     packageExcess: packageExcess,
     // inID:jsonObj.inID
   });
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({ ...values, [prop]: event.target.value });
-    };
+  const [errorPackageName, setErrorPackageName] = useState("");
+  const [errorPackageInfo, setErrorPackageInfo] = useState("");
+  const [errorPackageExcess, setErrorPackageExcess] = useState("");
+  const [errorPackageCost, setErrorPackageCost] = useState("");
+  const handleChange =(prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    if (prop == "packageName") {
+      if (value.length == 0) {
+        setErrorPackageName("Package name field should not empty! ");
+      }  else if (value == " ") {
+        setErrorPackageName("first character shound not be space!");
+      }else{
+        setErrorPackageName("");
+      }
+      setValues({ ...values, [prop]: value });
+    } else if (prop == "packageInfo") {
+      if (value.length == 0) {
+        setErrorPackageInfo("Package information field should not empty! ");
+      } else if (value == " ") {
+        setErrorPackageInfo("first character shound not be space!");
+      }else{
+        setErrorPackageInfo("");
+      }
+      setValues({ ...values, [prop]: value });
+    } else if (prop == "packageExcess") {
+      if (value.length == 0) {
+        setErrorPackageExcess("Package excess field should not empty!");
+      } else if (/^\d+$/.test(value)) {
+        setErrorPackageExcess("");
+      } else if (event.target.value[0] == " ") {
+        setErrorPackageExcess("first character shound not space!");
+      } else {
+        setErrorPackageExcess("Invalid package excess");
+      }
+      setValues({ ...values, [prop]: value });
+    } else if (prop == "packageCost") {
+      if (value.length == 0) {
+        setErrorPackageCost("Package cost field should not empty!");
+      } else if (/^\d+$/.test(value)) {
+        setErrorPackageCost("");
+      } else if (event.target.value[0] == " ") {
+        setErrorPackageCost("first character shound not space!");
+      } else {
+        setErrorPackageCost("Invalid package cost!");
+      }
+      setValues({ ...values, [prop]: value });
+    }
+  };
+
+    // (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    //   setValues({ ...values, [prop]: event.target.value });
+      
+
+    // };
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const handleClickOpen = () => {
@@ -98,7 +150,7 @@ const ManageInButton: React.FC<props> = ({
   const handleEdit = () => {
     console.log(`handleEdit`);
     console.log("token", token);
-    axios({
+    if(!((!!errorPackageName)||(!!errorPackageInfo)||(!!errorPackageExcess)||(!!errorPackageCost))){axios({
       method: "put",
       url: "http://localhost:3001/package/update",
       data: {
@@ -126,7 +178,10 @@ const ManageInButton: React.FC<props> = ({
           navigate("/Admin");
         }
       })
-      .then(handleClose);
+      .then(handleClose);}
+      else{setLoading(false);
+        alert("กรุณาตรวจสอบข้อมูล");}
+    
   };
 
   const handleDelete = (e: React.MouseEvent) => {
@@ -176,6 +231,8 @@ const ManageInButton: React.FC<props> = ({
         <DialogTitle> กรอกที่นี่เพื่อแก้ไขแพ็คเกจ</DialogTitle>
         <DialogContent>
           <TextField
+          error={!!errorPackageName}
+          helperText={errorPackageName}
             autoFocus
             margin="dense"
             id="packageName"
@@ -186,6 +243,8 @@ const ManageInButton: React.FC<props> = ({
             onChange={handleChange("packageName")}
           />
           <TextField
+          error={!!errorPackageExcess}
+          helperText={errorPackageExcess}
             autoFocus
             margin="dense"
             id="packageExcess"
@@ -196,6 +255,8 @@ const ManageInButton: React.FC<props> = ({
             onChange={handleChange("packageExcess")}
           />
           <TextField
+          error={!!errorPackageInfo}
+          helperText={errorPackageInfo}
             autoFocus
             margin="dense"
             id="packageInfo"
@@ -207,6 +268,8 @@ const ManageInButton: React.FC<props> = ({
           />
 
           <TextField
+          error={!!errorPackageCost}
+          helperText={errorPackageCost}
             autoFocus
             margin="dense"
             id="packageCost"

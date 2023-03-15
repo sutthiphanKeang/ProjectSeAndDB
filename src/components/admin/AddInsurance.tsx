@@ -29,7 +29,7 @@ export default function Insurance() {
     axios({
       method: "GET",
       // url: "https://carleasing.azurewebsites.net/insurance/admin",
-      url:"http://localhost:3001/package/display",
+      url: "http://localhost:3001/package/display",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -52,11 +52,11 @@ export default function Insurance() {
   }, [loaded]);
 
   interface State {
-    packageID: any,
-    packageName: any,
-    packageInfo: any,
-    packageExcess: any,
-    packageCost: any
+    packageID: any;
+    packageName: any;
+    packageInfo: any;
+    packageExcess: any;
+    packageCost: any;
   }
   const dataJson = JSON.stringify(data2);
   let data: string = dataJson;
@@ -74,49 +74,155 @@ export default function Insurance() {
     setOpen1(false);
     setLoad(!loaded);
   };
-
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({ ...values, [prop]: event.target.value });
-    };
-
+  const [loading, setLoading] = React.useState(false); //state new of insert button
   const [values, setValues] = React.useState<State>({
     packageID: jsonObj.packageID,
     packageName: jsonObj.packageName,
     packageInfo: jsonObj.packageInfo,
     packageExcess: jsonObj.packageExcess,
-    packageCost: jsonObj.packageCost
+    packageCost: jsonObj.packageCost,
   });
+  const [errorPackageName, setErrorPackageName] = useState("");
+  const [errorPackageInfo, setErrorPackageInfo] = useState("");
+  const [errorPackageExcess, setErrorPackageExcess] = useState("");
+  const [errorPackageCost, setErrorPackageCost] = useState("");
+  const handleChange =
+    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      if (prop == "packageName") {
+        if (value.length == 0) {
+          setErrorPackageName("Package name field should not empty! ");
+        } else if (value == " ") {
+          setErrorPackageName("first character shound not be space!");
+        } else {
+          setErrorPackageName("");
+        }
+        setValues({ ...values, [prop]: value });
+      } else if (prop == "packageInfo") {
+        if (value.length == 0) {
+          setErrorPackageInfo("Package information field should not empty! ");
+        } else if (value == " ") {
+          setErrorPackageInfo("first character shound not be space!");
+        } else {
+          setErrorPackageInfo("");
+        }
+        setValues({ ...values, [prop]: value });
+      } else if (prop == "packageExcess") {
+        if (value.length == 0) {
+          setErrorPackageExcess("Package excess field should not empty!");
+        } 
+        else if (/^\d+$/.test(value)) {
+          setErrorPackageExcess("");
+        } else if (event.target.value[0] == " ") {
+          setErrorPackageExcess("first character shound not space!");
+        }  else {
+          setErrorPackageExcess("Invalid package excess");
+        }
+        setValues({ ...values, [prop]: value });
+      } else if (prop == "packageCost") {
+        if (value.length == 0) {
+          setErrorPackageCost("Package cost field should not empty!");
+        } else if (value[0]=="0") {
+          setErrorPackageCost("Package cost must be more than 1 Baht");
+        }else if (/^\d+$/.test(value)) {
+          setErrorPackageCost("");
+        } else if (event.target.value[0] == " ") {
+          setErrorPackageCost("first character shound not space!");
+        } else if (value == "0") {
+          setErrorPackageExcess("");
+        } else {
+          setErrorPackageCost("Invalid package cost!");
+        }
+        setValues({ ...values, [prop]: value });
+      }
+    };
 
+  // setValues({ ...values, [prop]: event.target.value });
+  // const rhandleSubmit = (e: React.MouseEvent)=>{
+  //   setLoading(true);
+  //   const token = JSON.parse(
+  //     localStorage.getItem("admin") ?? ' { "token": "" }'
+  //   ).token;
+  //   e.preventDefault();
+  //   if (!((!!errorPackageName)||(!!errorPackageInfo)||(!!errorPackageExcess)||(!!errorPackageCost))){
+  //     axios({
+  //     method: "post",
+  //     url: "ttp://localhost:3001/package/insert",
+  //     data: {
+  //       packageName: values.packageName,
+  //       packageInfo: values.packageInfo,
+  //       packageExcess: values.packageExcess,
+  //       packageCost: values.packageCost,
+
+  //     },
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //     .then((response) => {
+  //       console.log("Admin Import Package >>", response);
+  //       setLoading(false);
+  //       alert("เพิ่มแพคเกจสำเร็จ");
+  //       return response.data;
+  //     })
+  //     .then((data) => console.log(data))
+  //     .catch((error) => {
+  //       if (error.response.status === "401") {
+  //         localStorage.clear();
+  //         setonLoginadmin(false);
+  //         alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+  //         console.log("มาละจ้า");
+  //         navigate("/Admin");
+  //       }
+  //       console.error("found error", error);
+  //       setLoading(false);
+  //       alert("กรุณาตรวจสอบข้อมูลอีกครั้ง");
+  //     });
+  //   }else{
+  //     setLoading(false);
+  //     alert("กรุณาตรวจสอบข้อมูล");
+  //   }
+  // }
   const rhandleSubmit = () => {
     console.log(`rhandleSubmit`);
-
-    axios({
-      method: "post",
-      url: "http://localhost:3001/package/insert",
-      data: {
-        packageName: values.packageName,
-        packageInfo: values.packageInfo,
-        packageCost: values.packageCost,
-        packageExcess: values.packageExcess
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        return response.data;
+    if (
+      !(
+        !!errorPackageName ||
+        !!errorPackageInfo ||
+        !!errorPackageExcess ||
+        !!errorPackageCost
+      )
+    ) {
+      axios({
+        method: "post",
+        url: "http://localhost:3001/package/insert",
+        data: {
+          packageName: values.packageName,
+          packageInfo: values.packageInfo,
+          packageCost: values.packageCost,
+          packageExcess: values.packageExcess,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .then((data) => console.log(data))
-      .catch((error) => {
-        if (error.response.status == "401") {
-          localStorage.clear();
-          setonLoginadmin(false);
-          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-          navigate("/Login");
-        }
-      })
-      .then(handleClose);
+        .then((response) => {
+          return response.data;
+        })
+        .then((data) => console.log(data))
+        .catch((error) => {
+          if (error.response.status == "401") {
+            localStorage.clear();
+            setonLoginadmin(false);
+            alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+            navigate("/Login");
+          }
+        })
+        .then(handleClose);
+    } else {
+      setLoading(false);
+      alert("กรุณาตรวจสอบข้อมูล");
+    }
   };
 
   return (
@@ -140,6 +246,8 @@ export default function Insurance() {
           <DialogTitle>Insert Package กรอกที่นี่</DialogTitle>
           <DialogContent>
             <TextField
+              error={!!errorPackageName}
+              helperText={errorPackageName}
               autoFocus
               margin="dense"
               id="Name"
@@ -150,6 +258,8 @@ export default function Insurance() {
               onChange={handleChange("packageName")}
             />
             <TextField
+              error={!!errorPackageExcess}
+              helperText={errorPackageExcess}
               autoFocus
               margin="dense"
               id="Deductible"
@@ -160,6 +270,8 @@ export default function Insurance() {
               onChange={handleChange("packageExcess")}
             />
             <TextField
+              error={!!errorPackageInfo}
+              helperText={errorPackageInfo}
               autoFocus
               margin="dense"
               id="Detail"
@@ -170,10 +282,12 @@ export default function Insurance() {
               onChange={handleChange("packageInfo")}
             />
             <TextField
+              error={!!errorPackageCost}
+              helperText={errorPackageCost}
               autoFocus
               margin="dense"
               id="Price"
-              label="Price of Insurance"
+              label="Price of Package"
               fullWidth
               variant="standard"
               value={values.packageCost}
