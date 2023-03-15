@@ -115,16 +115,19 @@ export default function Costsummary() {
         bookDate: book.bookData.bookDate,
         returnDate: book.bookData.returnDate,
         insuranceId: in_id.in_id,
-        amount_balance: cost.amount_balance!,
-        tax_amount: cost.tax_amount!,
-        total_amount: cost.total_amount!,
+        // amount_balance: cost.amount_balance!,
+        // tax_amount: cost.tax_amount!,
+        // total_amount: cost.total_amount!,
       },
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
-        navigate("/Payment", {state:{sum:sum}});
+        //นำเข้าหน้า payment 
+        // navigate("/Payment", {state:{sum:sum}});
+        const bill_id = response.data.BillID;
+        navigate("/PaymentSystem", {state:{bill_id:bill_id}});
         return response.data;
       })
       .catch((error) => {

@@ -93,6 +93,10 @@ const ManageCarButton: React.FC<props> = ({
   const [inputGear, setInputGear] = React.useState("");
   const [typeCar, settypeCar] = React.useState("");
   const [typeGear, setTypeGear] = React.useState("");
+  const [errorName, setErrorName] = useState("");
+  const [errorSeats, setErrorSeats] = useState("");
+  const [errorDoors, setErrorDoors] = useState("");
+  const [errorCost, setErrorCost] = useState("");
   const typeId = new Map<string, string>([
     ["Sedan", "1"],
     ["Van", "2"],
@@ -114,16 +118,62 @@ const ManageCarButton: React.FC<props> = ({
     carName: brand + " " + title + " " + year,
     carID: id,
     price: price,
-    preview: "",
-    raw: "",
+    preview: img,
+    raw: img,
     typeID: options[type - 1],
-    gear_type: gear,
+    gear_type: gear == "A" ? "Auto" : "Manual",
     seats: seats,
     doors: doors,
   });
   // เปลี่ยนแปลงค่า
   const handleChange =
     (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      if (prop == "carName") {
+        if (value.length == 0) {
+          setErrorName("Car name field should not empty! ");
+        } else if (value == " ") {
+          setErrorName("first character shound not be space!");
+        } else if (/^[a-zA-Z0-9ก-ฮ]+\s+[a-zA-Z0-9]+\s+\d{4}$/.test(value)) {
+          setErrorName("");
+        } else if (/^[a-zA-Z0-9ก-ฮ]+\s+[a-zA-Z0-9]+\s+\D*$/.test(value)) {
+          setErrorName("Invalid name field!");
+        }
+        setValues({ ...values, [prop]: value });
+      } else if (prop == "seats") {
+        if (value.length == 0) {
+          setErrorSeats("Seats field should not empty!");
+        } else if (event.target.value[0] == " ") {
+          setErrorSeats("first character shound not space!");
+        } else if (/^\d{1}$/.test(value)) {
+          setErrorSeats("");
+        } else {
+          setErrorSeats("Invalid seats field!");
+        }
+        setValues({ ...values, [prop]: value });
+      } else if (prop == "doors") {
+        if (value.length == 0) {
+          setErrorDoors("Doors field should not empty!");
+        } else if (event.target.value[0] == " ") {
+          setErrorDoors("first character shound not space!");
+        } else if (/^\d{1}$/.test(value)) {
+          setErrorDoors("");
+        } else {
+          setErrorDoors("Invalid doors field!");
+        }
+        setValues({ ...values, [prop]: value });
+      } else if (prop == "price") {
+        if (value.length == 0) {
+          setErrorCost("Price field should not empty!");
+        } else if (event.target.value[0] == " ") {
+          setErrorCost("first character shound not space!");
+        } else if (/^\d+$/.test(value)) {
+          setErrorCost("");
+        } else {
+          setErrorCost("Invalid cost field!");
+        }
+        setValues({ ...values, [prop]: value });
+      }
       setValues({ ...values, [prop]: event.target.value });
     };
   //เปลี่ยนรูป
@@ -133,8 +183,8 @@ const ManageCarButton: React.FC<props> = ({
         carName: values.carName,
         carID: values.carID,
         price: values.price,
-        preview: URL.createObjectURL(e.target.files[0]),
-        raw: e.target.files[0],
+        preview: values.preview, //URL.createObjectURL(e.target.files[0]),
+        raw: values.raw,
         typeID: values.typeID,
         gear_type: values.gear_type,
         seats: values.seats,
@@ -152,41 +202,57 @@ const ManageCarButton: React.FC<props> = ({
   const handleNext = (e: React.MouseEvent) => {
     e.preventDefault();
     var body = new FormData();
-    body.append("carName", values.carName);
-    body.append("carId", id);
+    body.append("name", values.carName);
+    body.append("vehicle_id", id);
     // body.append("description", values.description);
     // body.append("review", values.review);
-    body.append("price", values.price);
-    body.append("typeId", typeId.get(values.typeID)!);
-    body.append("file", values.raw);
-
+    body.append("cost", values.price);
+    body.append("type_id", typeId.get(values.typeID)!);
+    body.append("vehicle_img", values.raw);
+    body.append("seats", values.seats);
+    body.append("doors", values.doors);
+    body.append("gear_type", values.gear_type);
+    console.log(body);
     const token = JSON.parse(
       localStorage.getItem("admin") ?? ' { "token": "" }'
     ).token;
     console.log("token", token);
-    axios({
-      method: "PUT",
-      url: "https://carleasing.azurewebsites.net/vehicle/edit",
-      data: body,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        return response.data;
+    if (!(!!errorCost || !!errorDoors || !!errorName || !!errorSeats)) {
+      axios({
+        method: "PUT",
+        url: `http://localhost:3001/vehicle/edit/${values.carID}`,
+        data: {
+          name: values.carName,
+          vehicle_id: id,
+          cost: values.price,
+          type_id: typeId.get(values.typeID)!,
+          vehicle_img: values.raw,
+          seats: values.seats,
+          doors: values.doors,
+          gear_type: values.gear_type == "Auto" ? "A" : "M",
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        if (error.response.status == "401") {
-          localStorage.clear();
-          setonLoginadmin(false);
-          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-          navigate("/Admin");
-        }
-      })
-      .then(handleClose2);
+        .then((response) => {
+          return response.data;
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          if (error.response.status == "401") {
+            localStorage.clear();
+            setonLoginadmin(false);
+            alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+            navigate("/Admin");
+          }
+        })
+        .then(handleClose2);
+    } else {
+      alert("กรุณาตรวจสอบข้อมูล");
+    }
   };
   // เมื่อกดปุ่มลบ
   const handleDelete = (e: React.MouseEvent) => {
@@ -198,7 +264,7 @@ const ManageCarButton: React.FC<props> = ({
     console.log({ carId: values.carID });
     axios({
       method: "delete",
-      url: "https://carleasing.azurewebsites.net/vehicle/delete",
+      url: `http://localhost:3001/vehicle/delete/${values.carID}`,
       data: { carId: values.carID },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -231,7 +297,7 @@ const ManageCarButton: React.FC<props> = ({
       preview: "",
       raw: "",
       typeID: options[type - 1],
-      gear_type: gear,
+      gear_type: gear == "A" ? "Auto" : "Manual",
       seats: seats,
       doors: doors,
     });
@@ -354,13 +420,17 @@ const ManageCarButton: React.FC<props> = ({
                   autoComplete="off"
                 >
                   <TextField
+                    error={!!errorName}
+                    helperText={errorName}
                     id="carName"
-                    label="carName"
+                    label="Vehicle name"
                     variant="outlined"
                     value={values.carName}
                     onChange={handleChange("carName")}
                   />
                   <TextField
+                    error={!!errorDoors}
+                    helperText={errorDoors}
                     id="doors"
                     label="doors"
                     variant="outlined"
@@ -368,6 +438,8 @@ const ManageCarButton: React.FC<props> = ({
                     onChange={handleChange("doors")}
                   />
                   <TextField
+                    error={!!errorSeats}
+                    helperText={errorSeats}
                     id="seats"
                     label="seats"
                     variant="outlined"
@@ -376,6 +448,8 @@ const ManageCarButton: React.FC<props> = ({
                   />
 
                   <TextField
+                    error={!!errorCost}
+                    helperText={errorCost}
                     id="price"
                     label="price"
                     variant="outlined"
@@ -418,7 +492,7 @@ const ManageCarButton: React.FC<props> = ({
                     )}
                   />
                   <Autocomplete
-                    value={values.gear_type == "A" ? "Auto" : "Manual"}
+                    value={values.gear_type}
                     onChange={(event: any, newValue: string | null) => {
                       if (newValue) {
                         setTypeGear(gearType.get(newValue)!);
