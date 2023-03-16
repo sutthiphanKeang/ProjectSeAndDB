@@ -54,11 +54,11 @@ export default function BasicTabs() {
     setValue(newValue);
   };
 
-  useEffect(() =>{
-    if (!onLoginadmin){
-      navigate("/Admin")
-    }
-  },[onLoginadmin])
+  // useEffect(() =>{
+  //   if (!onLoginadmin){
+  //     navigate("/Admin")
+  //   }
+  // },[onLoginadmin])
 
   console.log("admin", onLoginadmin)
   

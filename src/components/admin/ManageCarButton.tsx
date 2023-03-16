@@ -249,18 +249,18 @@ const ManageCarButton: React.FC<props> = ({
   // เมื่อกดปุ่มลบ
   const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault();
-    const token = JSON.parse(
-      localStorage.getItem("admin") ?? '{token:""}'
-    ).token;
-    console.log("token", token);
+    // const token = JSON.parse(
+    //   localStorage.getItem("admin") ?? '{token:""}'
+    // ).token;
+    // console.log("token", token);
     console.log({ carId: values.carID });
     axios({
       method: "delete",
       url: `http://localhost:5500/vehicle/delete/`,
       data: { carId: values.carID },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
       .then((response) => {
         console.log("regis res", response);
@@ -268,12 +268,12 @@ const ManageCarButton: React.FC<props> = ({
       })
       .then((data) => console.log(data))
       .catch((error) => {
-        if (error.response.status == "401") {
-          localStorage.clear();
-          setonLoginadmin(false);
-          alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-          navigate("/Admin");
-        }
+        // if (error.response.status == "401") {
+        //   localStorage.clear();
+        //   setonLoginadmin(false);
+        //   alert("กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
+        //   navigate("/Admin");
+        // }
       })
       .then(handleClose2);
   };

@@ -52,7 +52,7 @@ const LoginAdmin: React.FC = () => {
   const [onLoginadmin, setonLoginadmin] = useOutletContext<any>();
   const navigate = useNavigate();
   const [part, setpart] = useState("");
-
+  setonLoginadmin(true);
 
   useEffect(() => {
     navigate(part);
